@@ -34,7 +34,7 @@ dependencies {
     // db
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     runtime('com.h2database:h2')
-//    runtime('mysql:mysql-connector-java')
+    runtime('mysql:mysql-connector-java')
 
     // cache
 	compile('org.springframework.boot:spring-boot-starter-cache')
