@@ -1,9 +1,8 @@
-package kr.co.mash_up.nine_tique;
+package kr.co.mash_up.nine_tique.domain;
 
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * 유저
@@ -20,13 +19,13 @@ public class User extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = false)  // not null
     private String name;
 
-    @Column(length = 30, nullable = false, unique = true)
+    @Column(length = 30, nullable = false, unique = true)  // not null, unique
     private String email;
 
-    @Column
+    @Column(length = 255)
     private String oauthToken;  // 카톡, FB
 
     @Column(nullable = false, unique = true)
@@ -34,12 +33,16 @@ public class User extends AbstractEntity<Long> {
 
 //    private String gcmToken;  // 푸쉬
 
-    //Todo: 권한 Entity 추가
-
     // mappedBy - 연관관계 주인 설정. 주인O(읽기, 쓰기), 주인X(읽기)
     // mappedBy가 있으면 주인X.
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private SellerInfo sellerInfo;
+
+    // orphanRemoval 연관관계가 끊어진 엔티티를 자동으로 삭제
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Zzim zzim;
+
+    //Todo: 권한 Entity 추가
 
     /**
      * test등의 용도로 setter 생성
@@ -48,7 +51,5 @@ public class User extends AbstractEntity<Long> {
     public void setId(Long id){
         this.id = id;
     }
-
-
 
 }

@@ -1,4 +1,4 @@
-package kr.co.mash_up.nine_tique;
+package kr.co.mash_up.nine_tique.domain;
 
 import lombok.*;
 
@@ -20,7 +20,11 @@ public class SellerInfo extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
 
-    //Todo: 매장정보
+    @Column
+    private String shopName;  // 매장이름
+
+    @Column
+    private String shopInfo;  // 매장정보
 
     //Todo:  매장위치
 

@@ -1,4 +1,4 @@
-package kr.co.mash_up.nine_tique;
+package kr.co.mash_up.nine_tique.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -18,8 +18,8 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
     @EmbeddedId  //복합키 설정
     private Id id = new Id();
 
-    @ManyToOne  // ZzimProduct(Many) : Like(One)
-    @MapsId(value = "likeId")  //식별관계 매핑(FK가 PK에 포함될 때). FK와 매핑한 연관관계를 기본키에도 매핑하겠다는 뜻
+    @ManyToOne  // ZzimProduct(Many) : Zzim(One)
+    @MapsId(value = "zzimId")  //식별관계 매핑(FK가 PK에 포함될 때). FK와 매핑한 연관관계를 기본키에도 매핑하겠다는 뜻
     private Zzim zzim;
 
     @ManyToOne

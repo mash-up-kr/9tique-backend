@@ -1,12 +1,12 @@
-package kr.co.mash_up.nine_tique;
+package kr.co.mash_up.nine_tique.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.javafx.runtime.SystemProperties;
 import kr.co.mash_up.nine_tique.config.SystemPropertiesConfig;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "product")
@@ -25,14 +25,17 @@ public class Product extends AbstractEntity<Long> {
     @JsonProperty
     private String name;  //이름
 
+    private String brandName;
+
+    private String size;
+
+    private int price;
+
     @Lob  // text type으로 사용하기 위해
     @JsonProperty
     private String description;  // 상세설명
 
-    @Lob
-    private List<String> imageFileName;  //Todo: 이미지 5개로 제한
-
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)  // enum이름을 DB에 저장
     private ProductStatus productStatus;  // 판매중/완료
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,6 +45,9 @@ public class Product extends AbstractEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")  // FK 매핑시 이용
     private Category category;  // 카테고리
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)  // FK는 항상 N쪽에, 주인도 N쪽
+    private Set<ProductImage> productImages;  //Todo: 이미지 4개로 제한
 
     //Todo: 이벤트 여부 추가?
 
@@ -53,22 +59,5 @@ public class Product extends AbstractEntity<Long> {
         this.id = id;
     }
 
-    /**
-     * 업로드된 이미지를 다운받을 수 있는 url 제공
-     * @return image url
-     */
-    @JsonProperty("imageUrl")
-    public String getImageUrl(){
-        return String.format("$s/product/%d/%s",
-                System.getProperty(SystemPropertiesConfig.STORAGE_URI), this.id, this.imageFileName);
-    }
 
-    /**
-     * 물리적인 image upload path 제공
-     * @return upload path
-     */
-    @Transient
-    public String getImageUploadPath(){
-        return String.format("%s/product/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), this.id);
-    }
 }

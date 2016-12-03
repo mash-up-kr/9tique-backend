@@ -1,4 +1,4 @@
-package kr.co.mash_up.nine_tique;
+package kr.co.mash_up.nine_tique.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,13 +22,13 @@ public abstract class AbstractEntity<K extends Serializable> implements Serializ
     /**
      * 생성일자
      */
-    @Column(name = "created_at", insertable = true, updatable = false)  // update 못하게 설정
+    @Column(name = "created_at", insertable = true, updatable = false)  // insert 구문 포함, update 못하게 설정
     protected LocalDateTime createdAt;
 
     /**
      * 수정일자
      */
-    @Column(name = "updated_at", insertable = true, updatable = true)
+    @Column(name = "updated_at", insertable = true, updatable = true)  // insert, update 구문 포함
     protected LocalDateTime updatedAt;
 
     @PrePersist  // 객체 영속화 전에 호출

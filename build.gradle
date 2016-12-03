@@ -1,13 +1,13 @@
 buildscript {
-	ext {
-		springBootVersion = '1.4.1.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    ext {
+        springBootVersion = '1.4.1.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -15,33 +15,34 @@ apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 
 jar {
-	baseName = 'nine_tique'
-	version = '0.0.1-SNAPSHOT'
+    baseName = 'nine_tique'
+    version = '0.0.1-SNAPSHOT'
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 
 dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-aop')
 
     // db
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    runtime('com.h2database:h2')
+//    runtime('com.h2database:h2')
     runtime('mysql:mysql-connector-java')
 
     // cache
-	compile('org.springframework.boot:spring-boot-starter-cache')
+    compile('org.springframework.boot:spring-boot-starter-cache')
 
     // lombok
-	compileOnly('org.projectlombok:lombok')
+    compileOnly('org.projectlombok:lombok')
 
     // security
-    //	compile('org.springframework.boot:spring-boot-starter-security')
+//    compile('org.springframework.boot:spring-boot-starter-security')
+//	testCompile('org.springframework.security:spring-security-test')
 }

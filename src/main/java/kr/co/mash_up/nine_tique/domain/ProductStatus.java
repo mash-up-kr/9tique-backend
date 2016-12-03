@@ -1,4 +1,4 @@
-package kr.co.mash_up.nine_tique;
+package kr.co.mash_up.nine_tique.domain;
 
 /**
  * 상품의 판매중/판매 완료 여부

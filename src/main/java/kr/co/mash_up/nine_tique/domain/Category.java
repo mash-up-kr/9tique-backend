@@ -1,8 +1,10 @@
-package kr.co.mash_up.nine_tique;
+package kr.co.mash_up.nine_tique.domain;
 
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "category")
@@ -22,4 +24,7 @@ public class Category extends AbstractEntity<Long> {
     @Column
     private String sub;
 
+    //Todo: User와의 관계 추가
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Product> products = new HashSet<>();
 }
