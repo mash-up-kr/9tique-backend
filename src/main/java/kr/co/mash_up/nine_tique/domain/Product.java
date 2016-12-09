@@ -25,10 +25,16 @@ public class Product extends AbstractEntity<Long> {
     @JsonProperty
     private String name;  //이름
 
+    @Column(length = 50)
+    @JsonProperty
     private String brandName;
 
+    @Column(length = 50)
+    @JsonProperty
     private String size;
 
+    @Column
+    @JsonProperty
     private int price;
 
     @Lob  // text type으로 사용하기 위해
@@ -36,18 +42,22 @@ public class Product extends AbstractEntity<Long> {
     private String description;  // 상세설명
 
     @Enumerated(EnumType.STRING)  // enum이름을 DB에 저장
+    @JsonProperty
     private ProductStatus productStatus;  // 판매중/완료
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_info_id")
+    @JsonProperty
     private SellerInfo sellerInfo;  // 판매자 정보
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")  // FK 매핑시 이용
+    @JsonProperty
     private Category category;  // 카테고리
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)  // FK는 항상 N쪽에, 주인도 N쪽
-    private Set<ProductImage> productImages;  //Todo: 이미지 4개로 제한
+    @JsonProperty
+    private Set<ProductImage> productImages;
 
     //Todo: 이벤트 여부 추가?
 

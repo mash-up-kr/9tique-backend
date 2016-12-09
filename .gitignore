@@ -23,3 +23,9 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### logging ###
+/logs/
+
+### storage ###
+/storage/

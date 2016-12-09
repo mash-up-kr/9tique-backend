@@ -1,6 +1,5 @@
 package kr.co.mash_up.nine_tique.config;
 
-import org.aspectj.apache.bcel.classfile.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
