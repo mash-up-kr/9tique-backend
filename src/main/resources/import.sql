@@ -24,7 +24,7 @@ INSERT INTO user(name, email, oauth_token, access_token, created_at) VALUES ('�
 INSERT INTO user(name, email, oauth_token, access_token, created_at) VALUES ('유저4', 'dd@naver.com', 'ddfsdfsd434', 'ddfsdfsd434', CURRENT_TIMESTAMP());
 
 
-INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장1', '매장1 정보', '010-0000-0000', CURRENT_TIMESTAMP(),1);
+INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장1', '매장1 정보', '010-0000-0000', CURRENT_TIMESTAMP(), 1);
 INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장2', '매장2 정보', '010-0000-0001', CURRENT_TIMESTAMP(), 2);
 
 

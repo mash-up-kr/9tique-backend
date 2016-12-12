@@ -32,7 +32,7 @@ public class CategoryController {
         ParameterUtil.checkParameterEmpty(requestVO.getMain(), requestVO.getSub());
         log.debug(requestVO.getMain() + ", " + requestVO.getSub());
 
-        Category category = categorySservice.save(requestVO.toCategoryEntity());
+        Category category = categorySservice.create(requestVO.toCategoryEntity());
 
         if (category != null) {
             return ResponseVO.ok();

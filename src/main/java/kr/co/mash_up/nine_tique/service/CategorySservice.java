@@ -24,7 +24,6 @@ public class CategorySservice {
         return categoryRepository.findOne(id);
     }
 
-    //Todo: update logic implement
     @Transactional
     public Category update(Long id, Category newCategory) {
         Category oldCateogry = categoryRepository.findOne(id);
@@ -37,7 +36,7 @@ public class CategorySservice {
     }
 
     @Transactional
-    public Category save(Category category) {
+    public Category create(Category category) {
         return categoryRepository.save(category);
     }
 

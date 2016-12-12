@@ -25,67 +25,21 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    /**
+     * 상품 생성
+     *
+     * @param requestVO 생성할 상품 정보
+     * @return 생성 결과
+     */
 //    @RequestMapping(method = RequestMethod.POST)
-//    public ResponseVO add(@RequestParam(name = "name") String name,
-//                          @RequestParam(name = "brandName") String brandName,
-//                          @RequestParam(name = "size") String size,
-//                          @RequestParam(name = "price") int price,
-//                          @RequestParam(name = "description") String description,
-//                          @RequestParam(name = "productStatus") String productStatus,
-//                          @RequestParam(name = "sellerId") long sellerId,
-//                          @RequestParam(name = "mainCategory") String mainCategory,
-//                          @RequestParam(name = "subCategory") String subCategory,
-//                          @RequestParam(name = "files") List<MultipartFile> files
-//                          ) {
-////        ParameterUtil.checkParameterEmpty(requestVO.getName());  Todo: field setting
+//    public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
+//        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
+//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getProductStatus(), requestVO.getSellerId(),
+//                requestVO.getMainCategory(), requestVO.getFiles());
 //
-//        Product product = new Product();
-//        product.setName(name);
-//        product.setBrandName(brandName);
-//        product.setSize(size);
-//        product.setPrice(price);
-//        product.setDescription(description);
-//        SellerInfo sellerInfo = sellerInfoRepository.findOne(sellerId);
-//        product.setSellerInfo(sellerInfo);
-//        Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
-//        product.setCategory(category);
+//        Product product = productService.save(requestVO);
 //
-//        if(productStatus.equals("SELL")){
-//            product.setProductStatus(ProductStatus.SELL);
-//        }else if(productStatus.equals("SOLD_OUT")){
-//            product.setProductStatus(ProductStatus.SOLD_OUT);
-//        }
-//
-//        Product savedProduct = productService.save(product);
-//
-//        for(MultipartFile file : files){
-////            ParameterUtil.checkParameterEmpty(file);
-//            if(file != null && !file.isEmpty()){
-//                ProductImage productImage = new ProductImage();
-//
-//                String saveName = UUID.randomUUID().toString() +
-//                        file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-//
-//                log.debug(saveName);
-//
-//                productImage.setFileName(saveName);
-//                productImage.setOriginalFileName(file.getOriginalFilename());
-//                productImage.setSize(file.getSize());
-//
-//                productImage.setProduct(savedProduct);
-//                FileUtil.upload(file, productImage.getImageUploadPath(), saveName);
-//
-////                FileUtil.upload(file, FileUtil.getImageUploadPath(savedProduct.getId()), saveName);
-////                productImage.setImageUrl(FileUtil.getImageUrl(savedProduct.getId(), saveName));
-//
-//                productImageRepository.save(productImage);
-//
-//                log.debug(file.getOriginalFilename());
-//            }
-//        }
-//
-//
-//        if (savedProduct != null) {
+//        if (product != null) {
 //            return ResponseVO.ok();
 //        }
 //
@@ -93,17 +47,31 @@ public class ProductController {
 //        return ResponseVO.ok();
 //    }
 
-    /**
-     * 상품 생성
-     *
-     * @param requestVO 생성할 상품 정보
-     * @return 생성 결과
-     */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
-        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-                requestVO.getPrice(), requestVO.getDescription(), requestVO.getProductStatus(), requestVO.getSellerId(),
-                requestVO.getMainCategory(), requestVO.getFiles());
+    public ResponseVO add(@RequestParam(name = "name") String name,
+                          @RequestParam(name = "brandName") String brandName,
+                          @RequestParam(name = "size") String size,
+                          @RequestParam(name = "price") int price,
+                          @RequestParam(name = "description") String description,
+                          @RequestParam(name = "productStatus") String productStatus,
+                          @RequestParam(name = "sellerId") long sellerId,
+                          @RequestParam(name = "mainCategory") String mainCategory,
+                          @RequestParam(name = "subCategory") String subCategory,
+                          @RequestParam(name = "files") List<MultipartFile> files) {
+        ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, productStatus, sellerId,
+                mainCategory, files);
+
+        ProductRequestVO requestVO = new ProductRequestVO();
+        requestVO.setName(name);
+        requestVO.setBrandName(brandName);
+        requestVO.setSize(size);
+        requestVO.setPrice(price);
+        requestVO.setDescription(description);
+        requestVO.setSellerId(sellerId);
+        requestVO.setMainCategory(mainCategory);
+        requestVO.setSubCategory(subCategory);
+        requestVO.setProductStatus(productStatus);
+        requestVO.setFiles(files);
 
         Product product = productService.save(requestVO);
 
@@ -167,6 +135,14 @@ public class ProductController {
 
         return new DataListResponseVO<Product>(page);
     }
+
+
+
+
+
+
+
+
 
     /**
      * 상품 삭제

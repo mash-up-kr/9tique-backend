@@ -22,7 +22,7 @@ public class SellerInfo extends AbstractEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty
-    private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
+    private Long id;
 
     @Column
     @JsonProperty
@@ -41,9 +41,12 @@ public class SellerInfo extends AbstractEntity<Long> {
     // mappedBy - 연관관계 주인 설정. 주인O(읽기, 쓰기), 주인X(읽기)
     // mappedBy가 있으면 주인X.
     @OneToMany(mappedBy = "sellerInfo", fetch = FetchType.LAZY)
+//    @OneToMany(mappedBy = "sellerInfo")
     private List<Product> products = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+//    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
+    @JoinColumn(name = "user_id")  // FK 매핑시 이용
     @JsonProperty
     private User user;
 }

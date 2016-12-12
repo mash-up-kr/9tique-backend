@@ -45,12 +45,15 @@ public class Product extends AbstractEntity<Long> {
     @JsonProperty
     private ProductStatus productStatus;  // 판매중/완료
 
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "seller_info_id")
     @JsonProperty
     private SellerInfo sellerInfo;  // 판매자 정보
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // Memo : Lazy 함부로 쓰지말자... 해당 테이블 쿼리 안날릴시 정보가 안나온다.
+//    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id")  // FK 매핑시 이용
     @JsonProperty
     private Category category;  // 카테고리
