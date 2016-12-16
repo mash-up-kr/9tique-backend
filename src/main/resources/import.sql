@@ -28,16 +28,16 @@ INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES
 INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장2', '매장2 정보', '010-0000-0001', CURRENT_TIMESTAMP(), 2);
 
 
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품1', '상품1 브렌드', '상품1 설명', 1000, 'SELL',  '상품1 사이즈', CURRENT_TIMESTAMP(), 1, 1);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품2', '상품2 브렌드', '상품2 설명', 2000, 'SOLD_OUT',  '상품2 사이즈', CURRENT_TIMESTAMP(), 1, 2);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품3', '상품3 브렌드', '상품3 설명', 30000, 'SOLD_OUT',  '상품3 사이즈', CURRENT_TIMESTAMP(), 1, 2);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품4', '상품4 브렌드', '상품4 설명', 40000, 'SELL',  '상품4 사이즈', CURRENT_TIMESTAMP(), 1, 1);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품5', '상품5 브렌드', '상품5 설명', 50000, 'SELL',  '상품5 사이즈', CURRENT_TIMESTAMP(), 1, 1);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품6', '상품6 브렌드', '상품6 설명', 60000, 'SELL',  '상품6 사이즈', CURRENT_TIMESTAMP(), 2, 1);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품7', '상품7 브렌드', '상품7 설명', 70000, 'SOLD_OUT',  '상품7 사이즈', CURRENT_TIMESTAMP(), 2, 1);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품8', '상품8 브렌드', '상품8 설명', 80000, 'SOLD_OUT',  '상품8 사이즈', CURRENT_TIMESTAMP(), 2, 1);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품9', '상품9 브렌드', '상품9 설명', 90000, 'SELL',  '상품9 사이즈', CURRENT_TIMESTAMP(), 2, 1);
-INSERT INTO product(name, brand_name, description, price, product_status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 17, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품1', '상품1 브렌드', '상품1 설명', 1000, 'SELL',  '상품1 사이즈', CURRENT_TIMESTAMP(), 1, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품2', '상품2 브렌드', '상품2 설명', 2000, 'SOLD_OUT',  '상품2 사이즈', CURRENT_TIMESTAMP(), 1, 2);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품3', '상품3 브렌드', '상품3 설명', 30000, 'SOLD_OUT',  '상품3 사이즈', CURRENT_TIMESTAMP(), 1, 2);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품4', '상품4 브렌드', '상품4 설명', 40000, 'SELL',  '상품4 사이즈', CURRENT_TIMESTAMP(), 1, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품5', '상품5 브렌드', '상품5 설명', 50000, 'SELL',  '상품5 사이즈', CURRENT_TIMESTAMP(), 1, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품6', '상품6 브렌드', '상품6 설명', 60000, 'SELL',  '상품6 사이즈', CURRENT_TIMESTAMP(), 2, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품7', '상품7 브렌드', '상품7 설명', 70000, 'SOLD_OUT',  '상품7 사이즈', CURRENT_TIMESTAMP(), 2, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품8', '상품8 브렌드', '상품8 설명', 80000, 'SOLD_OUT',  '상품8 사이즈', CURRENT_TIMESTAMP(), 2, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품9', '상품9 브렌드', '상품9 설명', 90000, 'SELL',  '상품9 사이즈', CURRENT_TIMESTAMP(), 2, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 17, 1);
 
 
 

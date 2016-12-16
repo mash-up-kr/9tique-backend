@@ -2,10 +2,7 @@ package kr.co.mash_up.nine_tique.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.Product;
-import kr.co.mash_up.nine_tique.domain.ProductStatus;
-import kr.co.mash_up.nine_tique.domain.SellerInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

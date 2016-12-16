@@ -19,7 +19,7 @@ import lombok.ToString;
 @JsonInclude(value = JsonInclude.Include.ALWAYS)
 public class ResponseVO {
 
-    @JsonProperty
+    @JsonProperty(value = "result_code")
     private String resultCode;
 
     @JsonProperty
@@ -35,6 +35,6 @@ public class ResponseVO {
     }
 
     public static ResponseVO ok(){
-        return new ResponseVO(ResultCodes.OK);
+        return new ResponseVO(ResultCodes.OK, "success");
     }
 }

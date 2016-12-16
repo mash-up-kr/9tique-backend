@@ -1,6 +1,12 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.*;
+import kr.co.mash_up.nine_tique.domain.Category;
+import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.ProductImage;
+import kr.co.mash_up.nine_tique.domain.SellerInfo;
+import kr.co.mash_up.nine_tique.dto.ProductDto;
+import kr.co.mash_up.nine_tique.dto.ProductImageDto;
+import kr.co.mash_up.nine_tique.dto.SellerInfoDto;
 import kr.co.mash_up.nine_tique.repository.CategoryRepository;
 import kr.co.mash_up.nine_tique.repository.ProductImageRepository;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
@@ -11,14 +17,16 @@ import kr.co.mash_up.nine_tique.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,14 +44,14 @@ public class ProductService {
     @Autowired
     private ProductImageRepository productImageRepository;
 
-    //Todo: seller info 정보 출력. 현재 null임
     /*
     ManyToOne은 알아서 join을 안한다.
     OneToMany는 알아서 join을 한다.
     트랜잭션안에서 1번이라도 쿼리를 날리면 join된다.
+    -> fetch 전략때문임... -> LAZY와 EGEAR의 차이.
      */
     @Transactional(readOnly = true)
-    public Page<Product> findProductsByCategory(ProductListRequestVO requestVO) {
+    public Page<ProductDto> findProductsByCategory(ProductListRequestVO requestVO) {
         Category category = null;
 
         Pageable pageable = requestVO.getPageable();
@@ -55,17 +63,76 @@ public class ProductService {
             log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
         }
 
-        return productRepository.findByCategory(pageable, category);
+        Page<Product> productPage = productRepository.findByCategory(pageable, category);
+
+        // DTO로 변환
+        List<ProductDto> productDtos = productPage.getContent().stream()
+                .map(product -> {
+                    List<ProductImageDto> productImageDtos = new ArrayList<>();
+                    for (ProductImage image : product.getProductImages()) {
+                        productImageDtos.add(new ProductImageDto.Builder()
+                                .withUrl(image.getImageUrl())
+                                .build());
+                    }
+
+                    SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
+                            .withShopName(product.getSellerInfo().getShopName())
+                            .withShopInfo(product.getSellerInfo().getShopInfo())
+                            .withPhone(product.getSellerInfo().getPhone())
+                            .build();
+
+                    return new ProductDto.Builder()
+                            .withId(product.getId())
+                            .withName(product.getName())
+                            .withBrandName(product.getBrandName())
+                            .withSize(product.getSize())
+                            .withPrice(product.getPrice())
+                            .withDescription(product.getDescription())
+                            .withStatus(product.getStatus())
+                            .withMainCategory(product.getCategory().getMain())
+                            .withSubCategory(product.getCategory().getSub())
+                            .withSellerInfo(sellerInfoDto)
+                            .withProductImages(productImageDtos)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        Pageable resultPageable = new PageRequest(productPage.getNumber(), productPage.getSize(),
+                new Sort(Sort.Direction.DESC, "createdAt"));
+
+        return new PageImpl<ProductDto>(productDtos, resultPageable, productPage.getTotalElements());
     }
 
     @Transactional(readOnly = true)
-    public Page<Product> findProducts(Pageable pageable) {
-        return productRepository.findAll(pageable);
-    }
+    public ProductDto findOne(Long id) {
+        Product product = productRepository.findOne(id);
 
-    @Transactional(readOnly = true)
-    public Product findOne(Long id) {
-        return productRepository.findOne(id);
+        List<ProductImageDto> productImageDtos = new ArrayList<>();
+        for (ProductImage image : product.getProductImages()) {
+            productImageDtos.add(new ProductImageDto.Builder()
+                    .withUrl(image.getImageUrl())
+                    .build());
+        }
+
+        SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
+                .withShopName(product.getSellerInfo().getShopName())
+                .withShopInfo(product.getSellerInfo().getShopInfo())
+                .withPhone(product.getSellerInfo().getPhone())
+                .build();
+
+        return new ProductDto.Builder()
+                .withId(product.getId())
+                .withName(product.getName())
+                .withBrandName(product.getBrandName())
+                .withSize(product.getSize())
+                .withPrice(product.getPrice())
+                .withDescription(product.getDescription())
+                .withStatus(product.getStatus())
+                .withMainCategory(product.getCategory().getMain())
+                .withSubCategory(product.getCategory().getSub())
+                .withSellerInfo(sellerInfoDto)
+                .withProductImages(productImageDtos)
+                .build();
     }
 
     @Transactional
@@ -115,9 +182,9 @@ public class ProductService {
 
             String productStatus = requestVO.getProductStatus();
             if (productStatus.equals("SELL")) {
-                oldProduct.setProductStatus(ProductStatus.SELL);
+                oldProduct.setStatus(Product.Status.SELL);
             } else if (productStatus.equals("SOLD_OUT")) {
-                oldProduct.setProductStatus(ProductStatus.SOLD_OUT);
+                oldProduct.setStatus(Product.Status.SOLD_OUT);
             }
 
             List<MultipartFile> files = requestVO.getFiles();
@@ -140,9 +207,9 @@ public class ProductService {
         product.setCategory(category);
 
         if (requestVO.getProductStatus().equals("SELL")) {
-            product.setProductStatus(ProductStatus.SELL);
+            product.setStatus(Product.Status.SELL);
         } else if (requestVO.getProductStatus().equals("SOLD_OUT")) {
-            product.setProductStatus(ProductStatus.SOLD_OUT);
+            product.setStatus(Product.Status.SOLD_OUT);
         }
 
         Product savedProduct = productRepository.save(product);
@@ -158,7 +225,7 @@ public class ProductService {
         productRepository.delete(id);
     }
 
-    private void saveMultipartFile(List<MultipartFile> files, Product product){
+    private void saveMultipartFile(List<MultipartFile> files, Product product) {
 
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty()) {
@@ -183,6 +250,5 @@ public class ProductService {
                 log.debug(file.getOriginalFilename());
             }
         }
-
     }
 }

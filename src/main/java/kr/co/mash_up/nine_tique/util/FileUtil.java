@@ -5,26 +5,37 @@ import kr.co.mash_up.nine_tique.config.SystemPropertiesConfig;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Transient;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileUtil {
 
-    public static File upload(MultipartFile multipartFile, String uploadDir, String fileName){
+    public static File upload(MultipartFile multipartFile, String uploadDir, String fileName) {
         File dirPath = new File(uploadDir);
-        if(!dirPath.exists()){
+        if (!dirPath.exists()) {
             boolean made = dirPath.mkdirs();  // 해당 경로에 없는 dir 모두 생성
-            if(!made){
+            if (!made) {
                 throw new RuntimeException(String.format("make directory(%s) fail", uploadDir));
             }
         }
 
-        String targetFilePath = uploadDir + "/" +fileName;
+        String targetFilePath = uploadDir + "/" + fileName;
         File targetFile = new File(targetFilePath);
 
-        try{
+        try {
+            // file save 방법1
             multipartFile.transferTo(targetFile);
-        }catch (IOException e){
+
+            // file save 방법2
+//            byte[] bytes = multipartFile.getBytes();
+//            BufferedOutputStream bufferStream =
+//                    new BufferedOutputStream(new FileOutputStream(targetFile));
+//            bufferStream.write(bytes);
+//            bufferStream.close();
+
+        } catch (IOException e) {
             throw new RuntimeException(String.format("file upload error: %s", targetFile), e);
         }
         return targetFile;

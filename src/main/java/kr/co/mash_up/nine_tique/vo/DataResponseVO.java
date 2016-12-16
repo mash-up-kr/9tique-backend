@@ -19,8 +19,12 @@ public class DataResponseVO<T> extends ResponseVO {
         super(resultCode);
     }
 
+    public DataResponseVO(String resultCode, String message){
+        super(resultCode, message);
+    }
+
     public DataResponseVO(T item){
-        this(ResultCodes.OK);
+        this(ResultCodes.OK,  "success");
         this.item = item;
     }
 }

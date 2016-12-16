@@ -1,11 +1,8 @@
 package kr.co.mash_up.nine_tique.controller;
 
 import kr.co.mash_up.nine_tique.domain.*;
-import kr.co.mash_up.nine_tique.repository.CategoryRepository;
-import kr.co.mash_up.nine_tique.repository.ProductImageRepository;
-import kr.co.mash_up.nine_tique.repository.SellerInfoRepository;
+import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.service.ProductService;
-import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/product")
@@ -113,11 +109,10 @@ public class ProductController {
      * @return 조회한 상품 정보
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public DataResponseVO<Product> detail(@PathVariable Long id) {
-        Product product = productService.findOne(id);
-        return new DataResponseVO<Product>(product);
+    public DataResponseVO<ProductDto> detail(@PathVariable Long id) {
+        ProductDto productDto = productService.findOne(id);
+        return new DataResponseVO<ProductDto>(productDto);
     }
-
 
     /**
      * 카테고리별 리스트 조회
@@ -126,23 +121,15 @@ public class ProductController {
      * @return 카테고리별 상품 리스트
      */
     @RequestMapping(method = RequestMethod.GET)
-    public DataListResponseVO<Product> list(ProductListRequestVO requestVO) {
+    public DataListResponseVO<ProductDto> list(ProductListRequestVO requestVO) {
 
-        Page<Product> page = productService.findProductsByCategory(requestVO);
+        Page<ProductDto> page = productService.findProductsByCategory(requestVO);
 
-        log.debug(requestVO.getPage() + " " + requestVO.getPageSize() + " " + requestVO.getPageable() +
+        log.debug(requestVO.getPageNo() + " " + requestVO.getPageSize() + " " + requestVO.getPageable() +
                 " " + requestVO.getMainCategory() + " " + requestVO.getSubCategory());
 
-        return new DataListResponseVO<Product>(page);
+        return new DataListResponseVO<ProductDto>(page);
     }
-
-
-
-
-
-
-
-
 
     /**
      * 상품 삭제

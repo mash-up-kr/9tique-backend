@@ -18,59 +18,47 @@ public class Product extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
     private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
 
     @Column(length = 50)
-    @JsonProperty
     private String name;  //이름
 
     @Column(length = 50)
-    @JsonProperty
     private String brandName;
 
     @Column(length = 50)
-    @JsonProperty
     private String size;
 
     @Column
-    @JsonProperty
     private int price;
 
     @Lob  // text type으로 사용하기 위해
-    @JsonProperty
     private String description;  // 상세설명
 
     @Enumerated(EnumType.STRING)  // enum이름을 DB에 저장
-    @JsonProperty
-    private ProductStatus productStatus;  // 판매중/완료
+    private Status status;  // 판매중/완료
 
 //    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
     @JoinColumn(name = "seller_info_id")
-    @JsonProperty
     private SellerInfo sellerInfo;  // 판매자 정보
 
     // Memo : Lazy 함부로 쓰지말자... 해당 테이블 쿼리 안날릴시 정보가 안나온다.
 //    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
     @JoinColumn(name = "category_id")  // FK 매핑시 이용
-    @JsonProperty
     private Category category;  // 카테고리
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)  // FK는 항상 N쪽에, 주인도 N쪽
-    @JsonProperty
     private Set<ProductImage> productImages;
 
     //Todo: 이벤트 여부 추가?
 
     /**
-     * test등의 용도로 setter 생성
-     * @param id
+     * 상품의 판매중/판매 완료 여부
      */
-    public void setId(Long id){
-        this.id = id;
+    public enum Status {
+        SELL,  // 판매중
+        SOLD_OUT  // 판매 완료
     }
-
-
 }

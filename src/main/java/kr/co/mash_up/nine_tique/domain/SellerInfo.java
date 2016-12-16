@@ -21,21 +21,17 @@ public class SellerInfo extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
     private Long id;
 
     @Column
-    @JsonProperty
     private String shopName;  // 매장이름
 
     @Column
-    @JsonProperty
     private String shopInfo;  // 매장정보
 
-    //Todo:  매장위치
+    //Todo:  매장위치 추가
 
     @Column(length = 20, nullable = false, unique = true)
-    @JsonProperty
     private String phone;  // 전화
 
     // mappedBy - 연관관계 주인 설정. 주인O(읽기, 쓰기), 주인X(읽기)
@@ -47,6 +43,5 @@ public class SellerInfo extends AbstractEntity<Long> {
 //    @OneToOne(fetch = FetchType.LAZY)
     @OneToOne
     @JoinColumn(name = "user_id")  // FK 매핑시 이용
-    @JsonProperty
     private User user;
 }
