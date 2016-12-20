@@ -1,8 +1,10 @@
 package kr.co.mash_up.nine_tique;
 
+import kr.co.mash_up.nine_tique.security.JwtFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.web.client.RestTemplate;
@@ -25,5 +27,14 @@ public class NineTiqueApplication {
     @Bean
     public RestTemplate restTemplate(){
         return new RestTemplate();
+    }
+
+    @Bean
+    public FilterRegistrationBean jwtFilter(){
+        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(new JwtFilter());
+        registrationBean.addUrlPatterns("/api/*");
+
+        return registrationBean;
     }
 }

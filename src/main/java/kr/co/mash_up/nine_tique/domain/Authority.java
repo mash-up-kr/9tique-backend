@@ -7,6 +7,7 @@ Authentication, Authorization, Access Controll 처리를 간단한 설정만으�
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
@@ -17,8 +18,7 @@ import javax.persistence.*;
 @Table(name = "authority")
 @Data
 @EqualsAndHashCode(callSuper = false)
-//Todo: implements GrantedAuthority
-public class Authority extends AbstractEntity<Long> {
+public class Authority extends AbstractEntity<Long> implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +26,4 @@ public class Authority extends AbstractEntity<Long> {
 
     @Column(length = 30)
     private String authority;
-
 }

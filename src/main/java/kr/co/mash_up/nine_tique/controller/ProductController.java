@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/product")
+@RequestMapping(value = "/api/product")
 @Slf4j
 public class ProductController {
 
