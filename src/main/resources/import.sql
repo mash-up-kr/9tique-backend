@@ -17,11 +17,20 @@ INSERT INTO category(main, sub, created_at) VALUES ('BOTTOM', 'SKIRT', CURRENT_T
 INSERT INTO category(main, sub, created_at) VALUES ('SHOSE', '', CURRENT_TIMESTAMP());
 INSERT INTO category(main, sub, created_at) VALUES ('CAP', '', CURRENT_TIMESTAMP());
 
+INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저1', 'aa@naver.com', 'aafsdfsd434', CURRENT_TIMESTAMP());
+INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저2', 'bb@naver.com', 'bbfsdfsd434', CURRENT_TIMESTAMP());
+INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저3', 'cc@naver.com', 'ccfsdfsd434', CURRENT_TIMESTAMP());
+INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저4', 'dd@naver.com', 'ddfsdfsd434', CURRENT_TIMESTAMP());
 
-INSERT INTO user(name, email, oauth_token, access_token, created_at) VALUES ('유저1', 'aa@naver.com', 'aafsdfsd434', 'aafsdfsd434', CURRENT_TIMESTAMP());
-INSERT INTO user(name, email, oauth_token, access_token, created_at) VALUES ('유저2', 'bb@naver.com', 'bbfsdfsd434', 'bbfsdfsd434', CURRENT_TIMESTAMP());
-INSERT INTO user(name, email, oauth_token, access_token, created_at) VALUES ('유저3', 'cc@naver.com', 'ccfsdfsd434', 'ccfsdfsd434', CURRENT_TIMESTAMP());
-INSERT INTO user(name, email, oauth_token, access_token, created_at) VALUES ('유저4', 'dd@naver.com', 'ddfsdfsd434', 'ddfsdfsd434', CURRENT_TIMESTAMP());
+INSERT INTO authority(authority) VALUES ('USER');
+INSERT INTO authority(authority) VALUES ('SELLER');
+INSERT INTO authority(authority) VALUES ('ADMIN');
+
+INSERT INTO user_authority(user_id, authority_id) VALUES (1, 1);
+INSERT INTO user_authority(user_id, authority_id) VALUES (2, 2);
+INSERT INTO user_authority(user_id, authority_id) VALUES (3, 1);
+INSERT INTO user_authority(user_id, authority_id) VALUES (4, 1);
+
 
 
 INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장1', '매장1 정보', '010-0000-0000', CURRENT_TIMESTAMP(), 1);

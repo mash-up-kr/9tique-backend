@@ -20,7 +20,7 @@ import java.util.Set;
 @Table(name = "user")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"sellerInfo", "zzim"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class User extends AbstractEntity<Long> {
 

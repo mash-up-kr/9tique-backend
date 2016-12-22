@@ -1,10 +1,8 @@
 package kr.co.mash_up.nine_tique;
 
-import kr.co.mash_up.nine_tique.security.JwtFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.web.client.RestTemplate;
@@ -18,23 +16,14 @@ Jsr310JpaConverters에 static class로 LocalDateTimeConverter가 있다.
 @EntityScan(basePackageClasses = {NineTiqueApplication.class, Jsr310JpaConverters.class})
 public class NineTiqueApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(NineTiqueApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(NineTiqueApplication.class, args);
         System.out.println("Ninetique Server Run!!");
         System.out.println("args = [" + args + "]");
     }
 
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         return new RestTemplate();
-    }
-
-    @Bean
-    public FilterRegistrationBean jwtFilter(){
-        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
-        registrationBean.setFilter(new JwtFilter());
-        registrationBean.addUrlPatterns("/api/*");
-
-        return registrationBean;
     }
 }

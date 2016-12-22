@@ -2,6 +2,7 @@ package kr.co.mash_up.nine_tique.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import kr.co.mash_up.nine_tique.config.JwtSettings;
 import kr.co.mash_up.nine_tique.domain.Authority;
 import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.repository.AuthorityRepository;
@@ -31,8 +32,11 @@ public class UserService {
     @Autowired
     private AuthorityRepository authorityRepository;
 
-    //Todo: key 숨기기
-    String secretKey = "qTLY/BYBom546U8mvYwdE/59JbYY+qKucaEme8Z8jQbyF5MvXuWNnkJOmTSguaWbB9R00hpoI/DUdZF2zee26A";
+    @Autowired
+    private JwtSettings jwtSettings;
+
+//    //Todo: key 숨기기
+//    String secretKey = "qTLY/BYBom546U8mvYwdE/59JbYY+qKucaEme8Z8jQbyF5MvXuWNnkJOmTSguaWbB9R00hpoI/DUdZF2zee26A";
 
     public void findOne(Long id) {
         userRepository.findOne(id);
@@ -78,7 +82,6 @@ public class UserService {
     }
 
 
-
     //jwt 생성해서 리턴
     private String generateAccessToken(User user) {
         String authority = Authorities.USER;
@@ -97,17 +100,17 @@ public class UserService {
         //Todo: 만료시간 정하기
         return Jwts.builder()
                 .setSubject("access_token")  // token 제목
-                .setIssuer("nine_tique")  // token 발급자
+                .setIssuer(jwtSettings.getTokenIssuer())  // token 발급자
                 .setIssuedAt(new Date())  // 발급시간
 //                .setExpiration(new Date())  // 만료시간
                 // public 클레임
-                .claim("http://mash-up.co.kr/9tique/jwt_claims", true)
+                .claim(jwtSettings.getTokenIssuer() + "/jwt_claims", true)
                 // private 클레임
                 .claim("user_id", user.getId().toString())
                 .claim("oauth_token", user.getOauthToken())
                 .claim("oauth_type", user.getOauthType())
                 .claim("roles", authority)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, jwtSettings.getTokenSigningKey())
                 .compact();
     }
 }
