@@ -1,8 +1,5 @@
 package kr.co.mash_up.nine_tique.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
 import kr.co.mash_up.nine_tique.config.JwtSettings;
 import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
@@ -26,7 +23,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private JwtSettings jwtSettings;
 
     @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
     private UserRepository userRepository;
+
+    public static final String HEADER_PREFIX = "Bearer ";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -39,46 +41,32 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader(jwtSettings.getTokenHeader());
 
         if (authHeader != null) {
-            if (!authHeader.startsWith("Bearer ")) {
+            if (!authHeader.startsWith(HEADER_PREFIX)) {
                 throw new ServletException("Missing or invalid Authorization header.");
             }
 
             logger.info(authHeader.toString());
 
-            final String token = authHeader.substring(7);  // The part after "Bearer "
+            final String token = authHeader.substring(HEADER_PREFIX.length());  // The part after "Bearer "
 
-            try {
-                final Claims claims = Jwts.parser()
-                        .setSigningKey(jwtSettings.getTokenSigningKey())
-                        .parseClaimsJws(token)
-                        .getBody();
-                logger.info(claims);
-
-                //Todo: expire time check
-//            LocalDateTime expriedTime = LocalDateTime.parse((CharSequence) claims.get("expried"));
-//            if(expriedTime.plusHours(30).isBefore(LocalDateTime.now())){
-                //Todo: throw expired exception
-//            }
-
-                Long userId = Long.valueOf((String) claims.get("user_id"));
-                log.info("user id " + userId);
-                User user = userRepository.findOne(userId);
-
-                if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                    if (user != null) {
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(user, null, user.getAuthoritiesWithoutPersistence());
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        log.info("authenticated user " + userId + ", setting security context");
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                }
-
-            } catch (final SignatureException e) {
+            if (!jwtTokenUtil.validateToken(token)) {
                 throw new ServletException("Invaild token.");
             }
-        }
 
+            Long userId = jwtTokenUtil.getUserIdFromToken(token);
+            log.info("user id " + userId);
+            User user = userRepository.findOne(userId);
+
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (user != null) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(user, null, user.getAuthoritiesWithoutPersistence());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    log.info("authenticated user " + userId + ", setting security context");
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+        }
         filterChain.doFilter(request, response);
     }
 }

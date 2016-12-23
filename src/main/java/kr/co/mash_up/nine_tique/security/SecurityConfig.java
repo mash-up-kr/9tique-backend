@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -20,6 +22,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public RestAuthenticationEntryPoint authenticationEntryPointBean() {
         return new RestAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public AccessDeniedHandler noRedirectingAccessDeniedHandler() {
+        return new AccessDeniedHandlerImpl();
     }
 
     @Bean
@@ -55,6 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()  // We don't need CSRF for JWT based authentication
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPointBean())
+
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(noRedirectingAccessDeniedHandler())
 
                 .and()
                 .sessionManagement()

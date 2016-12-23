@@ -22,9 +22,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             throws AuthenticationException {
 
         Long userId = (Long) authentication.getPrincipal();
+        log.info("authenticate user id" + userId);
+
         User user = userRepository.findOne(userId);
 
-        log.info("authenticate user id" + userId);
+//        Optional.of(user).orElseThrow(() -> new RuntimeException("user not found"));
 
         if (user == null) {
             //Todo: throw user not found exception
