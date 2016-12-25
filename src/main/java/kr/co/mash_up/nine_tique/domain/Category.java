@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "category")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"products"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class Category extends AbstractEntity<Long> {
 

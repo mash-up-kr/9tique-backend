@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Table(name = "zzim_product")
 @Getter
 @Setter
-@ToString  //(exclude = {"like", "product"})
+@ToString(exclude = {"zzim", "product"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
 
@@ -25,7 +25,7 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
     @ManyToOne
     @MapsId(value = "productId")
     @JsonProperty
-    @JsonUnwrapped
+    @JsonUnwrapped  // json object로 wrapping 안한다
     private Product product;
 
     //Todo: 필요한 필드 추가
@@ -35,14 +35,6 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
         this.id.productId = product.getId();
         this.zzim = zzim;
         this.product = product;
-    }
-
-    @JsonProperty(value = "createdAt")
-    public Long getCreatedTimestamp(){
-        if(this.createdAt == null){
-            return null;
-        }
-        return Timestamp.valueOf(this.createdAt).getTime();
     }
 
     @Embeddable
@@ -55,5 +47,22 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
 
         @Column(name = "product_id")
         private Long productId;
+    }
+
+
+    @JsonProperty(value = "createdAt")
+    public Long getCreatedTimestamp(){
+        if(this.createdAt == null){
+            return null;
+        }
+        return Timestamp.valueOf(this.createdAt).getTime();
+    }
+
+    @JsonProperty(value = "updatedAt")
+    public Long getUpdatedTimestamp(){
+        if(this.updatedAt == null){
+            return null;
+        }
+        return Timestamp.valueOf(this.updatedAt).getTime();
     }
 }

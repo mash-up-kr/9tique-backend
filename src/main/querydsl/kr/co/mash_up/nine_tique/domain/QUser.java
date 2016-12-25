@@ -24,7 +24,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final StringPath accessToken = createString("accessToken");
+    public final SetPath<Authority, QAuthority> authorities = this.<Authority, QAuthority>createSet("authorities", Authority.class, QAuthority.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -36,6 +36,8 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath name = createString("name");
 
     public final StringPath oauthToken = createString("oauthToken");
+
+    public final EnumPath<User.OauthType> oauthType = createEnum("oauthType", User.OauthType.class);
 
     public final QSellerInfo sellerInfo;
 

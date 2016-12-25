@@ -2,15 +2,21 @@ package kr.co.mash_up.nine_tique.controller;
 
 import kr.co.mash_up.nine_tique.domain.*;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
+import kr.co.mash_up.nine_tique.repository.ProductRepository;
+import kr.co.mash_up.nine_tique.repository.UserRepository;
+import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.ProductService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -56,6 +62,10 @@ public class ProductController {
                           @RequestParam(name = "files") List<MultipartFile> files) {
         ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, productStatus, sellerId,
                 mainCategory, files);
+
+        //Todo: seller id 없애기
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info(userId + " ");
 
         ProductRequestVO requestVO = new ProductRequestVO();
         requestVO.setName(name);
@@ -141,15 +151,5 @@ public class ProductController {
     public ResponseVO delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseVO.ok();
-    }
-
-    /*
-   찜 - 하기, 해제,
-   유저의 찜테이블에 상품 id 추가
-   유저정보, 상품 id
-    */
-    @RequestMapping(value = "/{id}/zzim", method = RequestMethod.PUT)
-    public void zzim() {
-
     }
 }

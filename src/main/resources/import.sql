@@ -17,7 +17,7 @@ INSERT INTO category(main, sub, created_at) VALUES ('BOTTOM', 'SKIRT', CURRENT_T
 INSERT INTO category(main, sub, created_at) VALUES ('SHOSE', '', CURRENT_TIMESTAMP());
 INSERT INTO category(main, sub, created_at) VALUES ('CAP', '', CURRENT_TIMESTAMP());
 
-INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저1', 'aa@naver.com', 'aafsdfsd434', CURRENT_TIMESTAMP());
+INSERT INTO user(name, email, oauth_token, created_at) VALUES ('admin', '9tique@naver.com', '9tique', CURRENT_TIMESTAMP());
 INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저2', 'bb@naver.com', 'bbfsdfsd434', CURRENT_TIMESTAMP());
 INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저3', 'cc@naver.com', 'ccfsdfsd434', CURRENT_TIMESTAMP());
 INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저4', 'dd@naver.com', 'ddfsdfsd434', CURRENT_TIMESTAMP());
@@ -26,15 +26,20 @@ INSERT INTO authority(authority) VALUES ('USER');
 INSERT INTO authority(authority) VALUES ('SELLER');
 INSERT INTO authority(authority) VALUES ('ADMIN');
 
-INSERT INTO user_authority(user_id, authority_id) VALUES (1, 1);
+INSERT INTO user_authority(user_id, authority_id) VALUES (1, 3);
 INSERT INTO user_authority(user_id, authority_id) VALUES (2, 2);
 INSERT INTO user_authority(user_id, authority_id) VALUES (3, 1);
 INSERT INTO user_authority(user_id, authority_id) VALUES (4, 1);
 
 
+INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장1', '매장1 정보', '010-0000-0000', CURRENT_TIMESTAMP(), 2);
+INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장2', '매장2 정보', '010-0000-0001', CURRENT_TIMESTAMP(), 3);
 
-INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장1', '매장1 정보', '010-0000-0000', CURRENT_TIMESTAMP(), 1);
-INSERT INTO seller_info(shop_name, shop_info, phone, created_at, user_id) VALUES ('매장2', '매장2 정보', '010-0000-0001', CURRENT_TIMESTAMP(), 2);
+
+INSERT INTO zzim(user_id, created_at) VALUES (1, CURRENT_TIMESTAMP());
+INSERT INTO zzim(user_id, created_at) VALUES (2, CURRENT_TIMESTAMP());
+INSERT INTO zzim(user_id, created_at) VALUES (3, CURRENT_TIMESTAMP());
+INSERT INTO zzim(user_id, created_at) VALUES (4, CURRENT_TIMESTAMP());
 
 
 INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품1', '상품1 브렌드', '상품1 설명', 1000, 'SELL',  '상품1 사이즈', CURRENT_TIMESTAMP(), 1, 1);
@@ -47,7 +52,3 @@ INSERT INTO product(name, brand_name, description, price, status, size, created_
 INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품8', '상품8 브렌드', '상품8 설명', 80000, 'SOLD_OUT',  '상품8 사이즈', CURRENT_TIMESTAMP(), 2, 1);
 INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품9', '상품9 브렌드', '상품9 설명', 90000, 'SELL',  '상품9 사이즈', CURRENT_TIMESTAMP(), 2, 1);
 INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 17, 1);
-
-
-
-

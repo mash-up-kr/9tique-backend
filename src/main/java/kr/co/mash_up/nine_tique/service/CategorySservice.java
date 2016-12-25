@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Category와 관련된 비즈니스 로직 처리
+ */
 @Service
 public class CategorySservice {
 

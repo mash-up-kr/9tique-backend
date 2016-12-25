@@ -1,6 +1,5 @@
 package kr.co.mash_up.nine_tique.repository;
 
-import com.mysema.query.jpa.impl.JPAQuery;
 import kr.co.mash_up.nine_tique.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -8,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+
 
 //public class ProductRepositoryImpl implements ProductRepositoryCustom {
 //

@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Table(name = "product_image")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"product"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class ProductImage extends AbstractEntity<Long> {
 

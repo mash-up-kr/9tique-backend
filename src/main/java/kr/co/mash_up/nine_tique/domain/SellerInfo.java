@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "seller_info")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"products"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class SellerInfo extends AbstractEntity<Long> {
 

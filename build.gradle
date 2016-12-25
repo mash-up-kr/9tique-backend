@@ -29,14 +29,15 @@ repositories {
 // https://gist.github.com/EdwardBeckett/5377401
 // http://blog.jongminkim.co.kr/?p=386
 sourceSets {
-    generated {
+    querydsl {
         java {
-            srcDirs = ['src/main/generated']
+            srcDirs = ['src/main/querydsl']
         }
     }
 }
 
-configurations{
+configurations {
+    compile.exclude module: "spring-boot-starter-jdbc"
     querydslapt
 }
 
@@ -70,35 +71,36 @@ dependencies {
     compile 'com.mysema.querydsl:querydsl-apt:3.7.2'
 }
 
-task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types'){
+task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
     source = sourceSets.main.java
     classpath = configurations.compile + configurations.querydslapt
     options.compilerArgs = [
-            "-proc:only",
-            "-processor", "com.mysema.query.apt.jpa.JPAAnnotationProcessor"
+            '-proc:only', '-processor', 'com.mysema.query.apt.jpa.JPAAnnotationProcessor'
     ]
-    destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
+    destinationDir = sourceSets.querydsl.java.srcDirs.iterator().next()
+    dependencyCacheDir = compileJava.dependencyCacheDir
 }
+generateQueryDSL.mustRunAfter clean
 
 compileJava {
     dependsOn generateQueryDSL
     source generateQueryDSL.destinationDir
 }
 
-compileGeneratedJava {
+compileQuerydslJava {
     dependsOn generateQueryDSL
     options.warnings = false
     classpath += sourceSets.main.runtimeClasspath
 }
 
 clean {
-    delete sourceSets.generated.java.srcDirs
+    delete sourceSets.querydsl.java.srcDirs
 }
-
-idea {
-    module {
-        sourceDirs += file('src/main/generated')
-    }
-}
+//
+//idea {
+//    module {
+//        sourceDirs += file('src/main/querydsl')
+//    }
+//}
 
 

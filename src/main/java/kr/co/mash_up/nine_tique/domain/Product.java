@@ -12,7 +12,7 @@ import java.util.Set;
 @Table(name = "product")
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"sellerInfo", "category", "productImages"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class Product extends AbstractEntity<Long> {
 
@@ -35,7 +35,7 @@ public class Product extends AbstractEntity<Long> {
     @Lob  // text type으로 사용하기 위해
     private String description;  // 상세설명
 
-    @Enumerated(EnumType.STRING)  // enum이름을 DB에 저장
+    @Enumerated(EnumType.STRING)  // enum 이름을 DB에 저장
     private Status status;  // 판매중/완료
 
 //    @ManyToOne(fetch = FetchType.LAZY)

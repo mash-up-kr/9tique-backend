@@ -41,11 +41,11 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final SetPath<ProductImage, QProductImage> productImages = this.<ProductImage, QProductImage>createSet("productImages", ProductImage.class, QProductImage.class, PathInits.DIRECT2);
 
-    public final EnumPath<ProductStatus> productStatus = createEnum("productStatus", ProductStatus.class);
-
     public final QSellerInfo sellerInfo;
 
     public final StringPath size = createString("size");
+
+    public final EnumPath<Product.Status> status = createEnum("status", Product.Status.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

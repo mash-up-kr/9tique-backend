@@ -56,7 +56,7 @@ public class User extends AbstractEntity<Long> {
     private SellerInfo sellerInfo;
 
     // orphanRemoval 연관관계가 끊어진 엔티티를 자동으로 삭제
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Zzim zzim;
 
     /**
