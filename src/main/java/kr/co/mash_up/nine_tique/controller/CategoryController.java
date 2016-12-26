@@ -24,6 +24,7 @@ public class CategoryController {
 
     /**
      * 카테고리 생성
+     *
      * @param requestVO 생성할 카테고리 정보
      * @return 생성 결과
      */
@@ -31,32 +32,39 @@ public class CategoryController {
     public ResponseVO add(@RequestBody CategoryRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMain(), requestVO.getSub());
         log.debug(requestVO.getMain() + ", " + requestVO.getSub());
+        Category category = categorySservice.create(requestVO);
 
-        Category category = categorySservice.create(requestVO.toCategoryEntity());
-
-        if (category != null) {
+        if (category != null) {  // 생성 성공
             return ResponseVO.ok();
         }
 
-        //Todo: 생성 실패시 예외처리
-       return ResponseVO.ok();
+        //Todo: 생성 실패시 예외처리 -> 어떤 경우가 있을까..?
+        return ResponseVO.ok();
     }
 
     /**
      * 카테고리 수정
-     * @param id 수정할 카테고리 id
+     *
+     * @param id        수정할 카테고리 id
      * @param requestVO 수정할 내용
      * @return 수정 결과
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public DataResponseVO<Category> update(@PathVariable Long id, @RequestBody CategoryRequestVO requestVO) {
+    public ResponseVO update(@PathVariable Long id, @RequestBody CategoryRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMain(), requestVO.getSub());
         Category category = categorySservice.update(id, requestVO.toCategoryEntity());
-        return new DataResponseVO<Category>(category);
+
+        if (category != null) {  // 수정 성공
+            return ResponseVO.ok();
+        }
+
+        //Todo: 수정 실패시 예외처리 -> 어떤 경우가 있을까..?
+        return ResponseVO.ok();
     }
 
     /**
      * 카테고리 삭제
+     *
      * @param id 삭제할 카테고리 id
      * @return 삭제 결과
      */
@@ -68,6 +76,7 @@ public class CategoryController {
 
     /**
      * 카테고리 목록 조회
+     *
      * @return 카테고리 목록
      */
     @RequestMapping(method = RequestMethod.GET)
@@ -78,12 +87,13 @@ public class CategoryController {
 
     /**
      * 카테고리 상세정보 조회
-     * @param id 상세조회할 카테고리 id
+     *
+     * @param categoryId 상세조회할 카테고리 id
      * @return 조회한 카테고리 정보
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public DataResponseVO<Category> detail(@PathVariable Long id) {
-        Category category = categorySservice.findOne(id);
+    public DataResponseVO<Category> detail(@PathVariable("id") Long categoryId) {
+        Category category = categorySservice.findById(categoryId);
         return new DataResponseVO<Category>(category);
     }
 }

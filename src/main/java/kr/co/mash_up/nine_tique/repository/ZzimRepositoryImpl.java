@@ -1,6 +1,7 @@
 package kr.co.mash_up.nine_tique.repository;
 
 import com.mysema.query.jpa.impl.JPAQuery;
+import kr.co.mash_up.nine_tique.domain.QUser;
 import kr.co.mash_up.nine_tique.domain.QZzim;
 import kr.co.mash_up.nine_tique.domain.QZzimProduct;
 import kr.co.mash_up.nine_tique.domain.ZzimProduct;
@@ -10,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
-import kr.co.mash_up.nine_tique.domain.QUser;
 
 /**
  * ZzimRepositoryCustom 구현체

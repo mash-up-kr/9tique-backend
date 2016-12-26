@@ -18,7 +18,7 @@ public class StaticResourceConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        if(!registry.hasMappingForPattern("/storage/**")){
+        if (!registry.hasMappingForPattern("/storage/**")) {
             registry.addResourceHandler("/storage/**")
                     .addResourceLocations(staticResourceLocation);
         }

@@ -34,7 +34,7 @@ public class QZzim extends EntityPathBase<Zzim> {
 
     public final QUser user;
 
-    public final SetPath<ZzimProduct, QZzimProduct> zzimProducts = this.<ZzimProduct, QZzimProduct>createSet("zzimProducts", ZzimProduct.class, QZzimProduct.class, PathInits.DIRECT2);
+    public final MapPath<ZzimProduct.Id, ZzimProduct, QZzimProduct> zzimProducts = this.<ZzimProduct.Id, ZzimProduct, QZzimProduct>createMap("zzimProducts", ZzimProduct.Id.class, ZzimProduct.class, QZzimProduct.class);
 
     public QZzim(String variable) {
         this(Zzim.class, forVariable(variable), INITS);

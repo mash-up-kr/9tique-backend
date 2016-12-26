@@ -16,18 +16,16 @@ public class UserController {
     public String login(@RequestBody UserRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getOauthToken(), requestVO.getType());
 
-        //Todo: return access token
+        // return access token
         String token = userService.login(requestVO);
 
         return token;
     }
 
     @RequestMapping(value = "/api/user/{id}", method = RequestMethod.PUT)
-    public String registerSeller(@PathVariable("id") Long id){
+    public String registerSeller(@PathVariable("id") Long id) {
         String token = userService.addSellerAuthority(id);
 
         return token;
     }
-
-
 }

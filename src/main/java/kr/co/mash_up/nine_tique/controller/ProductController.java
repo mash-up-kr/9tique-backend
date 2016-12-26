@@ -1,9 +1,7 @@
 package kr.co.mash_up.nine_tique.controller;
 
-import kr.co.mash_up.nine_tique.domain.*;
+import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.repository.ProductRepository;
-import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.ProductService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
@@ -11,12 +9,9 @@ import kr.co.mash_up.nine_tique.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -36,19 +31,20 @@ public class ProductController {
 //    @RequestMapping(method = RequestMethod.POST)
 //    public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
 //        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getProductStatus(), requestVO.getSellerId(),
+//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getProductStatus(),
 //                requestVO.getMainCategory(), requestVO.getFiles());
 //
-//        Product product = productService.save(requestVO);
+//        Long userId = SecurityUtil.getCurrentUser().getId();
+//        log.info(userId + " ");
 //
-//        if (product != null) {
+//        Product product = productService.create(userId, requestVO);
+//
+//        if (product != null) {  // 생성 성공
 //            return ResponseVO.ok();
 //        }
-//
-//        //Todo: 생성 실패시 예외처리
+//        //Todo: 생성 실패시 예외처리 -> 어떤 경우가 있을까..?
 //        return ResponseVO.ok();
 //    }
-
     @RequestMapping(method = RequestMethod.POST)
     public ResponseVO add(@RequestParam(name = "name") String name,
                           @RequestParam(name = "brandName") String brandName,
@@ -56,14 +52,12 @@ public class ProductController {
                           @RequestParam(name = "price") int price,
                           @RequestParam(name = "description") String description,
                           @RequestParam(name = "productStatus") String productStatus,
-                          @RequestParam(name = "sellerId") long sellerId,
                           @RequestParam(name = "mainCategory") String mainCategory,
                           @RequestParam(name = "subCategory") String subCategory,
                           @RequestParam(name = "files") List<MultipartFile> files) {
-        ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, productStatus, sellerId,
+        ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, productStatus,
                 mainCategory, files);
 
-        //Todo: seller id 없애기
         Long userId = SecurityUtil.getCurrentUser().getId();
         log.info(userId + " ");
 
@@ -73,42 +67,42 @@ public class ProductController {
         requestVO.setSize(size);
         requestVO.setPrice(price);
         requestVO.setDescription(description);
-        requestVO.setSellerId(sellerId);
         requestVO.setMainCategory(mainCategory);
         requestVO.setSubCategory(subCategory);
         requestVO.setProductStatus(productStatus);
         requestVO.setFiles(files);
 
-        Product product = productService.save(requestVO);
+        Product product = productService.create(userId, requestVO);
 
         if (product != null) {
             return ResponseVO.ok();
         }
-
-        //Todo: 생성 실패시 예외처리
+        //Todo: 생성 실패시 예외처리 -> 어떤 경우가 있을까..?
         return ResponseVO.ok();
     }
 
     /**
      * 상품 정보 수정 (상태변경 - 판매중/완료)
-     * @param id 수정할 상품 id
+     *
+     * @param productId 수정할 상품 id
      * @param requestVO 수정할 상품 정보
      * @return 수정 결과
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseVO update(@PathVariable Long id, @RequestBody ProductRequestVO requestVO) {
+    public ResponseVO update(@PathVariable("id") Long productId, @RequestBody ProductRequestVO requestVO) {
         // 바뀐 정보만 update하기 위해 service단에서 체크한다.
 //        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
 //                requestVO.getPrice(), requestVO.getDescription(), requestVO.getProductStatus(), requestVO.getSellerId(),
 //                requestVO.getMainCategory(), requestVO.getFiles());
 
-        Product product = productService.update(id, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        Product product = productService.update(userId, productId, requestVO);
 
         if (product != null) {
             return ResponseVO.ok();
         }
 
-        //Todo: 업데이트 실패시 예외처리
+        //Todo: 수정 실패시 예외처리 -> 어떤 경우가 있을까..?
         return ResponseVO.ok();
     }
 
@@ -132,6 +126,7 @@ public class ProductController {
      */
     @RequestMapping(method = RequestMethod.GET)
     public DataListResponseVO<ProductDto> list(ProductListRequestVO requestVO) {
+        ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
 
         Page<ProductDto> page = productService.findProductsByCategory(requestVO);
 
@@ -144,12 +139,13 @@ public class ProductController {
     /**
      * 상품 삭제
      *
-     * @param id 삭제할 상품 id
+     * @param productId 삭제할 상품 id
      * @return 삭제 결과
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseVO delete(@PathVariable Long id) {
-        productService.delete(id);
+    public ResponseVO delete(@PathVariable("id") Long productId) {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        productService.delete(userId, productId);
         return ResponseVO.ok();
     }
 }

@@ -4,6 +4,8 @@ import kr.co.mash_up.nine_tique.domain.*;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.dto.SellerInfoDto;
+import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
+import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.repository.ZzimRepository;
@@ -41,20 +43,25 @@ public class ZzimService {
      * @return 성공/실패 여부
      */
     @Transactional
-    public boolean addProduct(Long userId, Long productId) {
+    public void addProduct(Long userId, Long productId) {
         User user = userRepository.findOne(userId);
         Zzim zzim = user.getZzim();
 //        Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
 
         Product product = productRepository.findOne(productId);
-        ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
-
-        if (!zzim.getZzimProducts().containsKey(zzimProduct.getId())) {
-            zzim.getZzimProducts().put(zzimProduct.getId(), zzimProduct);
-            return true;
+        if (product == null) {
+            throw new IdNotFoundException("zzim add product -> product not found");
         }
-        return false;
+
+        ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
+        if (zzim.getZzimProducts().containsKey(zzimProduct.getId())) {
+            throw new AlreadyExistException("zzim add product -> zzim already exist");
+        }
+
+        zzim.getZzimProducts().put(zzimProduct.getId(), zzimProduct);
     }
+
+    //Todo: col 추가해서 enable시키기
 
     /**
      * 찜해제
@@ -64,19 +71,21 @@ public class ZzimService {
      * @return 성공/실패 여부
      */
     @Transactional
-    public boolean deleteProduct(Long userId, Long productId) {
+    public void deleteProduct(Long userId, Long productId) {
         User user = userRepository.findOne(userId);
         Zzim zzim = user.getZzim();
 //        Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
 
         Product product = productRepository.findOne(productId);
-        ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
-
-        if (zzim.getZzimProducts().containsKey(zzimProduct.getId())) {
-            zzim.getZzimProducts().remove(zzimProduct.getId());
-            return true;
+        if (product == null) {
+            throw new IdNotFoundException("zzim delete product -> product not found");
         }
-        return false;
+
+        ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
+        if (!zzim.getZzimProducts().containsKey(zzimProduct.getId())) {
+            throw new IdNotFoundException("zzim delete product -> zzim not found");
+        }
+        zzim.getZzimProducts().remove(zzimProduct.getId());
     }
 
     /**
@@ -89,6 +98,10 @@ public class ZzimService {
     @Transactional(readOnly = true)
     public Page<ProductDto> findZzimProducts(Long userId, Pageable pageable) {
         Page<ZzimProduct> zzimProductPage = zzimRepository.getZzimProducts(userId, pageable);
+
+        if (zzimProductPage == null) {
+            throw new IdNotFoundException("zzim products not found");
+        }
 
         // DTO로 변환
         List<ProductDto> productDtos = zzimProductPage.getContent().stream()

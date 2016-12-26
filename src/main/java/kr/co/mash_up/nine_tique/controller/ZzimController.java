@@ -3,6 +3,7 @@ package kr.co.mash_up.nine_tique.controller;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.ZzimService;
+import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.vo.ResponseVO;
@@ -27,13 +28,10 @@ public class ZzimController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseVO add(@RequestParam(name = "product_id") Long productId) {
-        Long userId = SecurityUtil.getCurrentUser().getId();
-        boolean result = zzimService.addProduct(userId, productId);
 
-        if (result) {
-            return ResponseVO.ok();  // 성공
-        }
-        return ResponseVO.ok();  // 실패
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        zzimService.addProduct(userId, productId);
+        return ResponseVO.ok();
     }
 
     /**
@@ -44,12 +42,10 @@ public class ZzimController {
      */
     @RequestMapping(value = "/product/{id}", method = RequestMethod.DELETE)
     public ResponseVO delete(@PathVariable("id") Long productId) {
+        ParameterUtil.checkParameterEmpty(productId);
         Long userId = SecurityUtil.getCurrentUser().getId();
-        boolean result = zzimService.deleteProduct(userId, productId);
-        if (result) {
-            return ResponseVO.ok();  // 성공
-        }
-        return ResponseVO.ok();  // 실패
+        zzimService.deleteProduct(userId, productId);
+        return ResponseVO.ok();
     }
 
     /**

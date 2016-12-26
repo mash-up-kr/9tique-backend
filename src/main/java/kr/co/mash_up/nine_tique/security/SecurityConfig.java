@@ -19,11 +19,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * create 401 error handler Bean
+     * @return 401 error handler
+     */
     @Bean
     public RestAuthenticationEntryPoint authenticationEntryPointBean() {
         return new RestAuthenticationEntryPoint();
     }
 
+    /**
+     * create 403 error handler Bean
+     * @return 403 error handler
+     */
     @Bean
     public AccessDeniedHandler noRedirectingAccessDeniedHandler() {
         return new AccessDeniedHandlerImpl();
@@ -61,11 +69,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()  // We don't need CSRF for JWT based authentication
                 .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPointBean())
+                .authenticationEntryPoint(authenticationEntryPointBean())  // 401 error handle
 
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(noRedirectingAccessDeniedHandler())
+                .accessDeniedHandler(noRedirectingAccessDeniedHandler())  // 403 error handle
 
                 .and()
                 .sessionManagement()
@@ -79,9 +87,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/category/**").hasAnyAuthority(Authorities.USER)
-                .antMatchers(HttpMethod.POST, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
-                .antMatchers(HttpMethod.PUT, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
+//                .antMatchers(HttpMethod.POST, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
+//                .antMatchers(HttpMethod.PUT, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
+//                .antMatchers(HttpMethod.DELETE, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.POST, "/api/category/**").hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.PUT, "/api/category/**").hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.DELETE, "/api/category/**").hasAnyAuthority(Authorities.USER)
 
                 .and()
                 .authorizeRequests()

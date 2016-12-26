@@ -2,6 +2,7 @@ package kr.co.mash_up.nine_tique.security;
 
 import kr.co.mash_up.nine_tique.config.JwtSettings;
 import kr.co.mash_up.nine_tique.domain.User;
+import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,14 +58,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             log.info("user id " + userId);
             User user = userRepository.findOne(userId);
 
+            if (user == null) {
+                //Todo: 에러 처리 핸들러 구현
+                throw new IdNotFoundException("user not found");
+            }
+
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (user != null) {
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(user, null, user.getAuthoritiesWithoutPersistence());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    log.info("authenticated user " + userId + ", setting security context");
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthoritiesWithoutPersistence());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                log.info("authenticated user " + userId + ", setting security context");
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
         filterChain.doFilter(request, response);

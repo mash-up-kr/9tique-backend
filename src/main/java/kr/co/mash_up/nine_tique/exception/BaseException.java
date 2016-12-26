@@ -14,20 +14,20 @@ public class BaseException extends RuntimeException {
 
     private final String resultCode;
 
-    public BaseException(String resultCode){
+    public BaseException(String resultCode) {
         this(resultCode, null);
     }
 
-    public BaseException(String resultCode, String debugMessage){
+    public BaseException(String resultCode, String debugMessage) {
         this(resultCode, debugMessage, null);
     }
 
-    public BaseException(String resultCode, String debugMessage, Throwable throwable){
+    public BaseException(String resultCode, String debugMessage, Throwable throwable) {
         super(debugMessage, throwable);
         this.resultCode = resultCode;
     }
 
-    public String getExceptionDebugMessage(){
+    public String getExceptionDebugMessage() {
         return this.toString();
     }
 }

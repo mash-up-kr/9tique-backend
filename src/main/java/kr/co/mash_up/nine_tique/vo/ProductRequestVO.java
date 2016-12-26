@@ -36,9 +36,6 @@ public class ProductRequestVO extends RequestVO {
     private String productStatus;
 
     @JsonProperty
-    private long sellerId;
-
-    @JsonProperty
     private String mainCategory;
 
     @JsonProperty
@@ -56,5 +53,4 @@ public class ProductRequestVO extends RequestVO {
         product.setDescription(description);
         return product;
     }
-
 }

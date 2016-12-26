@@ -27,6 +27,4 @@ public class DataListRequestVO extends RequestVO {
     public Pageable getPageable(){
         return new QPageRequest(getPageNo(), getPageSize());
     }
-
-
 }

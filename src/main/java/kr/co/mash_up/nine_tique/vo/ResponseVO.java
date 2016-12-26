@@ -37,4 +37,12 @@ public class ResponseVO {
     public static ResponseVO ok(){
         return new ResponseVO(ResultCodes.OK, "success");
     }
+
+    public static ResponseVO created(){
+        return new ResponseVO(ResultCodes.CREATED, "created");
+    }
+
+    public static ResponseVO noContent(){
+        return new ResponseVO(ResultCodes.NO_CONTENT, "no content");
+    }
 }
