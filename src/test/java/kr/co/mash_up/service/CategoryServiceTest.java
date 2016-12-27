@@ -1,6 +1,5 @@
 package kr.co.mash_up.service;
 
-import kr.co.mash_up.TestWithContext;
 import kr.co.mash_up.builder.CategoryBuilder;
 import kr.co.mash_up.nine_tique.NineTiqueApplication;
 import kr.co.mash_up.nine_tique.domain.Category;
@@ -12,17 +11,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-
-public class CategoryServiceTest extends TestWithContext {
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {NineTiqueApplication.class})
+//@ActiveProfiles(profiles = "test")
+public class CategoryServiceTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -50,7 +47,7 @@ public class CategoryServiceTest extends TestWithContext {
     public void testCreate() {
         int beforeSize = categorySservice.findCategories().size();
 
-        categorySservice.create(testCategory);
+        categoryRepository.save(testCategory);
 
         Category category = categoryRepository.findOne(testCategory.getId());
         assertThat(category.getMain(), is("main1"));
@@ -61,23 +58,23 @@ public class CategoryServiceTest extends TestWithContext {
         assertThat(afterSize, is(beforeSize + 1));
     }
 
-    @Test
-    public void testDelete(){
-        // Todo:
-    }
-
-    @Test
-    public void testFindOne(){
-        // Todo:
-    }
-
-    @Test
-    public void testUpdate(){
-        // Todo:
-    }
-
-    @Test
-    public void testFindCategories(){
-        // Todo:
-    }
+//    @Test
+//    public void testDelete(){
+//        // Todo:
+//    }
+//
+//    @Test
+//    public void testFindOne(){
+//        // Todo:
+//    }
+//
+//    @Test
+//    public void testUpdate(){
+//        // Todo:
+//    }
+//
+//    @Test
+//    public void testFindCategories(){
+//        // Todo:
+//    }
 }

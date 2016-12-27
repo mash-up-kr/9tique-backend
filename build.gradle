@@ -26,21 +26,6 @@ repositories {
     mavenCentral()
 }
 
-// https://gist.github.com/EdwardBeckett/5377401
-// http://blog.jongminkim.co.kr/?p=386
-sourceSets {
-    querydsl {
-        java {
-            srcDirs = ['src/main/querydsl']
-        }
-    }
-}
-
-configurations {
-    compile.exclude module: "spring-boot-starter-jdbc"
-    querydslapt
-}
-
 dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     compile('org.springframework.boot:spring-boot-starter-web')
@@ -55,7 +40,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-cache')
 
     // lombok
-    compileOnly('org.projectlombok:lombok')
+    compile('org.projectlombok:lombok')
 
     // security
     compile('org.springframework.boot:spring-boot-starter-security')
@@ -69,6 +54,21 @@ dependencies {
     // queryDSL
     compile 'com.mysema.querydsl:querydsl-jpa:3.7.2'
     compile 'com.mysema.querydsl:querydsl-apt:3.7.2'
+}
+
+// https://gist.github.com/EdwardBeckett/5377401
+// http://blog.jongminkim.co.kr/?p=386
+sourceSets {
+    querydsl {
+        java {
+            srcDirs = ['src/main/querydsl']
+        }
+    }
+}
+
+configurations {
+//    compile.exclude module: "spring-boot-starter-jdbc"  // 다른 commection pool 사용시 jdbc exclude
+    querydslapt
 }
 
 task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
@@ -96,11 +96,9 @@ compileQuerydslJava {
 clean {
     delete sourceSets.querydsl.java.srcDirs
 }
-//
-//idea {
-//    module {
-//        sourceDirs += file('src/main/querydsl')
-//    }
-//}
 
-
+idea {
+    module {
+        sourceDirs += file('src/main/querydsl')
+    }
+}

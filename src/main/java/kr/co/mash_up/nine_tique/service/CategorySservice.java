@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Category와 관련된 비즈니스 로직 처리
  */
-@Service
+@Service(value = "categorySservice")
 @Slf4j
 public class CategorySservice {
 

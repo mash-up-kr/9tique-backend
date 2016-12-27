@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Product와 관련된 비즈니스 로직 처리
  */
-@Service
+@Service(value = "productService")
 @Slf4j
 public class ProductService {
 

@@ -2,16 +2,19 @@ package kr.co.mash_up.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.mash_up.TestWithContext;
 import kr.co.mash_up.builder.CategoryBuilder;
+import kr.co.mash_up.nine_tique.NineTiqueApplication;
 import kr.co.mash_up.nine_tique.controller.CategoryController;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.service.CategorySservice;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -28,7 +31,10 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
  */
 @WebAppConfiguration
 //@WithMockUser(username = "opklnm102")
-public class CategoryControllerTest extends TestWithContext {
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {NineTiqueApplication.class})
+//@ActiveProfiles(profiles = "test")
+public class CategoryControllerTest {
 
     Logger logger = Logger.getLogger(this.getClass());
 
@@ -53,8 +59,9 @@ public class CategoryControllerTest extends TestWithContext {
         // 유닛 테스트
         mockMvc = standaloneSetup(categoryController)
                 .build();
-    }
 
+
+    }
 
     @Test
     public void testAdd() throws Exception {
@@ -77,7 +84,7 @@ public class CategoryControllerTest extends TestWithContext {
          * Do -> 테스트시 직접 실행
          * Return -> 테스트 결과 반환
          */
-        this.mockMvc.perform(post("/category")
+        this.mockMvc.perform(post("/api/category")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString))
                 .andExpect(handler().handlerType(CategoryController.class))  //요청에 매핑된 클래스 확인
@@ -102,7 +109,7 @@ public class CategoryControllerTest extends TestWithContext {
                 .build();
         String jsonString = this.jsonStringFromObject(category);
 
-        this.mockMvc.perform(put("/category/{id}", id)
+        this.mockMvc.perform(put("/api/category/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString))
                 .andExpect(handler().handlerType(CategoryController.class))
@@ -114,7 +121,7 @@ public class CategoryControllerTest extends TestWithContext {
     public void testDelete() throws Exception {
         Long id = 1L;
 
-        this.mockMvc.perform(delete("/category/{id}", id))
+        this.mockMvc.perform(delete("/api/category/{id}", id))
                 .andExpect(handler().handlerType(CategoryController.class))
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().isOk());
@@ -125,7 +132,7 @@ public class CategoryControllerTest extends TestWithContext {
 
 //        when(categoryService.findCategories()).thenReturn(anyList());
 
-        MvcResult result = mockMvc.perform(get("/category"))
+        MvcResult result = mockMvc.perform(get("/api/category"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(handler().handlerType(CategoryController.class))
@@ -140,9 +147,9 @@ public class CategoryControllerTest extends TestWithContext {
 
     @Test
     public void testDetail() throws Exception {
-        Long id = 1L;
+        Long id = 2L;
 
-        mockMvc.perform(get("/category/{id}", id))
+        mockMvc.perform(get("/api/category/{id}", id))
                 .andExpect(handler().handlerType(CategoryController.class))
                 .andExpect(handler().methodName("detail"))
                 .andExpect(status().isOk())

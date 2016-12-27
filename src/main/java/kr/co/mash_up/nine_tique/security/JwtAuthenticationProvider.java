@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 

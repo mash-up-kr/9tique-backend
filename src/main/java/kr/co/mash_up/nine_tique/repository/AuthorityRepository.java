@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 /**
  * Authority 엔티티의 CRUD처리 담당
  */
-@Repository
+@Repository(value = "authorityRepository")
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
     Authority findByAuthority(String name);
 }

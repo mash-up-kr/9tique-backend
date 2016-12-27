@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * Zzim과 관련된 비즈니스 로직 처리
  */
-@Service
+@Service(value = "zzimService")
 @Slf4j
 public class ZzimService {
 

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * User와 관련된 비즈니스 로직 처리
  */
-@Service
+@Service(value = "userService")
 @Slf4j
 public class UserService {
 
