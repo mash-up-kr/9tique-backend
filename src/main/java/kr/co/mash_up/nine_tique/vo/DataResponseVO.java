@@ -15,11 +15,11 @@ public class DataResponseVO<T> extends ResponseVO {
 
     private T item;
 
-    public DataResponseVO(String resultCode){
+    public DataResponseVO(Integer resultCode){
         super(resultCode);
     }
 
-    public DataResponseVO(String resultCode, String message){
+    public DataResponseVO(Integer resultCode, String message){
         super(resultCode, message);
     }
 

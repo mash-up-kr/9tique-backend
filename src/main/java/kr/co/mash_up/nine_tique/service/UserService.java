@@ -79,6 +79,8 @@ public class UserService {
             throw new IdNotFoundException("user not found");
         }
 
+        //Todo: 인증코드 검증
+
         // Seller Infomation 저장
         // Todo: Seller Infomation 저장된거랑 맞춘다.
         SellerInfo sellerInfo = new SellerInfo();

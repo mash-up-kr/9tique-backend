@@ -29,7 +29,7 @@ public class DataListResponseVO<T> extends ResponseVO {
     @JsonProperty(value = "page_total")
     private int pageTotal;  // pageNo total count
 
-    public DataListResponseVO(String resultCode, String message){
+    public DataListResponseVO(Integer resultCode, String message){
         super(resultCode, message);
     }
 

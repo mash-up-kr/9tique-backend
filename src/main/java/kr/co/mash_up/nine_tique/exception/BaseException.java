@@ -12,19 +12,19 @@ import lombok.Setter;
 @Setter
 public class BaseException extends RuntimeException {
 
-    private final String resultCode;
+    private final Integer status;
 
-    public BaseException(String resultCode) {
-        this(resultCode, null);
+    public BaseException(Integer status) {
+        this(status, null);
     }
 
-    public BaseException(String resultCode, String debugMessage) {
-        this(resultCode, debugMessage, null);
+    public BaseException(Integer status, String debugMessage) {
+        this(status, debugMessage, null);
     }
 
-    public BaseException(String resultCode, String debugMessage, Throwable throwable) {
+    public BaseException(Integer status, String debugMessage, Throwable throwable) {
         super(debugMessage, throwable);
-        this.resultCode = resultCode;
+        this.status = status;
     }
 
     public String getExceptionDebugMessage() {

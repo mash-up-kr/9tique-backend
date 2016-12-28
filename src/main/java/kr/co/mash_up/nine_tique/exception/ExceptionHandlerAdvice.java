@@ -17,6 +17,6 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(BaseException.class)
     @ResponseBody
     public ResponseVO baseException(BaseException e, HttpServletRequest request) {
-        return new ResponseVO(e.getResultCode(), e.getMessage());
+        return new ResponseVO(e.getStatus(), e.getMessage());
     }
 }

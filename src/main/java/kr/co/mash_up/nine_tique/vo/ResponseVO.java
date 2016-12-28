@@ -19,18 +19,18 @@ import lombok.ToString;
 @JsonInclude(value = JsonInclude.Include.ALWAYS)
 public class ResponseVO {
 
-    @JsonProperty(value = "result_code")
-    private String resultCode;
+    @JsonProperty
+    private Integer status;
 
     @JsonProperty
     private String message;
 
-    public ResponseVO(String resultCode){
-        this.resultCode = resultCode;
+    public ResponseVO(Integer status){
+        this.status = status;
     }
 
-    public ResponseVO(String resultCode, String message) {
-        this.resultCode = resultCode;
+    public ResponseVO(Integer status, String message) {
+        this.status = status;
         this.message = message;
     }
 
