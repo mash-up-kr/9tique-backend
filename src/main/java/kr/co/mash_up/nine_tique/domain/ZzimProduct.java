@@ -48,21 +48,4 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
         @Column(name = "product_id")
         private Long productId;
     }
-
-
-    @JsonProperty(value = "createdAt")
-    public Long getCreatedTimestamp(){
-        if(this.createdAt == null){
-            return null;
-        }
-        return Timestamp.valueOf(this.createdAt).getTime();
-    }
-
-    @JsonProperty(value = "updatedAt")
-    public Long getUpdatedTimestamp(){
-        if(this.updatedAt == null){
-            return null;
-        }
-        return Timestamp.valueOf(this.updatedAt).getTime();
-    }
 }

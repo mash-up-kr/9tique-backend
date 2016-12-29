@@ -2,10 +2,12 @@ package kr.co.mash_up.nine_tique.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -44,4 +46,18 @@ public abstract class AbstractEntity<K extends Serializable> implements Serializ
     public abstract String toString();
 
     public abstract K getId();
+
+    public long getCreatedTimestamp(){
+        if(this.createdAt == null){
+            return 0;
+        }
+        return Timestamp.valueOf(this.createdAt).getTime();
+    }
+
+    public long getUpdatedTimestamp(){
+        if(this.updatedAt == null){
+            return 0;
+        }
+        return Timestamp.valueOf(this.updatedAt).getTime();
+    }
 }

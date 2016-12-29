@@ -1,18 +1,12 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.domain.Product;
-import kr.co.mash_up.nine_tique.domain.ProductImage;
-import kr.co.mash_up.nine_tique.domain.SellerInfo;
+import kr.co.mash_up.nine_tique.domain.*;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.dto.SellerInfoDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
-import kr.co.mash_up.nine_tique.repository.CategoryRepository;
-import kr.co.mash_up.nine_tique.repository.ProductImageRepository;
-import kr.co.mash_up.nine_tique.repository.ProductRepository;
-import kr.co.mash_up.nine_tique.repository.SellerInfoRepository;
+import kr.co.mash_up.nine_tique.repository.*;
 import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.vo.ProductListRequestVO;
@@ -49,6 +43,9 @@ public class ProductService {
     @Autowired
     private ProductImageRepository productImageRepository;
 
+    @Autowired
+    private ZzimRepository zzimRepository;
+
     /*
     ManyToOne은 알아서 join을 안한다.
     OneToMany는 알아서 join을 한다.
@@ -56,22 +53,30 @@ public class ProductService {
     -> fetch 전략때문임... -> LAZY와 EGEAR의 차이.
      */
     @Transactional(readOnly = true)
-    public Page<ProductDto> findProductsByCategory(ProductListRequestVO requestVO) {
+    public Page<ProductDto> findProductsByCategory(Long userId, ProductListRequestVO requestVO) {
         Pageable pageable = requestVO.getPageable();
         String mainCategory = requestVO.getMainCategory();
         String subCategory = requestVO.getSubCategory();
 
-        Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
-        if (category == null) {
-            throw new IdNotFoundException("find product by category -> category not found");
+        Page<Product> productPage = null;
+
+        if (mainCategory.toUpperCase().equals("NEW")) {
+            productPage = productRepository.findAll(pageable);
+        } else {
+            Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
+            if (category == null) {
+                throw new IdNotFoundException("find product by category -> category not found");
+            }
+            log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
+
+            productPage = productRepository.findByCategory(pageable, category);
         }
-        log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
 
-
-        Page<Product> productPage = productRepository.findByCategory(pageable, category);
         if (productPage == null) {
             throw new IdNotFoundException("find product by category -> products not found");
         }
+
+        List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
 
         // DTO로 변환
         List<ProductDto> productDtos = productPage.getContent().stream()
@@ -89,6 +94,8 @@ public class ProductService {
                             .withPhone(product.getSellerInfo().getPhone())
                             .build();
 
+                    boolean isZzim = checkProductZzim(zzimProducts, product);
+
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
@@ -101,6 +108,9 @@ public class ProductService {
                             .withSubCategory(product.getCategory().getSub())
                             .withSellerInfo(sellerInfoDto)
                             .withProductImages(productImageDtos)
+                            .withZzimStatus(isZzim)
+                            .withCreatedAt(product.getCreatedTimestamp())
+                            .withUpdatedAt(product.getUpdatedTimestamp())
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -112,8 +122,9 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public ProductDto findOne(Long id) {
-        Product product = productRepository.findOne(id);
+    public ProductDto findOne(Long userId, Long productid) {
+        Product product = productRepository.findOne(productid);
+
         if (product == null) {
             throw new IdNotFoundException("product find by id -> product not found");
         }
@@ -131,6 +142,9 @@ public class ProductService {
                 .withPhone(product.getSellerInfo().getPhone())
                 .build();
 
+        List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
+        boolean isZzim = checkProductZzim(zzimProducts, product);
+
         return new ProductDto.Builder()
                 .withId(product.getId())
                 .withName(product.getName())
@@ -143,6 +157,9 @@ public class ProductService {
                 .withSubCategory(product.getCategory().getSub())
                 .withSellerInfo(sellerInfoDto)
                 .withProductImages(productImageDtos)
+                .withZzimStatus(isZzim)
+                .withCreatedAt(product.getCreatedTimestamp())
+                .withUpdatedAt(product.getUpdatedTimestamp())
                 .build();
     }
 
@@ -289,5 +306,21 @@ public class ProductService {
                 log.debug(file.getOriginalFilename());
             }
         }
+    }
+
+    /**
+     * 상품이 찜 되었는지 확인
+     *
+     * @param zzimProducts 유저의 찜한 상품 목록
+     * @param product      확인할 상품
+     * @return 결과
+     */
+    private boolean checkProductZzim(List<ZzimProduct> zzimProducts, Product product) {
+        for (ZzimProduct zzimProduct : zzimProducts) {
+            if (Objects.equals(zzimProduct.getProduct().getId(), product.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

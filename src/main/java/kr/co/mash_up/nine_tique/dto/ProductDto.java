@@ -49,6 +49,15 @@ public class ProductDto {
     @JsonProperty(value = "product_images")
     private List<ProductImageDto> productImageDtos;
 
+    @JsonProperty(value = "zzim_status")
+    private boolean zzimStatus;
+
+    @JsonProperty(value = "created_at")
+    private long createdAt;
+
+    @JsonProperty(value = "updated_at")
+    private long updatedAt;
+
     public static class Builder {
 
         private Long id;
@@ -62,8 +71,11 @@ public class ProductDto {
         private String subCategory;
         private SellerInfoDto sellerInfo;
         private List<ProductImageDto> productImages;
+        private boolean zzimStatus;
+        private long createdAt;
+        private long updatedAt;
 
-        public ProductDto build(){
+        public ProductDto build() {
             ProductDto productDto = new ProductDto();
             productDto.setId(id);
             productDto.setName(name);
@@ -76,61 +88,79 @@ public class ProductDto {
             productDto.setSubCategory(subCategory);
             productDto.setSellerInfoDto(sellerInfo);
             productDto.setProductImageDtos(productImages);
+            productDto.setZzimStatus(zzimStatus);
+            productDto.setCreatedAt(createdAt);
+            productDto.setUpdatedAt(updatedAt);
             return productDto;
         }
 
-        public Builder withId(Long id){
+        public Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder withName(String name){
+        public Builder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder withBrandName(String brandName){
+        public Builder withBrandName(String brandName) {
             this.brandName = brandName;
             return this;
         }
 
-        public Builder withSize(String size){
+        public Builder withSize(String size) {
             this.size = size;
             return this;
         }
 
-        public Builder withPrice(int price){
+        public Builder withPrice(int price) {
             this.price = price;
             return this;
         }
 
-        public Builder withDescription(String description){
+        public Builder withDescription(String description) {
             this.description = description;
             return this;
         }
 
-        public Builder withStatus(Product.Status status){
+        public Builder withStatus(Product.Status status) {
             this.status = status;
             return this;
         }
 
-        public Builder withMainCategory(String mainCategory){
+        public Builder withMainCategory(String mainCategory) {
             this.mainCategory = mainCategory;
             return this;
         }
 
-        public Builder withSubCategory(String subCategory){
+        public Builder withSubCategory(String subCategory) {
             this.subCategory = subCategory;
             return this;
         }
 
-        public Builder withSellerInfo(SellerInfoDto sellerInfo){
+        public Builder withSellerInfo(SellerInfoDto sellerInfo) {
             this.sellerInfo = sellerInfo;
             return this;
         }
 
-        public Builder withProductImages( List<ProductImageDto> productImages){
+        public Builder withProductImages(List<ProductImageDto> productImages) {
             this.productImages = productImages;
+            return this;
+        }
+
+        public Builder withZzimStatus(boolean zzimStatus) {
+            this.zzimStatus = zzimStatus;
+            return this;
+        }
+
+        public Builder withCreatedAt(long createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder withUpdatedAt(long updatedAt) {
+            this.updatedAt = updatedAt;
             return this;
         }
     }

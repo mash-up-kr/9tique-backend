@@ -109,12 +109,13 @@ public class ProductController {
     /**
      * 상품 상세정보 조회
      *
-     * @param id 상세조회할 상품 id
+     * @param productId 상세조회할 상품 id
      * @return 조회한 상품 정보
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public DataResponseVO<ProductDto> detail(@PathVariable Long id) {
-        ProductDto productDto = productService.findOne(id);
+    public DataResponseVO<ProductDto> detail(@PathVariable("id") Long productId) {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        ProductDto productDto = productService.findOne(userId, productId);
         return new DataResponseVO<ProductDto>(productDto);
     }
 
@@ -127,8 +128,9 @@ public class ProductController {
     @RequestMapping(method = RequestMethod.GET)
     public DataListResponseVO<ProductDto> list(ProductListRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
+        Long userId = SecurityUtil.getCurrentUser().getId();
 
-        Page<ProductDto> page = productService.findProductsByCategory(requestVO);
+        Page<ProductDto> page = productService.findProductsByCategory(userId, requestVO);
 
         log.debug(requestVO.getPageNo() + " " + requestVO.getPageSize() + " " + requestVO.getPageable() +
                 " " + requestVO.getMainCategory() + " " + requestVO.getSubCategory());

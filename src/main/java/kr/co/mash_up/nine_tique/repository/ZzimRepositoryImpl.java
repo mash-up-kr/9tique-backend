@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 /**
  * ZzimRepositoryCustom 구현체
@@ -34,5 +35,20 @@ public class ZzimRepositoryImpl implements ZzimRepositoryCustom {
                 .limit(pageable.getPageSize()).offset(pageable.getOffset());
 
         return new PageImpl<ZzimProduct>(query.list(zzimProduct), pageable, query.count());
+    }
+
+    @Override
+    public List<ZzimProduct> getZzimProducts(Long userId) {
+        JPAQuery query = new JPAQuery(entityManager);
+        QZzimProduct zzimProduct = QZzimProduct.zzimProduct;
+        QZzim zzim = QZzim.zzim;
+        QUser user = QUser.user;
+
+        query.from(zzimProduct).join(zzimProduct.zzim, zzim)
+                .join(zzim.user, user)
+                .where(user.id.eq(userId))
+                .orderBy(zzimProduct.createdAt.desc());
+
+        return query.list(zzimProduct);
     }
 }
