@@ -52,3 +52,10 @@ INSERT INTO product(name, brand_name, description, price, status, size, created_
 INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품8', '상품8 브렌드', '상품8 설명', 80000, 'SOLD_OUT',  '상품8 사이즈', CURRENT_TIMESTAMP(), 2, 1);
 INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품9', '상품9 브렌드', '상품9 설명', 90000, 'SELL',  '상품9 사이즈', CURRENT_TIMESTAMP(), 2, 1);
 INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 17, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 6, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 6, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 6, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 7, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 7, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 7, 1);
+INSERT INTO product(name, brand_name, description, price, status, size, created_at, category_id, seller_info_id) VALUES ('상품10', '상품10 브렌드', '상품10 설명', 100000, 'SELL',  '상품10 사이즈', CURRENT_TIMESTAMP(), 7, 1);

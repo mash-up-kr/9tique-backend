@@ -63,13 +63,16 @@ public class ProductService {
         if (mainCategory.toUpperCase().equals("NEW")) {
             productPage = productRepository.findAll(pageable);
         } else {
-            Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
-            if (category == null) {
-                throw new IdNotFoundException("find product by category -> category not found");
+            if (subCategory.toUpperCase().equals("ALL")){
+                productPage = productRepository.findByMainCategory(pageable, mainCategory);
+            }else{
+                Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
+                if (category == null) {
+                    throw new IdNotFoundException("find product by category -> category not found");
+                }
+                log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
+                productPage = productRepository.findByCategory(pageable, category);
             }
-            log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
-
-            productPage = productRepository.findByCategory(pageable, category);
         }
 
         if (productPage == null) {
