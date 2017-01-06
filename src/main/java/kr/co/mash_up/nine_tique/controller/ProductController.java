@@ -47,16 +47,14 @@ public class ProductController {
 //    }
     @RequestMapping(method = RequestMethod.POST)
     public ResponseVO add(@RequestParam(name = "name") String name,
-                          @RequestParam(name = "brandName") String brandName,
+                          @RequestParam(name = "brand_name") String brandName,
                           @RequestParam(name = "size") String size,
                           @RequestParam(name = "price") int price,
                           @RequestParam(name = "description") String description,
-                          @RequestParam(name = "productStatus") String productStatus,
-                          @RequestParam(name = "mainCategory") String mainCategory,
-                          @RequestParam(name = "subCategory") String subCategory,
+                          @RequestParam(name = "main_category") String mainCategory,
+                          @RequestParam(name = "sub_category") String subCategory,
                           @RequestParam(name = "files") List<MultipartFile> files) {
-        ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, productStatus,
-                mainCategory, files);
+        ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, mainCategory, files);
 
         Long userId = SecurityUtil.getCurrentUser().getId();
         log.info(userId + " ");
@@ -69,7 +67,7 @@ public class ProductController {
         requestVO.setDescription(description);
         requestVO.setMainCategory(mainCategory);
         requestVO.setSubCategory(subCategory);
-        requestVO.setProductStatus(productStatus);
+        requestVO.setProductStatus(Product.Status.SELL.name());
         requestVO.setFiles(files);
 
         Product product = productService.create(userId, requestVO);

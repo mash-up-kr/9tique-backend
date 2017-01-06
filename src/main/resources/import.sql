@@ -2,6 +2,7 @@ INSERT INTO category(main, sub, created_at) VALUES ('OUTER', 'JACKET', CURRENT_T
 INSERT INTO category(main, sub, created_at) VALUES ('OUTER', 'COATS', CURRENT_TIMESTAMP());
 INSERT INTO category(main, sub, created_at) VALUES ('OUTER', 'JUMPER', CURRENT_TIMESTAMP());
 INSERT INTO category(main, sub, created_at) VALUES ('OUTER', 'HOODS_ZIPUP', CURRENT_TIMESTAMP());
+INSERT INTO category(main, sub, created_at) VALUES ('OUTER', 'PADDING_JUMPER', CURRENT_TIMESTAMP());
 INSERT INTO category(main, sub, created_at) VALUES ('OUTER', 'VEST', CURRENT_TIMESTAMP());
 INSERT INTO category(main, sub, created_at) VALUES ('TOP', 'TSHIRT', CURRENT_TIMESTAMP());
 INSERT INTO category(main, sub, created_at) VALUES ('TOP', 'HOODS_TSHIRT', CURRENT_TIMESTAMP());
