@@ -55,17 +55,17 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductDto> findProductsByCategory(Long userId, ProductListRequestVO requestVO) {
         Pageable pageable = requestVO.getPageable();
-        String mainCategory = requestVO.getMainCategory();
-        String subCategory = requestVO.getSubCategory();
+        String mainCategory = requestVO.getMainCategory().toUpperCase();
+        String subCategory = requestVO.getSubCategory().toUpperCase();
 
         Page<Product> productPage = null;
 
-        if (mainCategory.toUpperCase().equals("NEW")) {
+        if (mainCategory.equals("NEW")) {
             productPage = productRepository.findAll(pageable);
         } else {
-            if (subCategory.toUpperCase().equals("ALL")){
+            if (subCategory.equals("ALL")) {
                 productPage = productRepository.findByMainCategory(pageable, mainCategory);
-            }else{
+            } else {
                 Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
                 if (category == null) {
                     throw new IdNotFoundException("find product by category -> category not found");
