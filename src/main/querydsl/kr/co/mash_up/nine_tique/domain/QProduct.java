@@ -41,7 +41,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final SetPath<ProductImage, QProductImage> productImages = this.<ProductImage, QProductImage>createSet("productImages", ProductImage.class, QProductImage.class, PathInits.DIRECT2);
 
-    public final QSellerInfo sellerInfo;
+    public final QShop shop;
 
     public final StringPath size = createString("size");
 
@@ -69,7 +69,7 @@ public class QProduct extends EntityPathBase<Product> {
     public QProduct(Class<? extends Product> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this.category = inits.isInitialized("category") ? new QCategory(forProperty("category")) : null;
-        this.sellerInfo = inits.isInitialized("sellerInfo") ? new QSellerInfo(forProperty("sellerInfo"), inits.get("sellerInfo")) : null;
+        this.shop = inits.isInitialized("shop") ? new QShop(forProperty("shop")) : null;
     }
 
 }

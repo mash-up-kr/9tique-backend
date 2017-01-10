@@ -1,18 +1,18 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import kr.co.mash_up.nine_tique.config.SystemPropertiesConfig;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "product")
 @Getter
 @Setter
-@ToString(exclude = {"sellerInfo", "category", "productImages"})
+@ToString(exclude = {"shop", "category", "productImages"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class Product extends AbstractEntity<Long> {
 
@@ -38,10 +38,10 @@ public class Product extends AbstractEntity<Long> {
     @Enumerated(EnumType.STRING)  // enum 이름을 DB에 저장
     private Status status;  // 판매중/완료
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
-    @JoinColumn(name = "seller_info_id")
-    private SellerInfo sellerInfo;  // 판매자 정보
+    @JoinColumn(name = "shop_id")
+    private Shop shop;  // 판매자 정보
 
     // Memo : Lazy 함부로 쓰지말자... 해당 테이블 쿼리 안날릴시 정보가 안나온다.
 //    @ManyToOne(fetch = FetchType.LAZY)
@@ -49,7 +49,8 @@ public class Product extends AbstractEntity<Long> {
     @JoinColumn(name = "category_id")  // FK 매핑시 이용
     private Category category;  // 카테고리
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)  // FK는 항상 N쪽에, 주인도 N쪽
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    // FK는 항상 N쪽에, 주인도 N쪽
     private Set<ProductImage> productImages;
 
     //Todo: 이벤트 여부 추가?

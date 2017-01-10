@@ -39,7 +39,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final EnumPath<User.OauthType> oauthType = createEnum("oauthType", User.OauthType.class);
 
-    public final QSellerInfo sellerInfo;
+    public final QSeller seller;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -64,7 +64,7 @@ public class QUser extends EntityPathBase<User> {
 
     public QUser(Class<? extends User> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.sellerInfo = inits.isInitialized("sellerInfo") ? new QSellerInfo(forProperty("sellerInfo"), inits.get("sellerInfo")) : null;
+        this.seller = inits.isInitialized("seller") ? new QSeller(forProperty("seller"), inits.get("seller")) : null;
         this.zzim = inits.isInitialized("zzim") ? new QZzim(forProperty("zzim"), inits.get("zzim")) : null;
     }
 

@@ -8,7 +8,6 @@ import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.security.Key;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,7 +19,7 @@ import java.util.Set;
 @Table(name = "user")
 @Getter
 @Setter
-@ToString(exclude = {"sellerInfo", "zzim"})
+@ToString(exclude = {"seller", "zzim"})
 @NoArgsConstructor  // JPA는 default constructor 필요
 public class User extends AbstractEntity<Long> {
 
@@ -49,12 +48,12 @@ public class User extends AbstractEntity<Long> {
 
 //    private String gcmToken;  // 푸쉬
 
+    //    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Seller seller;
+
     // mappedBy - 연관관계 주인 설정. 주인O(읽기, 쓰기), 주인X(읽기)
     // mappedBy가 있으면 주인X.
-//    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    @OneToOne(mappedBy = "user")
-    private SellerInfo sellerInfo;
-
     // orphanRemoval 연관관계가 끊어진 엔티티를 자동으로 삭제
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Zzim zzim;
@@ -87,7 +86,7 @@ public class User extends AbstractEntity<Long> {
         FB
     }
 
-    public User(String oauthToken, User.OauthType oauthType, HashSet<Authority> authorities){
+    public User(String oauthToken, User.OauthType oauthType, HashSet<Authority> authorities) {
         this.oauthToken = oauthToken;
         this.oauthType = oauthType;
         this.authorities = authorities;

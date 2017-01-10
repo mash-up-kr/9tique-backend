@@ -116,9 +116,9 @@ public class ZzimService {
                     }
 
                     SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
-                            .withShopName(product.getSellerInfo().getShopName())
-                            .withShopInfo(product.getSellerInfo().getShopInfo())
-                            .withPhone(product.getSellerInfo().getPhone())
+                            .withShopName(product.getShop().getName())
+                            .withShopInfo(product.getShop().getInfo())
+                            .withPhone(product.getShop().getPhone())
                             .build();
 
                     return new ProductDto.Builder()

@@ -1,14 +1,8 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.Authority;
-import kr.co.mash_up.nine_tique.domain.SellerInfo;
-import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.domain.Zzim;
+import kr.co.mash_up.nine_tique.domain.*;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
-import kr.co.mash_up.nine_tique.repository.AuthorityRepository;
-import kr.co.mash_up.nine_tique.repository.SellerInfoRepository;
-import kr.co.mash_up.nine_tique.repository.UserRepository;
-import kr.co.mash_up.nine_tique.repository.ZzimRepository;
+import kr.co.mash_up.nine_tique.repository.*;
 import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
 import kr.co.mash_up.nine_tique.vo.UserRequestVO;
@@ -31,13 +25,16 @@ public class UserService {
     private AuthorityRepository authorityRepository;
 
     @Autowired
-    private SellerInfoRepository sellerInfoRepository;
+    private ShopRepository shopRepository;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private ZzimRepository zzimRepository;
+
+    @Autowired
+    private SellerRepository sellerRepository;
 
     public void findOne(Long id) {
         userRepository.findOne(id);
@@ -80,15 +77,18 @@ public class UserService {
         }
 
         //Todo: 인증코드 검증
-
         // Seller Infomation 저장
         // Todo: Seller Infomation 저장된거랑 맞춘다.
-        SellerInfo sellerInfo = new SellerInfo();
-        sellerInfo.setShopName("매장 name" + id);
-        sellerInfo.setShopInfo("매장 info" + id);
-        sellerInfo.setPhone("010-3222-2222" + id);
-        sellerInfo.setUser(user);
-        sellerInfoRepository.save(sellerInfo);
+        Shop shop = new Shop();
+        shop.setName("매장 name" + id);
+        shop.setInfo("매장 info" + id);
+        shop.setPhone("010-3222-2222" + id);
+        shopRepository.save(shop);
+
+        Seller seller = new Seller();
+        seller.setUser(user);
+        seller.setShop(shop);
+        sellerRepository.save(seller);
 
         // Seller 권한 저장
         Authority authority = authorityRepository.findByAuthority(Authorities.SELLER);

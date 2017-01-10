@@ -38,22 +38,25 @@ public class ProductImage extends AbstractEntity<Long> {
     private Product product;  // 상품
 
     //Todo: imageUrl을 @Column으로 추가
+
     /**
      * 업로드된 이미지를 다운받을 수 있는 url 제공
+     *
      * @return image url
      */
     @JsonProperty("imageUrl")
-    public String getImageUrl(){
+    public String getImageUrl() {
         return String.format("%s/product/%d/%s",
                 System.getProperty(SystemPropertiesConfig.STORAGE_URI), this.product.getId(), this.fileName);
     }
 
     /**
      * 물리적인 image upload path 제공
+     *
      * @return upload path
      */
     @Transient  // 매핑하지 않는다.
-    public String getImageUploadPath(){
+    public String getImageUploadPath() {
         return String.format("%s/product/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), product.getId());
     }
 }

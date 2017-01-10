@@ -38,13 +38,16 @@ public class ProductService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private SellerInfoRepository sellerInfoRepository;
+    private ShopRepository shopRepository;
 
     @Autowired
     private ProductImageRepository productImageRepository;
 
     @Autowired
     private ZzimRepository zzimRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /*
     ManyToOne은 알아서 join을 안한다.
@@ -92,9 +95,9 @@ public class ProductService {
                     }
 
                     SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
-                            .withShopName(product.getSellerInfo().getShopName())
-                            .withShopInfo(product.getSellerInfo().getShopInfo())
-                            .withPhone(product.getSellerInfo().getPhone())
+                            .withShopName(product.getShop().getName())
+                            .withShopInfo(product.getShop().getInfo())
+                            .withPhone(product.getShop().getPhone())
                             .build();
 
                     boolean isZzim = checkProductZzim(zzimProducts, product);
@@ -140,9 +143,9 @@ public class ProductService {
         }
 
         SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
-                .withShopName(product.getSellerInfo().getShopName())
-                .withShopInfo(product.getSellerInfo().getShopInfo())
-                .withPhone(product.getSellerInfo().getPhone())
+                .withShopName(product.getShop().getName())
+                .withShopInfo(product.getShop().getInfo())
+                .withPhone(product.getShop().getPhone())
                 .build();
 
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
@@ -174,7 +177,8 @@ public class ProductService {
             throw new IdNotFoundException("product update -> product not found");
         }
 
-        if (!Objects.equals(userId, oldProduct.getSellerInfo().getUser().getId())) {  // 등록한 seller만 삭제 가능
+        User user = userRepository.findOne(userId);
+        if (!Objects.equals(user.getSeller().getShop().getId(), oldProduct.getShop().getId())) {  // 등록한 shop의 seller만 삭제 가능
             throw new UserIdNotMatchedException("product update -> user id not matched");
         }
 
@@ -204,16 +208,13 @@ public class ProductService {
             oldProduct.setDescription(description);
         }
 
-        //Todo: seller info가 update되어야하는지...?
-        // seller info의 id를 넣어주는건데. seller가 바뀔순 없을거같은데...?
-        long sellerId = userId;
-
-        SellerInfo sellerInfo = sellerInfoRepository.findByUserId(sellerId);
-        if (sellerInfo == null) {
+        //Todo: shop이 update되어야하는지...?
+        // product의 shop이 바뀔 수 없을거 같은데...?
+        Shop shop = shopRepository.findByUserId(userId);
+        if (shop == null) {
             throw new IdNotFoundException("product update -> seller infomation not found");
         }
-        oldProduct.setSellerInfo(sellerInfo);
-
+        oldProduct.setShop(shop);
 
         String mainCategory = requestVO.getMainCategory();
         String subCategory = requestVO.getSubCategory();  // ""가 있어서 체크하지 않는다.
@@ -246,11 +247,11 @@ public class ProductService {
 
         //Todo: 상품이 이미 존재할 경우 예외처리. 상품을 뭐로 find할지 생각이 안난다..
 
-        SellerInfo sellerInfo = sellerInfoRepository.findByUserId(userId);
-        if (sellerInfo == null) {
+        Shop shop = shopRepository.findByUserId(userId);
+        if (shop == null) {
             throw new IdNotFoundException("product create -> seller Infomation not found");
         }
-        product.setSellerInfo(sellerInfo);
+        product.setShop(shop);
 
         Category category = categoryRepository.findByMainAndSubAllIgnoreCase(requestVO.getMainCategory(), requestVO.getSubCategory());
         if (category == null) {
@@ -278,9 +279,12 @@ public class ProductService {
         if (oldProduct == null) {
             throw new IdNotFoundException("product delete -> product not found");
         }
-        if (!Objects.equals(userId, oldProduct.getSellerInfo().getUser().getId())) {  // 등록한 seller만 삭제 가능
-            throw new UserIdNotMatchedException("product delete -> user id not matched");
+
+        User user = userRepository.findOne(userId);
+        if (!Objects.equals(user.getSeller().getShop().getId(), oldProduct.getShop().getId())) {  // 등록한 shop의 seller만 삭제 가능
+            throw new UserIdNotMatchedException("product update -> user id not matched");
         }
+
         productRepository.delete(productId);
     }
 
