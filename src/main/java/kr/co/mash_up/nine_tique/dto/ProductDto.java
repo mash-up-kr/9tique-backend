@@ -43,8 +43,8 @@ public class ProductDto {
     @JsonProperty(value = "sub_category")
     private String subCategory;
 
-    @JsonProperty(value = "seller_info")
-    private SellerInfoDto sellerInfoDto;
+    @JsonProperty(value = "shop")
+    private ShopDto shopDto;
 
     @JsonProperty(value = "product_images")
     private List<ProductImageDto> productImageDtos;
@@ -69,7 +69,7 @@ public class ProductDto {
         private Product.Status status;
         private String mainCategory;
         private String subCategory;
-        private SellerInfoDto sellerInfo;
+        private ShopDto shop;
         private List<ProductImageDto> productImages;
         private boolean zzimStatus;
         private long createdAt;
@@ -86,7 +86,7 @@ public class ProductDto {
             productDto.setStatus(status);
             productDto.setMainCategory(mainCategory);
             productDto.setSubCategory(subCategory);
-            productDto.setSellerInfoDto(sellerInfo);
+            productDto.setShopDto(shop);
             productDto.setProductImageDtos(productImages);
             productDto.setZzimStatus(zzimStatus);
             productDto.setCreatedAt(createdAt);
@@ -139,8 +139,8 @@ public class ProductDto {
             return this;
         }
 
-        public Builder withSellerInfo(SellerInfoDto sellerInfo) {
-            this.sellerInfo = sellerInfo;
+        public Builder withShop(ShopDto shop) {
+            this.shop = shop;
             return this;
         }
 

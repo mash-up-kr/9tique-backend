@@ -50,13 +50,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         JPAQuery query = new JPAQuery(entityManager);
         QProduct qProduct = QProduct.product;
         QCategory qCategory = QCategory.category;
-//        QProductImage productImage = QProductImage.productImage;
-//        QSellerInfo sellerInfo = QSellerInfo.sellerInfo;
 
         query.from(qProduct)
                 .join(qProduct.category, qCategory)
-//                .join(product.sellerInfo, sellerInfo)
-//                .join(product.productImages, productImage)
                 .where(qCategory.main.eq(mainCategory))
                 .orderBy(qProduct.status.asc(), qProduct.createdAt.desc())
                 .limit(pageable.getPageSize())

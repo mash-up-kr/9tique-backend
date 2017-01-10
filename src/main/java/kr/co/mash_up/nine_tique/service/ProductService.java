@@ -3,7 +3,7 @@ package kr.co.mash_up.nine_tique.service;
 import kr.co.mash_up.nine_tique.domain.*;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.ProductImageDto;
-import kr.co.mash_up.nine_tique.dto.SellerInfoDto;
+import kr.co.mash_up.nine_tique.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
 import kr.co.mash_up.nine_tique.repository.*;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -87,16 +86,17 @@ public class ProductService {
         // DTO로 변환
         List<ProductDto> productDtos = productPage.getContent().stream()
                 .map(product -> {
-                    List<ProductImageDto> productImageDtos = new ArrayList<>();
-                    for (ProductImage image : product.getProductImages()) {
-                        productImageDtos.add(new ProductImageDto.Builder()
-                                .withUrl(image.getImageUrl())
-                                .build());
-                    }
+                    List<ProductImageDto> productImageDtos = product.getProductImages().stream()
+                            .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
+                            .map(productImage -> {
+                                return new ProductImageDto.Builder()
+                                        .withUrl(productImage.getImageUrl())
+                                        .build();
+                            }).collect(Collectors.toList());
 
-                    SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
-                            .withShopName(product.getShop().getName())
-                            .withShopInfo(product.getShop().getInfo())
+                    ShopDto shopDto = new ShopDto.Builder()
+                            .withName(product.getShop().getName())
+                            .withInfo(product.getShop().getInfo())
                             .withPhone(product.getShop().getPhone())
                             .build();
 
@@ -112,7 +112,7 @@ public class ProductService {
                             .withStatus(product.getStatus())
                             .withMainCategory(product.getCategory().getMain())
                             .withSubCategory(product.getCategory().getSub())
-                            .withSellerInfo(sellerInfoDto)
+                            .withShop(shopDto)
                             .withProductImages(productImageDtos)
                             .withZzimStatus(isZzim)
                             .withCreatedAt(product.getCreatedTimestamp())
@@ -135,16 +135,17 @@ public class ProductService {
             throw new IdNotFoundException("product find by id -> product not found");
         }
 
-        List<ProductImageDto> productImageDtos = new ArrayList<>();
-        for (ProductImage image : product.getProductImages()) {
-            productImageDtos.add(new ProductImageDto.Builder()
-                    .withUrl(image.getImageUrl())
-                    .build());
-        }
+        List<ProductImageDto> productImageDtos = product.getProductImages().stream()
+                .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
+                .map(productImage -> {
+                    return new ProductImageDto.Builder()
+                            .withUrl(productImage.getImageUrl())
+                            .build();
+                }).collect(Collectors.toList());
 
-        SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
-                .withShopName(product.getShop().getName())
-                .withShopInfo(product.getShop().getInfo())
+        ShopDto shopDto = new ShopDto.Builder()
+                .withName(product.getShop().getName())
+                .withInfo(product.getShop().getInfo())
                 .withPhone(product.getShop().getPhone())
                 .build();
 
@@ -161,7 +162,7 @@ public class ProductService {
                 .withStatus(product.getStatus())
                 .withMainCategory(product.getCategory().getMain())
                 .withSubCategory(product.getCategory().getSub())
-                .withSellerInfo(sellerInfoDto)
+                .withShop(shopDto)
                 .withProductImages(productImageDtos)
                 .withZzimStatus(isZzim)
                 .withCreatedAt(product.getCreatedTimestamp())
@@ -297,7 +298,7 @@ public class ProductService {
                 // 고유이름 생성
                 String saveName = UUID.randomUUID().toString() +
                         file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-                log.debug(saveName);
+                log.debug(saveName + " " + file.getOriginalFilename());
 
                 productImage.setFileName(saveName);
                 productImage.setOriginalFileName(file.getOriginalFilename());

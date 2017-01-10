@@ -3,7 +3,7 @@ package kr.co.mash_up.nine_tique.service;
 import kr.co.mash_up.nine_tique.domain.*;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.ProductImageDto;
-import kr.co.mash_up.nine_tique.dto.SellerInfoDto;
+import kr.co.mash_up.nine_tique.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
@@ -108,16 +108,17 @@ public class ZzimService {
                 .map(zzimProduct -> {
                     Product product = zzimProduct.getProduct();
 
-                    List<ProductImageDto> productImageDtos = new ArrayList<>();
-                    for (ProductImage image : product.getProductImages()) {
-                        productImageDtos.add(new ProductImageDto.Builder()
-                                .withUrl(image.getImageUrl())
-                                .build());
-                    }
+                    List<ProductImageDto> productImageDtos = product.getProductImages().stream()
+                            .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
+                            .map(productImage -> {
+                                return new ProductImageDto.Builder()
+                                        .withUrl(productImage.getImageUrl())
+                                        .build();
+                            }).collect(Collectors.toList());
 
-                    SellerInfoDto sellerInfoDto = new SellerInfoDto.Builder()
-                            .withShopName(product.getShop().getName())
-                            .withShopInfo(product.getShop().getInfo())
+                    ShopDto shopDto = new ShopDto.Builder()
+                            .withName(product.getShop().getName())
+                            .withInfo(product.getShop().getInfo())
                             .withPhone(product.getShop().getPhone())
                             .build();
 
@@ -131,7 +132,7 @@ public class ZzimService {
                             .withStatus(product.getStatus())
                             .withMainCategory(product.getCategory().getMain())
                             .withSubCategory(product.getCategory().getSub())
-                            .withSellerInfo(sellerInfoDto)
+                            .withShop(shopDto)
                             .withProductImages(productImageDtos)
                             .build();
                 })
