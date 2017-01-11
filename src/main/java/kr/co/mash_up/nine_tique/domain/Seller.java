@@ -1,8 +1,13 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "seller")
@@ -10,35 +15,26 @@ import javax.persistence.*;
 @Setter
 @ToString(exclude = {"shop", "user"})
 @NoArgsConstructor  // JPA는 default constructor 필요
-public class Seller extends AbstractEntity<Seller.Id> {
+public class Seller extends AbstractEntity<Long> {
 
-    @EmbeddedId
-    private Id id = new Id();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne  // Seller(Many) : Shop(One)
-    @MapsId(value = "shopId")
+    @JoinColumn(name = "shop_id")
     private Shop shop;
 
     @OneToOne
-    @MapsId(value = "userId")
+//    @MapsId
+    @JoinColumn(name = "user_id")
     private User user;
 
-    public Seller(Shop shop, User user){
-        this.id.shopId = shop.getId();
-        this.id.userId = user.getId();
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SellerProduct> sellerProducts = new ArrayList<>();
+
+    public Seller(Shop shop, User user) {
         this.shop = shop;
         this.user = user;
-    }
-
-    @Embeddable
-    @Data
-    @EqualsAndHashCode(callSuper = false, of = {"shopId", "userId"})
-    public static class Id extends AbstractEntityId {
-
-        @Column(name = "shop_id")
-        private Long shopId;
-
-        @Column(name = "user_id")
-        private Long userId;
     }
 }

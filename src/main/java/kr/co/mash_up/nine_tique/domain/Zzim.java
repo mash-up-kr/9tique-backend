@@ -6,10 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 찜(좋아요)
@@ -27,12 +25,10 @@ public class Zzim extends AbstractEntity<Long> {
     private Long id;
 
     @OneToOne
-    @MapsId  //식별관계 매핑(FK가 PK에 포함될 때). FK와 매핑한 연관관계를 기본키에도 매핑하겠다는 뜻
+//    @MapsId  //식별관계 매핑(FK가 PK에 포함될 때). FK와 매핑한 연관관계를 기본키에도 매핑하겠다는 뜻
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "zzim", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<ZzimProduct> zzimProducts = new HashSet<>();
-    private Map<ZzimProduct.Id, ZzimProduct> zzimProducts = new HashMap<>();
-
+    private List<ZzimProduct> zzimProducts = new ArrayList<>();
 }

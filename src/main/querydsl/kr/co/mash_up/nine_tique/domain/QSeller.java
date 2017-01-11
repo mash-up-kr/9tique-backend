@@ -27,7 +27,7 @@ public class QSeller extends EntityPathBase<Seller> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final QSeller_Id id;
+    public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QShop shop;
 
@@ -54,7 +54,6 @@ public class QSeller extends EntityPathBase<Seller> {
 
     public QSeller(Class<? extends Seller> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.id = inits.isInitialized("id") ? new QSeller_Id(forProperty("id")) : null;
         this.shop = inits.isInitialized("shop") ? new QShop(forProperty("shop")) : null;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
     }

@@ -1,13 +1,14 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.*;
+import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.Zzim;
+import kr.co.mash_up.nine_tique.domain.ZzimProduct;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
-import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.repository.ZzimRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -25,9 +26,6 @@ import java.util.stream.Collectors;
 @Service(value = "zzimService")
 @Slf4j
 public class ZzimService {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -44,21 +42,17 @@ public class ZzimService {
      */
     @Transactional
     public void addProduct(Long userId, Long productId) {
-        User user = userRepository.findOne(userId);
-        Zzim zzim = user.getZzim();
-//        Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
-
+        Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
         Product product = productRepository.findOne(productId);
         if (product == null) {
             throw new IdNotFoundException("zzim add product -> product not found");
         }
 
         ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
-        if (zzim.getZzimProducts().containsKey(zzimProduct.getId())) {
+        if (checkProductZzim(zzim.getZzimProducts(), productId)) {
             throw new AlreadyExistException("zzim add product -> zzim already exist");
         }
-
-        zzim.getZzimProducts().put(zzimProduct.getId(), zzimProduct);
+        zzim.getZzimProducts().add(zzimProduct);
     }
 
     //Todo: col 추가해서 enable시키기
@@ -72,20 +66,53 @@ public class ZzimService {
      */
     @Transactional
     public void deleteProduct(Long userId, Long productId) {
-        User user = userRepository.findOne(userId);
-        Zzim zzim = user.getZzim();
-//        Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
-
+        Zzim zzim = zzimRepository.findOne(userId);
         Product product = productRepository.findOne(productId);
         if (product == null) {
             throw new IdNotFoundException("zzim delete product -> product not found");
         }
 
         ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
-        if (!zzim.getZzimProducts().containsKey(zzimProduct.getId())) {
+        if (!checkProductZzim(zzim.getZzimProducts(), productId)) {
             throw new IdNotFoundException("zzim delete product -> zzim not found");
         }
-        zzim.getZzimProducts().remove(zzimProduct.getId());
+
+        int deleteItemPosition = searchProductZzimIndex(zzim.getZzimProducts(), zzimProduct);
+        zzim.getZzimProducts().remove(deleteItemPosition);
+    }
+
+    /**
+     * 찜된 목록에서 삭제할 상품 위치 찾기
+     *
+     * @param zzimProducts 찜된 상품 목록
+     * @param zzimProduct  찾을 상품
+     * @return 리스트의 상품 위치
+     */
+    private int searchProductZzimIndex(List<ZzimProduct> zzimProducts, ZzimProduct zzimProduct) {
+        for (int idx = 0; idx < zzimProducts.size(); idx++) {
+            ZzimProduct.Id currentZzimProductId = zzimProducts.get(idx).getId();
+            if (Objects.equals(zzimProduct.getId().getProductId(), currentZzimProductId.getProductId())
+                    && Objects.equals(zzimProduct.getId().getZzimId(), currentZzimProductId.getZzimId())) {
+                return idx;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 찜되어 있는지 확인
+     *
+     * @param zzimProducts 찜된 상품 목록
+     * @param productId    확인할 상품 id
+     * @return 결과
+     */
+    private boolean checkProductZzim(List<ZzimProduct> zzimProducts, Long productId) {
+        for (ZzimProduct zzimProduct : zzimProducts) {
+            if (Objects.equals(zzimProduct.getProduct().getId(), productId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

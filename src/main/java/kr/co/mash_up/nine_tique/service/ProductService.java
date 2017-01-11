@@ -48,6 +48,9 @@ public class ProductService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SellerRepository sellerRepository;
+
     /*
     ManyToOne은 알아서 join을 안한다.
     OneToMany는 알아서 join을 한다.
@@ -82,6 +85,7 @@ public class ProductService {
         }
 
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
+        List<SellerProduct> sellerProducts = sellerRepository.getSellerProducts(userId);
 
         // DTO로 변환
         List<ProductDto> productDtos = productPage.getContent().stream()
@@ -101,6 +105,7 @@ public class ProductService {
                             .build();
 
                     boolean isZzim = checkProductZzim(zzimProducts, product);
+                    boolean isSeller = checkSeller(sellerProducts, product);
 
                     return new ProductDto.Builder()
                             .withId(product.getId())
@@ -117,6 +122,7 @@ public class ProductService {
                             .withZzimStatus(isZzim)
                             .withCreatedAt(product.getCreatedTimestamp())
                             .withUpdatedAt(product.getUpdatedTimestamp())
+                            .withSeller(isSeller)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -152,6 +158,9 @@ public class ProductService {
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
         boolean isZzim = checkProductZzim(zzimProducts, product);
 
+        List<SellerProduct> sellerProducts = sellerRepository.getSellerProducts(userId);
+        boolean isSeller = checkSeller(sellerProducts, product);
+
         return new ProductDto.Builder()
                 .withId(product.getId())
                 .withName(product.getName())
@@ -167,6 +176,7 @@ public class ProductService {
                 .withZzimStatus(isZzim)
                 .withCreatedAt(product.getCreatedTimestamp())
                 .withUpdatedAt(product.getUpdatedTimestamp())
+                .withSeller(isSeller)
                 .build();
     }
 
@@ -268,6 +278,11 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
 
+        //Todo: SellerProduct 저장
+        Seller seller = sellerRepository.findByUserId(userId);
+        SellerProduct sellerProduct = new SellerProduct(seller, savedProduct);
+        seller.getSellerProducts().add(sellerProduct);
+
         List<MultipartFile> files = requestVO.getFiles();
         saveMultipartFile(files, savedProduct);
 
@@ -288,6 +303,12 @@ public class ProductService {
 
         // 이미지 디렉토리 삭제
         FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
+
+        // SellerProduct 삭제
+        Seller seller = sellerRepository.findByUserId(userId);
+        SellerProduct sellerProduct = new SellerProduct(seller, oldProduct);
+        int deleteItemPosition = searchProductSellerIndex(seller.getSellerProducts(), sellerProduct);
+        seller.getSellerProducts().remove(deleteItemPosition);
 
         productRepository.delete(productId);
     }
@@ -333,5 +354,39 @@ public class ProductService {
             }
         }
         return false;
+    }
+
+    /**
+     * 상품이 내가 등록한 상품인지 확인
+     *
+     * @param sellerProducts 판매자가 등록한 상품 목록
+     * @param product        확인할 상품
+     * @return 내가 등록한 상품인지 여부
+     */
+    private boolean checkSeller(List<SellerProduct> sellerProducts, Product product) {
+        for (SellerProduct sellerProduct : sellerProducts) {
+            if (Objects.equals(sellerProduct.getProduct().getId(), product.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 판매 상품 목록에서 삭제할 상품 위치 찾기
+     *
+     * @param sellerProducts 판매자 상품목록
+     * @param sellerProduct  찾을 상품
+     * @return 리스트의 상품 위치
+     */
+    private int searchProductSellerIndex(List<SellerProduct> sellerProducts, SellerProduct sellerProduct) {
+        for (int idx = 0; idx < sellerProducts.size(); idx++) {
+            SellerProduct.Id currentSellerProductId = sellerProducts.get(idx).getId();
+            if (Objects.equals(sellerProduct.getId().getProductId(), currentSellerProductId.getProductId())
+                    && Objects.equals(sellerProduct.getId().getSellerId(), currentSellerProductId.getSellerId())) {
+                return idx;
+            }
+        }
+        return -1;
     }
 }

@@ -58,6 +58,9 @@ public class ProductDto {
     @JsonProperty(value = "updated_at")
     private long updatedAt;
 
+    @JsonProperty(value = "seller")
+    private boolean seller;
+
     public static class Builder {
 
         private Long id;
@@ -74,6 +77,7 @@ public class ProductDto {
         private boolean zzimStatus;
         private long createdAt;
         private long updatedAt;
+        private boolean seller;
 
         public ProductDto build() {
             ProductDto productDto = new ProductDto();
@@ -91,6 +95,7 @@ public class ProductDto {
             productDto.setZzimStatus(zzimStatus);
             productDto.setCreatedAt(createdAt);
             productDto.setUpdatedAt(updatedAt);
+            productDto.setSeller(seller);
             return productDto;
         }
 
@@ -161,6 +166,11 @@ public class ProductDto {
 
         public Builder withUpdatedAt(long updatedAt) {
             this.updatedAt = updatedAt;
+            return this;
+        }
+
+        public Builder withSeller(boolean seller) {
+            this.seller = seller;
             return this;
         }
     }
