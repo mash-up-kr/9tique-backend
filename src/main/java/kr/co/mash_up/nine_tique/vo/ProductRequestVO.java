@@ -17,28 +17,28 @@ import java.util.List;
 @ToString
 public class ProductRequestVO extends RequestVO {
 
-    @JsonProperty
+    @JsonProperty("name")
     private String name;
 
-    @JsonProperty
+    @JsonProperty("brand_name")
     private String brandName;
 
-    @JsonProperty
+    @JsonProperty("size")
     private String size;
 
-    @JsonProperty
+    @JsonProperty("price")
     private int price;
 
-    @JsonProperty
+    @JsonProperty("description")
     private String description;
 
-    @JsonProperty
-    private String productStatus;
+    @JsonProperty("status")
+    private String status;
 
-    @JsonProperty
+    @JsonProperty("main_category")
     private String mainCategory;
 
-    @JsonProperty
+    @JsonProperty("sub_category")
     private String subCategory;  // ""인것도 있어서 checkParameterEmpty()로 안넘긴다.
 
     @JsonIgnore  // MultipartFile을 json으로 serialization할 수 없기 때문에 무시
@@ -51,6 +51,13 @@ public class ProductRequestVO extends RequestVO {
         product.setSize(size);
         product.setPrice(price);
         product.setDescription(description);
+
+        if (status.equals("SELL")) {
+            product.setStatus(Product.Status.SELL);
+        } else if (status.equals("SOLD_OUT")) {
+            product.setStatus(Product.Status.SOLD_OUT);
+        }
+
         return product;
     }
 }

@@ -85,9 +85,7 @@ public class UserService {
         shop.setPhone("010-3222-2222" + id);
         shopRepository.save(shop);
 
-        Seller seller = new Seller();
-        seller.setUser(user);
-        seller.setShop(shop);
+        Seller seller = new Seller(shop, user);
         sellerRepository.save(seller);
 
         // Seller 권한 저장

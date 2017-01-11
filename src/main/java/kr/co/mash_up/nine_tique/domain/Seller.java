@@ -23,6 +23,13 @@ public class Seller extends AbstractEntity<Seller.Id> {
     @MapsId(value = "userId")
     private User user;
 
+    public Seller(Shop shop, User user){
+        this.id.shopId = shop.getId();
+        this.id.userId = user.getId();
+        this.shop = shop;
+        this.user = user;
+    }
+
     @Embeddable
     @Data
     @EqualsAndHashCode(callSuper = false, of = {"shopId", "userId"})

@@ -31,7 +31,7 @@ public class ProductController {
 //    @RequestMapping(method = RequestMethod.POST)
 //    public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
 //        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getProductStatus(),
+//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getStatus(),
 //                requestVO.getMainCategory(), requestVO.getFiles());
 //
 //        Long userId = SecurityUtil.getCurrentUser().getId();
@@ -67,7 +67,7 @@ public class ProductController {
         requestVO.setDescription(description);
         requestVO.setMainCategory(mainCategory);
         requestVO.setSubCategory(subCategory);
-        requestVO.setProductStatus(Product.Status.SELL.name());
+        requestVO.setStatus(Product.Status.SELL.name());
         requestVO.setFiles(files);
 
         Product product = productService.create(userId, requestVO);
@@ -90,7 +90,7 @@ public class ProductController {
     public ResponseVO update(@PathVariable("id") Long productId, @RequestBody ProductRequestVO requestVO) {
         // 바뀐 정보만 update하기 위해 service단에서 체크한다.
 //        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getProductStatus(), requestVO.getSellerId(),
+//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getStatus(), requestVO.getSellerId(),
 //                requestVO.getMainCategory(), requestVO.getFiles());
 
         Long userId = SecurityUtil.getCurrentUser().getId();

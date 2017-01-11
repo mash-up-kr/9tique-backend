@@ -1,13 +1,8 @@
 package kr.co.mash_up.nine_tique.util;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import kr.co.mash_up.nine_tique.config.SystemPropertiesConfig;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Transient;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileUtil {
@@ -39,6 +34,30 @@ public class FileUtil {
             throw new RuntimeException(String.format("file upload error: %s", targetFile), e);
         }
         return targetFile;
+    }
+
+    public static boolean deleteFile(String imageFilePath) {
+        File imageFile = new File(imageFilePath);
+        if (!imageFile.exists()) {
+            return false;
+        }
+        return imageFile.delete();
+    }
+
+    public static boolean deleteDir(String dirPath) {
+        File dir = new File(dirPath);
+        if (!dir.exists()) {
+            return false;
+        }
+
+        for (File file : dir.listFiles()) {
+            if (file.isFile()) {
+                file.delete();
+            } else if(file.isDirectory()){
+                deleteDir(file.getPath());
+            }
+        }
+        return dir.delete();
     }
 
 //    /**

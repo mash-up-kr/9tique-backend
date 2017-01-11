@@ -227,17 +227,23 @@ public class ProductService {
             oldProduct.setCategory(category);
         }
 
-        String productStatus = requestVO.getProductStatus();
+        String productStatus = requestVO.getStatus();
         if (productStatus.equals("SELL")) {
             oldProduct.setStatus(Product.Status.SELL);
         } else if (productStatus.equals("SOLD_OUT")) {
             oldProduct.setStatus(Product.Status.SOLD_OUT);
         }
 
+        //Todo: 이미지 업데이트
         List<MultipartFile> files = requestVO.getFiles();
         if (!ParameterUtil.isEmpty(files)) {
             saveMultipartFile(files, oldProduct);
         }
+        // 해당파일만 삭제
+//        oldProduct.getProductImages()
+//                .forEach(productImage -> {
+//                    FileUtil.deleteFile(productImage.getImageUploadPath() + "/" + productImage.getFileName());
+//                });
 
         return productRepository.save(oldProduct);
     }
@@ -260,12 +266,6 @@ public class ProductService {
         }
         product.setCategory(category);
 
-        if (requestVO.getProductStatus().equals("SELL")) {
-            product.setStatus(Product.Status.SELL);
-        } else if (requestVO.getProductStatus().equals("SOLD_OUT")) {
-            product.setStatus(Product.Status.SOLD_OUT);
-        }
-
         Product savedProduct = productRepository.save(product);
 
         List<MultipartFile> files = requestVO.getFiles();
@@ -285,6 +285,9 @@ public class ProductService {
         if (!Objects.equals(user.getSeller().getShop().getId(), oldProduct.getShop().getId())) {  // 등록한 shop의 seller만 삭제 가능
             throw new UserIdNotMatchedException("product update -> user id not matched");
         }
+
+        // 이미지 디렉토리 삭제
+        FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
 
         productRepository.delete(productId);
     }

@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -51,7 +51,7 @@ public class Product extends AbstractEntity<Long> {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     // FK는 항상 N쪽에, 주인도 N쪽
-    private Set<ProductImage> productImages;
+    private List<ProductImage> productImages;
 
     //Todo: 이벤트 여부 추가?
 
