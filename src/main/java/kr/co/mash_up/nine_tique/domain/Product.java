@@ -49,9 +49,15 @@ public class Product extends AbstractEntity<Long> {
     @JoinColumn(name = "category_id")  // FK 매핑시 이용
     private Category category;  // 카테고리
 
+    // One(Product) : Many(ProductImage) - Many쪽이 FK를 가지고(주인O), One쪽이 mappedBy(주인X)를 적용
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-    // FK는 항상 N쪽에, 주인도 N쪽
     private List<ProductImage> productImages;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<SellerProduct> sellerProducts;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ZzimProduct> zzimProducts;
 
     //Todo: 이벤트 여부 추가?
 

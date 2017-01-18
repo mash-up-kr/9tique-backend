@@ -19,7 +19,7 @@ public class SellerProduct extends AbstractEntity<SellerProduct.Id> {
     @MapsId(value = "sellerId")
     private Seller seller;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId(value = "productId")
     private Product product;
 

@@ -2,6 +2,8 @@ package kr.co.mash_up.nine_tique.repository;
 
 import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,4 +14,6 @@ public interface SellerRepositoryCustom {
     Seller findByUserId(Long userId);
 
     List<SellerProduct> getSellerProducts(Long userId);
+
+    Page<SellerProduct> getSellerProducts(Long userId, Pageable pageable);
 }
