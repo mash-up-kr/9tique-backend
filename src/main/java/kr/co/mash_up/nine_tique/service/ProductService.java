@@ -278,7 +278,7 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        //Todo: SellerProduct 저장
+        // SellerProduct 저장
         Seller seller = sellerRepository.findByUserId(userId);
         SellerProduct sellerProduct = new SellerProduct(seller, savedProduct);
         seller.getSellerProducts().add(sellerProduct);
@@ -303,12 +303,6 @@ public class ProductService {
 
         // 이미지 디렉토리 삭제
         FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
-
-        // SellerProduct 삭제
-        Seller seller = sellerRepository.findByUserId(userId);
-        SellerProduct sellerProduct = new SellerProduct(seller, oldProduct);
-        int deleteItemPosition = searchProductSellerIndex(seller.getSellerProducts(), sellerProduct);
-        seller.getSellerProducts().remove(deleteItemPosition);
 
         productRepository.delete(productId);
     }
@@ -370,23 +364,5 @@ public class ProductService {
             }
         }
         return false;
-    }
-
-    /**
-     * 판매 상품 목록에서 삭제할 상품 위치 찾기
-     *
-     * @param sellerProducts 판매자 상품목록
-     * @param sellerProduct  찾을 상품
-     * @return 리스트의 상품 위치
-     */
-    private int searchProductSellerIndex(List<SellerProduct> sellerProducts, SellerProduct sellerProduct) {
-        for (int idx = 0; idx < sellerProducts.size(); idx++) {
-            SellerProduct.Id currentSellerProductId = sellerProducts.get(idx).getId();
-            if (Objects.equals(sellerProduct.getId().getProductId(), currentSellerProductId.getProductId())
-                    && Objects.equals(sellerProduct.getId().getSellerId(), currentSellerProductId.getSellerId())) {
-                return idx;
-            }
-        }
-        return -1;
     }
 }
