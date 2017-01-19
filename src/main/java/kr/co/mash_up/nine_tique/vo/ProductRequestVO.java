@@ -17,6 +17,9 @@ import java.util.List;
 @ToString
 public class ProductRequestVO extends RequestVO {
 
+    @JsonProperty
+    private Long id;
+
     @JsonProperty("name")
     private String name;
 

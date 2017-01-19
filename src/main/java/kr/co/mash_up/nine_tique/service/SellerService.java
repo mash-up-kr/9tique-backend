@@ -2,11 +2,18 @@ package kr.co.mash_up.nine_tique.service;
 
 import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
+import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
+import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
+import kr.co.mash_up.nine_tique.repository.ProductRepository;
 import kr.co.mash_up.nine_tique.repository.SellerRepository;
+import kr.co.mash_up.nine_tique.repository.UserRepository;
+import kr.co.mash_up.nine_tique.util.FileUtil;
+import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
+import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -14,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +34,19 @@ public class SellerService {
     @Autowired
     private SellerRepository sellerRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    /**
+     * 판매자가 등록한 상품 리스트 조회
+     *
+     * @param userId   seller id
+     * @param pageable page 정보
+     * @return 판매자가 등록한 상품 리스트
+     */
     @Transactional(readOnly = true)
     public Page<ProductDto> findProducts(Long userId, Pageable pageable) {
         Page<SellerProduct> sellerProductPage = sellerRepository.getSellerProducts(userId, pageable);
@@ -80,5 +101,58 @@ public class SellerService {
                 new Sort(Sort.Direction.DESC, "createdAt"));
 
         return new PageImpl<ProductDto>(productDtos, resultPageable, sellerProductPage.getTotalElements());
+    }
+
+    /**
+     * 판매자가 등록한 상품 전체삭제
+     *
+     * @param userId Seller id
+     */
+    @Transactional
+    public void deleteProductsAll(Long userId) {
+        List<SellerProduct> sellerProducts = sellerRepository.getSellerProducts(userId);
+
+        if (sellerProducts == null || sellerProducts.isEmpty()) {
+            throw new IdNotFoundException("sell product delete all -> product not found");
+        }
+
+        sellerProducts.forEach(sellerProduct -> {
+            Product oldProduct = sellerProduct.getProduct();
+
+            // 이미지 디렉토리 삭제
+            FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
+
+            productRepository.delete(oldProduct.getId());
+        });
+    }
+
+    /**
+     * 판매자가 등록한 상품 삭제
+     *
+     * @param userId    Seller id
+     * @param requestVO Product id
+     */
+    @Transactional
+    public void deleteProducts(Long userId, ProductDeleteRequestVO requestVO) {
+        requestVO.getProducts().stream()
+                .map(ProductRequestVO::getId)
+                .forEach(productId -> {
+                    Product oldProduct = productRepository.findOne(productId);
+
+                    if (oldProduct == null) {
+                        throw new IdNotFoundException("product delete -> product not found");
+                    }
+
+                    //Todo: 지워도 되지 않나?? 쓸데없는 I/O가 아닐까?
+                    User user = userRepository.findOne(userId);
+                    if (!Objects.equals(oldProduct.getShop().getId(), user.getSeller().getShop().getId())) {
+                        throw new UserIdNotMatchedException("product delete -> user id not matched");
+                    }
+
+                    // 이미지 디렉토리 삭제
+                    FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
+
+                    productRepository.delete(oldProduct.getId());
+                });
     }
 }
