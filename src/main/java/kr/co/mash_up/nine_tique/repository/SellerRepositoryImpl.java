@@ -56,7 +56,7 @@ public class SellerRepositoryImpl implements SellerRepositoryCustom {
         query.from(qSellerProduct).join(qSellerProduct.seller, qSeller)
                 .join(qSeller.user, qUser)
                 .where(qUser.id.eq(userId))
-                .orderBy(qSeller.createdAt.desc())
+                .orderBy(qSellerProduct.createdAt.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
 
