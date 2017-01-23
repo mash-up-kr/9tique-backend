@@ -52,11 +52,13 @@ public class SellerRepositoryImpl implements SellerRepositoryCustom {
         QSellerProduct qSellerProduct = QSellerProduct.sellerProduct;
         QSeller qSeller = QSeller.seller;
         QUser qUser = QUser.user;
+        QProduct qProduct = QProduct.product;
 
         query.from(qSellerProduct).join(qSellerProduct.seller, qSeller)
+                .join(qSellerProduct.product, qProduct)
                 .join(qSeller.user, qUser)
                 .where(qUser.id.eq(userId))
-                .orderBy(qSellerProduct.createdAt.desc())
+                .orderBy(qProduct.status.asc(), qProduct.createdAt.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
 
