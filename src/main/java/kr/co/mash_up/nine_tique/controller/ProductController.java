@@ -10,9 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/product")
@@ -28,56 +25,57 @@ public class ProductController {
      * @param requestVO 생성할 상품 정보
      * @return 생성 결과
      */
-//    @RequestMapping(method = RequestMethod.POST)
-//    public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
-//        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getStatus(),
-//                requestVO.getMainCategory(), requestVO.getFiles());
-//
-//        Long userId = SecurityUtil.getCurrentUser().getId();
-//        log.info(userId + " ");
-//
-//        Product product = productService.create(userId, requestVO);
-//
-//        if (product != null) {  // 생성 성공
-//            return ResponseVO.ok();
-//        }
-//        //Todo: 생성 실패시 예외처리 -> 어떤 경우가 있을까..?
-//        return ResponseVO.ok();
-//    }
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseVO add(@RequestParam(name = "name") String name,
-                          @RequestParam(name = "brand_name") String brandName,
-                          @RequestParam(name = "size") String size,
-                          @RequestParam(name = "price") int price,
-                          @RequestParam(name = "description") String description,
-                          @RequestParam(name = "main_category") String mainCategory,
-                          @RequestParam(name = "sub_category") String subCategory,
-                          @RequestParam(name = "files") List<MultipartFile> files) {
-        ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, mainCategory, files);
+    public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
+        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
+                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getProductImages());
 
         Long userId = SecurityUtil.getCurrentUser().getId();
         log.info(userId + " ");
-
-        ProductRequestVO requestVO = new ProductRequestVO();
-        requestVO.setName(name);
-        requestVO.setBrandName(brandName);
-        requestVO.setSize(size);
-        requestVO.setPrice(price);
-        requestVO.setDescription(description);
-        requestVO.setMainCategory(mainCategory);
-        requestVO.setSubCategory(subCategory);
         requestVO.setStatus(Product.Status.SELL.name());
-        requestVO.setFiles(files);
 
         Product product = productService.create(userId, requestVO);
 
-        if (product != null) {
+        if (product != null) {  // 생성 성공
             return ResponseVO.ok();
         }
         //Todo: 생성 실패시 예외처리 -> 어떤 경우가 있을까..?
         return ResponseVO.ok();
     }
+
+//    @RequestMapping(method = RequestMethod.POST)
+//    public ResponseVO add(@RequestParam(name = "name") String name,
+//                          @RequestParam(name = "brand_name") String brandName,
+//                          @RequestParam(name = "size") String size,
+//                          @RequestParam(name = "price") int price,
+//                          @RequestParam(name = "description") String description,
+//                          @RequestParam(name = "main_category") String mainCategory,
+//                          @RequestParam(name = "sub_category") String subCategory,
+//                          @RequestParam(name = "files") List<String> imageUrls) {
+//        ParameterUtil.checkParameterEmpty(name, brandName, size, price, description, mainCategory, imageUrls);
+//
+//        Long userId = SecurityUtil.getCurrentUser().getId();
+//        log.info(userId + " ");
+//
+//        ProductRequestVO requestVO = new ProductRequestVO();
+//        requestVO.setName(name);
+//        requestVO.setBrandName(brandName);
+//        requestVO.setSize(size);
+//        requestVO.setPrice(price);
+//        requestVO.setDescription(description);
+//        requestVO.setMainCategory(mainCategory);
+//        requestVO.setSubCategory(subCategory);
+//        requestVO.setStatus(Product.Status.SELL.name());
+//        requestVO.setFiles(files);
+//
+//        Product product = productService.create(userId, requestVO);
+//
+//        if (product != null) {
+//            return ResponseVO.ok();
+//        }
+//        //Todo: 생성 실패시 예외처리 -> 어떤 경우가 있을까..?
+//        return ResponseVO.ok();
+//    }
 
     /**
      * 상품 정보 수정 (상태변경 - 판매중/완료)
@@ -87,11 +85,12 @@ public class ProductController {
      * @return 수정 결과
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseVO update(@PathVariable("id") Long productId, @RequestBody ProductRequestVO requestVO) {
+    public ResponseVO update(@PathVariable("id") Long productId,
+                             @RequestBody ProductRequestVO requestVO) {
         // 바뀐 정보만 update하기 위해 service단에서 체크한다.
 //        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getStatus(), requestVO.getSellerId(),
-//                requestVO.getMainCategory(), requestVO.getFiles());
+//                requestVO.getPrice(), requestVO.getDescription(), requestVO.getStatus(), requestVO.getMainCategory(),
+//                requestVO.getProductImages());
 
         Long userId = SecurityUtil.getCurrentUser().getId();
         Product product = productService.update(userId, productId, requestVO);

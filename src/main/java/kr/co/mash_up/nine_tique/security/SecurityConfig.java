@@ -104,6 +104,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/product_image/**").hasAnyAuthority(Authorities.SELLER)
+
+                .and()
+                .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
                 .antMatchers(HttpMethod.POST, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
                 .antMatchers(HttpMethod.DELETE, "/api/zzim/**").hasAnyAuthority(Authorities.USER)

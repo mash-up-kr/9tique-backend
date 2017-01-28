@@ -4,6 +4,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileUtil {
 
@@ -36,12 +40,49 @@ public class FileUtil {
         return targetFile;
     }
 
+    public static boolean moveFile(String source, String dest){
+        Path file = Paths.get(source);
+        Path movePath = Paths.get(dest);
+
+        boolean movoPathExists = Files.exists(movePath,
+                LinkOption.NOFOLLOW_LINKS);
+
+        if(!movoPathExists){  // 디렉토리 없으면 생성
+            try {
+                Files.createDirectories(movePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            Files.move(file, movePath.resolve(file.getFileName()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public static boolean deleteFile(String imageFilePath) {
         File imageFile = new File(imageFilePath);
         if (!imageFile.exists()) {
             return false;
         }
         return imageFile.delete();
+    }
+
+    public static boolean deleteFilesInDir(String dirPath) {
+        File dir = new File(dirPath);
+        if (!dir.exists()) {
+            return false;
+        }
+
+        for (File file : dir.listFiles()) {
+            if (file.isFile()) {
+                file.delete();
+            }
+        }
+        return true;
     }
 
     public static boolean deleteDir(String dirPath) {
@@ -53,7 +94,7 @@ public class FileUtil {
         for (File file : dir.listFiles()) {
             if (file.isFile()) {
                 file.delete();
-            } else if(file.isDirectory()){
+            } else if (file.isDirectory()) {
                 deleteDir(file.getPath());
             }
         }
@@ -64,9 +105,9 @@ public class FileUtil {
 //     * 업로드된 이미지를 다운받을 수 있는 url 제공
 //     * @return image url
 //     */
-//    public static String getImageUrl(long productId, String originalFileName){
+//    public static String getImageUrl(long productId, String fileName){
 //        return String.format("$s/product/%d/%s",
-//                System.getProperty(SystemPropertiesConfig.STORAGE_URI), productId, originalFileName);
+//                System.getProperty(SystemPropertiesConfig.STORAGE_URI), productId, fileName);
 //    }
 //
 //    /**

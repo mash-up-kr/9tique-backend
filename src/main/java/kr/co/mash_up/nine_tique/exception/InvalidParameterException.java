@@ -12,7 +12,7 @@ public class InvalidParameterException extends BaseException {
 
 
     public InvalidParameterException() {
-        this(null);
+        this("Invalid Parameter");
     }
 
     public InvalidParameterException(String message) {

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository(value = "productImageRepository")
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
+    ProductImage findByFileName(String fileName);
 }
