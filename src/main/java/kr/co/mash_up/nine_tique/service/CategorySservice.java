@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Category와 관련된 비즈니스 로직 처리
@@ -30,43 +31,36 @@ public class CategorySservice {
     @Transactional(readOnly = true)
     public Category findById(Long id) {
         Category category = categoryRepository.findOne(id);
+        Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("category find by id -> category not found"));
 
-        if (category == null) {
-            throw new IdNotFoundException("category find by id -> category not found");
-        }
         return category;
     }
 
     @Transactional
     public Category update(Long id, Category newCategory) {
-        Category oldCateogry = categoryRepository.findOne(id);
+        Category oldCategory = categoryRepository.findOne(id);
+        Optional.ofNullable(oldCategory).orElseThrow(() -> new IdNotFoundException("category update -> category not found"));
 
-        if (oldCateogry == null) {
-            throw new IdNotFoundException("category update -> category not found");
-        }
-
-        oldCateogry.setMain(newCategory.getMain());
-        oldCateogry.setSub(newCategory.getSub());
-        return categoryRepository.save(oldCateogry);
+        oldCategory.setMain(newCategory.getMain());
+        oldCategory.setSub(newCategory.getSub());
+        return categoryRepository.save(oldCategory);
     }
 
     @Transactional
     public Category create(CategoryRequestVO requestVO) {
         Category oldCategory = categoryRepository.findByMainAndSubAllIgnoreCase(requestVO.getMain(), requestVO.getSub());
 
-        if (oldCategory != null) {  // 이미 존재할 경우
+        Optional.ofNullable(oldCategory).ifPresent(category -> {  // 이미 존재할 경우
             throw new AlreadyExistException("category create -> category already exist");
-        }
+        });
+
         return categoryRepository.save(requestVO.toCategoryEntity());
     }
 
     @Transactional
     public void delete(Long id) {
         Category oldCategory = categoryRepository.findOne(id);
-        if (oldCategory == null) {
-            throw new IdNotFoundException("category delete -> category not found");
-        }
+        Optional.ofNullable(oldCategory).orElseThrow(() -> new IdNotFoundException("category delete -> category not found"));
         categoryRepository.delete(id);
     }
-
 }

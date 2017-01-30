@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +36,7 @@ public class ZzimService {
     private ZzimRepository zzimRepository;
 
     /**
+     * Todo: col 추가해서 enable시키기
      * 찜하기
      *
      * @param userId    요청한 유저 id
@@ -44,9 +47,8 @@ public class ZzimService {
     public void addProduct(Long userId, Long productId) {
         Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
         Product product = productRepository.findOne(productId);
-        if (product == null) {
-            throw new IdNotFoundException("zzim add product -> product not found");
-        }
+
+        Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("zzim add product -> product not found"));
 
         ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
         if (checkProductZzim(zzim.getZzimProducts(), productId)) {
@@ -55,9 +57,9 @@ public class ZzimService {
         zzim.getZzimProducts().add(zzimProduct);
     }
 
-    //Todo: col 추가해서 enable시키기
 
     /**
+     * Todo: col 추가해서 disable시키기
      * 찜해제
      *
      * @param userId    요청한 유저 id
@@ -68,9 +70,8 @@ public class ZzimService {
     public void deleteProduct(Long userId, Long productId) {
         Zzim zzim = zzimRepository.findOne(userId);
         Product product = productRepository.findOne(productId);
-        if (product == null) {
-            throw new IdNotFoundException("zzim delete product -> product not found");
-        }
+
+        Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("zzim delete product -> product not found"));
 
         ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
         if (!checkProductZzim(zzim.getZzimProducts(), productId)) {
@@ -126,9 +127,7 @@ public class ZzimService {
     public Page<ProductDto> findZzimProducts(Long userId, Pageable pageable) {
         Page<ZzimProduct> zzimProductPage = zzimRepository.getZzimProducts(userId, pageable);
 
-        if (zzimProductPage == null) {
-            throw new IdNotFoundException("zzim products not found");
-        }
+        Optional.ofNullable(zzimProductPage).orElseThrow(() ->  new IdNotFoundException("zzim products not found"));
 
         // DTO로 변환
         List<ProductDto> productDtos = zzimProductPage.getContent().stream()

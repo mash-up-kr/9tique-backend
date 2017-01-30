@@ -20,16 +20,16 @@ import lombok.ToString;
 public class ResponseVO {
 
     @JsonProperty
-    private Integer status;
+    private int status;
 
     @JsonProperty
     private String message;
 
-    public ResponseVO(Integer status){
+    public ResponseVO(int status){
         this.status = status;
     }
 
-    public ResponseVO(Integer status, String message) {
+    public ResponseVO(int status, String message) {
         this.status = status;
         this.message = message;
     }

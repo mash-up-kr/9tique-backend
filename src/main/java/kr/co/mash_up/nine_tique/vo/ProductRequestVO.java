@@ -54,9 +54,9 @@ public class ProductRequestVO extends RequestVO {
         product.setPrice(price);
         product.setDescription(description);
 
-        if (status.equals("SELL")) {
+        if (status.equalsIgnoreCase("SELL")) {
             product.setStatus(Product.Status.SELL);
-        } else if (status.equals("SOLD_OUT")) {
+        } else if (status.equalsIgnoreCase("SOLD_OUT")) {
             product.setStatus(Product.Status.SOLD_OUT);
         }
 

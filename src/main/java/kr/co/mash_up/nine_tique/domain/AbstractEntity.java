@@ -39,7 +39,7 @@ public abstract class AbstractEntity<K extends Serializable> implements Serializ
     }
 
     @PreUpdate  // 업데이트 전에 호출
-    private void onUpdate() {
+    protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 

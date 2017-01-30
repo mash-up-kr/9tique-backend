@@ -28,7 +28,6 @@ public class ZzimController {
      */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseVO add(@RequestParam(name = "product_id") Long productId) {
-
         Long userId = SecurityUtil.getCurrentUser().getId();
         zzimService.addProduct(userId, productId);
         return ResponseVO.ok();

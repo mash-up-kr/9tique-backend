@@ -4,11 +4,13 @@ import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.UserService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
-import kr.co.mash_up.nine_tique.vo.DataResponseVO;
 import kr.co.mash_up.nine_tique.vo.UserRequestVO;
 import kr.co.mash_up.nine_tique.vo.UserResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {

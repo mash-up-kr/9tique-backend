@@ -28,7 +28,7 @@ public class ProductImage extends AbstractEntity<Long> {
     private String originalFileName;  // 260byte(window 최대 256글자 + 확장자)
 
     @Column
-    private Long size;
+    private long size;
 
     @ManyToOne
     @JoinColumn(name = "product_id")  // FK 매핑시 이용

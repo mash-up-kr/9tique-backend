@@ -10,7 +10,7 @@ public class JwtSettings {
     private String tokenHeader;
 
     @Value(value = "${jwt.token_expiration_time}")
-    private Long tokenExpirationTime;
+    private long tokenExpirationTime;
 
     @Value(value = "${jwt.token_issuer}")
     private String tokenIssuer;
@@ -19,13 +19,13 @@ public class JwtSettings {
     private String tokenSigningKey;
 
     @Value(value = "${jwt.refresh_token_expiration_time}")
-    private Long refreshTokenExpTime;
+    private long refreshTokenExpTime;
 
     public String getTokenHeader() {
         return tokenHeader;
     }
 
-    public Long getTokenExpirationTime() {
+    public long getTokenExpirationTime() {
         return tokenExpirationTime;
     }
 
@@ -37,7 +37,7 @@ public class JwtSettings {
         return tokenSigningKey;
     }
 
-    public Long getRefreshTokenExpTime() {
+    public long getRefreshTokenExpTime() {
         return refreshTokenExpTime;
     }
 }

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -51,9 +52,7 @@ public class SellerService {
     public Page<ProductDto> findProducts(Long userId, Pageable pageable) {
         Page<SellerProduct> sellerProductPage = sellerRepository.getSellerProducts(userId, pageable);
 
-        if (sellerProductPage == null) {
-            throw new IdNotFoundException("selle products not found");
-        }
+        Optional.ofNullable(sellerProductPage).orElseThrow(() -> new IdNotFoundException("selle products not found"));
 
         List<ProductDto> productDtos = sellerProductPage.getContent().stream()
                 .map(sellerProduct -> {
@@ -112,9 +111,11 @@ public class SellerService {
     public void deleteProductsAll(Long userId) {
         List<SellerProduct> sellerProducts = sellerRepository.getSellerProducts(userId);
 
-        if (sellerProducts == null || sellerProducts.isEmpty()) {
-            throw new IdNotFoundException("sell product delete all -> product not found");
-        }
+        Optional.ofNullable(sellerProducts).orElseThrow(() -> new IdNotFoundException("sell product delete all -> product not found"));
+
+//        if (sellerProducts == null || sellerProducts.isEmpty()) {
+//            throw new IdNotFoundException("sell product delete all -> product not found");
+//        }
 
         sellerProducts.forEach(sellerProduct -> {
             Product oldProduct = sellerProduct.getProduct();
@@ -139,9 +140,7 @@ public class SellerService {
                 .forEach(productId -> {
                     Product oldProduct = productRepository.findOne(productId);
 
-                    if (oldProduct == null) {
-                        throw new IdNotFoundException("product delete -> product not found");
-                    }
+                    Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product delete -> product not found"));
 
                     //Todo: 지워도 되지 않나?? 쓸데없는 I/O가 아닐까?
                     User user = userRepository.findOne(userId);

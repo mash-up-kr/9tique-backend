@@ -12,17 +12,17 @@ import lombok.Setter;
 @Setter
 public class BaseException extends RuntimeException {
 
-    private final Integer status;
+    private int status;
 
-    public BaseException(Integer status) {
+    public BaseException(int status) {
         this(status, null);
     }
 
-    public BaseException(Integer status, String debugMessage) {
+    public BaseException(int status, String debugMessage) {
         this(status, debugMessage, null);
     }
 
-    public BaseException(Integer status, String debugMessage, Throwable throwable) {
+    public BaseException(int status, String debugMessage, Throwable throwable) {
         super(debugMessage, throwable);
         this.status = status;
     }

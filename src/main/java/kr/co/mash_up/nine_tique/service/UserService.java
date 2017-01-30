@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * User와 관련된 비즈니스 로직 처리
  */
@@ -42,24 +44,26 @@ public class UserService {
 
     @Transactional
     public String login(UserRequestVO requestVO) {
-        User user = userRepository.findByOauthTokenAndOauthType(requestVO.getOauthToken(), requestVO.getType());
+        User oldUser = userRepository.findByOauthTokenAndOauthType(requestVO.getOauthToken(), requestVO.getType());
 
-        if (user == null) {  // User가 없으면 정보 저장
-            user = requestVO.toUserEntity();  // oauth token, oauth type setting
+        oldUser = Optional.ofNullable(oldUser).orElseGet(() -> {  // User가 없으면 정보 저장
+            User newUser = requestVO.toUserEntity();  // oauth token, oauth type setting
 
             // USER 권한 저장
             Authority authority = authorityRepository.findByAuthority(Authorities.USER);
-            user.getAuthorities().add(authority);
+            newUser.getAuthorities().add(authority);
 
-            userRepository.save(user);
+            userRepository.save(newUser);
 
-            // zzim 연관관계 생성
+            // default zzim 연관관계 생성
             Zzim zzim = new Zzim();
-            zzim.setUser(user);
+            zzim.setUser(newUser);
             zzimRepository.save(zzim);
-        }
 
-        return jwtTokenUtil.generateToken(user);
+            return newUser;
+        });
+
+        return jwtTokenUtil.generateToken(oldUser);
     }
 
     /**
@@ -72,9 +76,7 @@ public class UserService {
     public String addSellerAuthority(Long id) {
         User user = userRepository.findOne(id);
 
-        if (user == null) {
-            throw new IdNotFoundException("user not found");
-        }
+        Optional.ofNullable(user).orElseThrow(() -> new IdNotFoundException("user not found"));
 
         //Todo: 인증코드 검증
         // Seller Infomation 저장

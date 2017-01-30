@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,24 +64,22 @@ public class ProductService {
 
         Page<Product> productPage = null;
 
-        if (mainCategory.equals("NEW")) {
+        if (mainCategory.equalsIgnoreCase("NEW")) {
             productPage = productRepository.findAll(pageable);
         } else {
-            if (subCategory.equals("ALL")) {
+            if (subCategory.equalsIgnoreCase("ALL")) {
                 productPage = productRepository.findByMainCategory(pageable, mainCategory);
             } else {
                 Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
-                if (category == null) {
-                    throw new IdNotFoundException("find product by category -> category not found");
-                }
+                Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("find product by category -> category not found"));
+
                 log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
+
                 productPage = productRepository.findByCategory(pageable, category);
             }
         }
 
-        if (productPage == null) {
-            throw new IdNotFoundException("find product by category -> products not found");
-        }
+        Optional.ofNullable(productPage).orElseThrow(() -> new IdNotFoundException("find product by category -> products not found"));
 
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
         List<SellerProduct> sellerProducts = sellerRepository.getSellerProducts(userId);
@@ -135,9 +134,7 @@ public class ProductService {
     public ProductDto findOne(Long userId, Long productid) {
         Product product = productRepository.findOne(productid);
 
-        if (product == null) {
-            throw new IdNotFoundException("product find by id -> product not found");
-        }
+        Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("product find by id -> product not found"));
 
         List<ProductImageDto> productImageDtos = product.getProductImages().stream()
                 .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
@@ -182,9 +179,7 @@ public class ProductService {
     public Product update(Long userId, Long productId, ProductRequestVO requestVO) {
         Product oldProduct = productRepository.findOne(productId);
 
-        if (oldProduct == null) {
-            throw new IdNotFoundException("product update -> product not found");
-        }
+        Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product update -> product not found"));
 
         User user = userRepository.findOne(userId);
         if (!Objects.equals(user.getSeller().getShop().getId(), oldProduct.getShop().getId())) {  // 등록한 shop의 seller만 삭제 가능
@@ -220,27 +215,25 @@ public class ProductService {
         //Todo: shop이 update되어야하는지...?
         // product의 shop이 바뀔 수 없을거 같은데...?
         Shop shop = shopRepository.findByUserId(userId);
-        if (shop == null) {
-            throw new IdNotFoundException("product update -> seller infomation not found");
-        }
+        Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("product update -> seller infomation not found"));
         oldProduct.setShop(shop);
 
         String mainCategory = requestVO.getMainCategory();
         String subCategory = requestVO.getSubCategory();  // ""가 있어서 체크하지 않는다.
         if (!ParameterUtil.isEmpty(mainCategory)) {
             Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
-            if (category == null) {
-                throw new IdNotFoundException("product update -> category not found");
-            }
+            Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("product update -> category not found"));
             oldProduct.setCategory(category);
         }
 
         String productStatus = requestVO.getStatus();
-        if (productStatus != null && productStatus.equals("SELL")) {
-            oldProduct.setStatus(Product.Status.SELL);
-        } else if (productStatus != null && productStatus.equals("SOLD_OUT")) {
-            oldProduct.setStatus(Product.Status.SOLD_OUT);
-        }
+        Optional.ofNullable(productStatus).ifPresent(status -> {
+            if (status.equalsIgnoreCase("SELL")) {
+                oldProduct.setStatus(Product.Status.SELL);
+            } else if (status.equalsIgnoreCase("SOLD_OUT")) {
+                oldProduct.setStatus(Product.Status.SOLD_OUT);
+            }
+        });
 
         // image url이 왔다는건 이미지 수정이 있다는 것
         List<ProductImageDto> productImageDtos = requestVO.getProductImages();
@@ -312,17 +305,12 @@ public class ProductService {
         Product product = requestVO.toProductEntity();
 
         //Todo: 상품이 이미 존재할 경우 예외처리. 상품을 뭐로 find할지 생각이 안난다..
-
         Shop shop = shopRepository.findByUserId(userId);
-        if (shop == null) {
-            throw new IdNotFoundException("product create -> seller Infomation not found");
-        }
+        Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("product create -> seller Infomation not found"));
         product.setShop(shop);
 
         Category category = categoryRepository.findByMainAndSubAllIgnoreCase(requestVO.getMainCategory(), requestVO.getSubCategory());
-        if (category == null) {
-            throw new IdNotFoundException("product create -> category not found");
-        }
+        Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("product create -> category not found"));
         product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
@@ -338,7 +326,7 @@ public class ProductService {
             productImage.setProduct(product);
 
             // file move tmp dir to product id dir
-            FileUtil.moveFile(productImage.getImageUploadTempPath() + "/" + productImage.getFileName(),
+            FileUtil.moveFile(ProductImage.getImageUploadTempPath() + "/" + productImage.getFileName(),
                     productImage.getImageUploadPath());
         });
 
@@ -348,9 +336,7 @@ public class ProductService {
     @Transactional
     public void delete(Long userId, Long productId) {
         Product oldProduct = productRepository.findOne(productId);
-        if (oldProduct == null) {
-            throw new IdNotFoundException("product delete -> product not found");
-        }
+        Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product delete -> product not found"));
 
         User user = userRepository.findOne(userId);
         if (!Objects.equals(user.getSeller().getShop().getId(), oldProduct.getShop().getId())) {  // 등록한 shop의 seller만 삭제 가능

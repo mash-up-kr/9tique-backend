@@ -40,14 +40,14 @@ public class FileUtil {
         return targetFile;
     }
 
-    public static boolean moveFile(String source, String dest){
+    public static boolean moveFile(String source, String dest) {
         Path file = Paths.get(source);
         Path movePath = Paths.get(dest);
 
         boolean movoPathExists = Files.exists(movePath,
                 LinkOption.NOFOLLOW_LINKS);
 
-        if(!movoPathExists){  // 디렉토리 없으면 생성
+        if (!movoPathExists) {  // 디렉토리 없으면 생성
             try {
                 Files.createDirectories(movePath);
             } catch (IOException e) {
