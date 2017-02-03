@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +34,6 @@ public class ZzimService {
     private ZzimRepository zzimRepository;
 
     /**
-     * Todo: col 추가해서 enable시키기
      * 찜하기
      *
      * @param userId    요청한 유저 id
@@ -46,20 +43,24 @@ public class ZzimService {
     @Transactional
     public void addProduct(Long userId, Long productId) {
         Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
-        Product product = productRepository.findOne(productId);
+        Product product = productRepository.findOneById(productId);
 
         Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("zzim add product -> product not found"));
 
-        ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
-        if (checkProductZzim(zzim.getZzimProducts(), productId)) {
+        ZzimProduct oldZzimProduct = zzimRepository.getZzimProduct(zzim, product);
+        if (oldZzimProduct == null) {  // 1번도 등록 안한 경우 등록
+            zzim.addZzimProduct(new ZzimProduct(zzim, product));
+            return;
+        }
+
+        if (oldZzimProduct.isEnabled()) { // 1번 등록했고, enable되있을 경우
             throw new AlreadyExistException("zzim add product -> zzim already exist");
         }
-        zzim.getZzimProducts().add(zzimProduct);
+        // 1번 등록했고, disable되있을 경우
+        zzim.addZzimProduct(oldZzimProduct);  // 등록
     }
 
-
     /**
-     * Todo: col 추가해서 disable시키기
      * 찜해제
      *
      * @param userId    요청한 유저 id
@@ -73,47 +74,12 @@ public class ZzimService {
 
         Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("zzim delete product -> product not found"));
 
-        ZzimProduct zzimProduct = new ZzimProduct(zzim, product);
-        if (!checkProductZzim(zzim.getZzimProducts(), productId)) {
+        ZzimProduct oldZzimProduct = zzimRepository.getZzimProduct(zzim, product);
+        if(oldZzimProduct == null){
             throw new IdNotFoundException("zzim delete product -> zzim not found");
         }
 
-        int deleteItemPosition = searchProductZzimIndex(zzim.getZzimProducts(), zzimProduct);
-        zzim.getZzimProducts().remove(deleteItemPosition);
-    }
-
-    /**
-     * 찜된 목록에서 삭제할 상품 위치 찾기
-     *
-     * @param zzimProducts 찜된 상품 목록
-     * @param zzimProduct  찾을 상품
-     * @return 리스트의 상품 위치
-     */
-    private int searchProductZzimIndex(List<ZzimProduct> zzimProducts, ZzimProduct zzimProduct) {
-        for (int idx = 0; idx < zzimProducts.size(); idx++) {
-            ZzimProduct.Id currentZzimProductId = zzimProducts.get(idx).getId();
-            if (Objects.equals(zzimProduct.getId().getProductId(), currentZzimProductId.getProductId())
-                    && Objects.equals(zzimProduct.getId().getZzimId(), currentZzimProductId.getZzimId())) {
-                return idx;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * 찜되어 있는지 확인
-     *
-     * @param zzimProducts 찜된 상품 목록
-     * @param productId    확인할 상품 id
-     * @return 결과
-     */
-    private boolean checkProductZzim(List<ZzimProduct> zzimProducts, Long productId) {
-        for (ZzimProduct zzimProduct : zzimProducts) {
-            if (Objects.equals(zzimProduct.getProduct().getId(), productId)) {
-                return true;
-            }
-        }
-        return false;
+        zzim.removeZzimProduct(oldZzimProduct);
     }
 
     /**
@@ -127,7 +93,7 @@ public class ZzimService {
     public Page<ProductDto> findZzimProducts(Long userId, Pageable pageable) {
         Page<ZzimProduct> zzimProductPage = zzimRepository.getZzimProducts(userId, pageable);
 
-        Optional.ofNullable(zzimProductPage).orElseThrow(() ->  new IdNotFoundException("zzim products not found"));
+        Optional.ofNullable(zzimProductPage).orElseThrow(() -> new IdNotFoundException("zzim products not found"));
 
         // DTO로 변환
         List<ProductDto> productDtos = zzimProductPage.getContent().stream()

@@ -30,6 +30,9 @@ public class Shop extends AbstractEntity<Long> {
     @Column
     private String info;  // 매장정보
 
+    @Column
+    private boolean enabled;
+
     //Todo:  매장위치 추가
 
     @Column(length = 20, nullable = false, unique = true)
@@ -46,5 +49,36 @@ public class Shop extends AbstractEntity<Long> {
 //    private User user;
 
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
-    private List<Seller> sellers =  new ArrayList<>();
+    private List<Seller> sellers = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Shop shop = (Shop) o;
+
+        return id != null ? id.equals(shop.id) : shop.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    public void disable() {
+        if (enabled) {
+            this.enabled = false;
+            products.forEach(Product::disable);
+            sellers.forEach(Seller::disable);
+        }
+    }
+
+    public void enable() {
+        if (!enabled) {
+            this.enabled = true;
+            products.forEach(Product::enable);
+            sellers.forEach(Seller::enable);
+        }
+    }
 }

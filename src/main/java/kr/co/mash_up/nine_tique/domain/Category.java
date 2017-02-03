@@ -1,7 +1,10 @@
 package kr.co.mash_up.nine_tique.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -28,10 +31,29 @@ public class Category extends AbstractEntity<Long> {
     @JsonProperty
     private String sub;
 
+    @Column
+    private boolean enabled;
+
     //Todo: User와의 관계 추가 -> ???
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Product> products = new HashSet<>();
 
     //Todo: products count도 넣을까?
 
+    public void disable() {
+        if (enabled) {
+            this.enabled = false;
+        }
+    }
+
+    public void enable() {
+        if (!enabled) {
+            this.enabled = true;
+        }
+    }
+
+    public void update(Category newCategory) {
+        this.main = newCategory.main;
+        this.sub = newCategory.sub;
+    }
 }

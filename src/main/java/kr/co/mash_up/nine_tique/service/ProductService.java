@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,9 +44,6 @@ public class ProductService {
     private ZzimRepository zzimRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private SellerRepository sellerRepository;
 
     /*
@@ -70,15 +66,17 @@ public class ProductService {
             if (subCategory.equalsIgnoreCase("ALL")) {
                 productPage = productRepository.findByMainCategory(pageable, mainCategory);
             } else {
-                Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
+                Category category = categoryRepository.findByMainAndSub(mainCategory, subCategory);
                 Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("find product by category -> category not found"));
+                if (!category.isEnabled()) {
+                    throw new IdNotFoundException("find product by category -> category not found");
+                }
 
                 log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
 
                 productPage = productRepository.findByCategory(pageable, category);
             }
         }
-
         Optional.ofNullable(productPage).orElseThrow(() -> new IdNotFoundException("find product by category -> products not found"));
 
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
@@ -101,8 +99,8 @@ public class ProductService {
                             .withPhone(product.getShop().getPhone())
                             .build();
 
-                    boolean isZzim = checkProductZzim(zzimProducts, product);
-                    boolean isSeller = checkSeller(sellerProducts, product);
+                    boolean isZzim = product.checkProductZzim(zzimProducts);
+                    boolean isSeller = product.checkSeller(sellerProducts);
 
                     return new ProductDto.Builder()
                             .withId(product.getId())
@@ -151,10 +149,10 @@ public class ProductService {
                 .build();
 
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
-        boolean isZzim = checkProductZzim(zzimProducts, product);
-
         List<SellerProduct> sellerProducts = sellerRepository.getSellerProducts(userId);
-        boolean isSeller = checkSeller(sellerProducts, product);
+
+        boolean isZzim = product.checkProductZzim(zzimProducts);
+        boolean isSeller = product.checkSeller(sellerProducts);
 
         return new ProductDto.Builder()
                 .withId(product.getId())
@@ -177,68 +175,32 @@ public class ProductService {
 
     @Transactional
     public Product update(Long userId, Long productId, ProductRequestVO requestVO) {
+        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
+                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getProductImages());
+
         Product oldProduct = productRepository.findOne(productId);
 
         Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product update -> product not found"));
+        if (!oldProduct.isEnabled()) {
+            throw new IdNotFoundException("product update -> product not found");
+        }
 
-        User user = userRepository.findOne(userId);
-        if (!Objects.equals(user.getSeller().getShop().getId(), oldProduct.getShop().getId())) {  // 등록한 shop의 seller만 삭제 가능
+        Seller seller = sellerRepository.findByUserId(userId);
+        Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("product update -> seller not found"));
+        if (!seller.isEnabled()) {
+            throw new IdNotFoundException("product update -> seller not found");
+        }
+        if (!oldProduct.matchShop(seller)) {  // 등록한 seller의 shop만 수정 가능
             throw new UserIdNotMatchedException("product update -> user id not matched");
         }
 
-        // 바뀐 정보만 update
-        String name = requestVO.getName();
-        if (!ParameterUtil.isEmpty(name)) {
-            oldProduct.setName(name);
+        Category category = categoryRepository.findByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
+        Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("product update -> category not found"));
+        if (!category.isEnabled()) {
+            throw new IdNotFoundException("product update -> category not found");
         }
 
-        String brandName = requestVO.getBrandName();
-        if (!ParameterUtil.isEmpty(brandName)) {
-            oldProduct.setBrandName(brandName);
-        }
-
-        String size = requestVO.getSize();
-        if (!ParameterUtil.isEmpty(size)) {
-            oldProduct.setSize(size);
-        }
-
-        int price = requestVO.getPrice();
-        if (!ParameterUtil.isEmpty(price)) {
-            oldProduct.setPrice(price);
-        }
-
-        String description = requestVO.getDescription();
-        if (!ParameterUtil.isEmpty(description)) {
-            oldProduct.setDescription(description);
-        }
-
-        //Todo: shop이 update되어야하는지...?
-        // product의 shop이 바뀔 수 없을거 같은데...?
-        Shop shop = shopRepository.findByUserId(userId);
-        Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("product update -> seller infomation not found"));
-        oldProduct.setShop(shop);
-
-        String mainCategory = requestVO.getMainCategory();
-        String subCategory = requestVO.getSubCategory();  // ""가 있어서 체크하지 않는다.
-        if (!ParameterUtil.isEmpty(mainCategory)) {
-            Category category = categoryRepository.findByMainAndSubAllIgnoreCase(mainCategory, subCategory);
-            Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("product update -> category not found"));
-            oldProduct.setCategory(category);
-        }
-
-        String productStatus = requestVO.getStatus();
-        Optional.ofNullable(productStatus).ifPresent(status -> {
-            if (status.equalsIgnoreCase("SELL")) {
-                oldProduct.setStatus(Product.Status.SELL);
-            } else if (status.equalsIgnoreCase("SOLD_OUT")) {
-                oldProduct.setStatus(Product.Status.SOLD_OUT);
-            }
-        });
-
-        // image url이 왔다는건 이미지 수정이 있다는 것
-        List<ProductImageDto> productImageDtos = requestVO.getProductImages();
-        if (!ParameterUtil.isEmpty(productImageDtos)) {
-            /*
+        /*
             경우의 수
             1. 사진 추가(카메라) 1장
             사진등록 + 참조 연결
@@ -268,35 +230,39 @@ public class ProductService {
             제거 + 추가면
             어떤거는 multipart로 만들고 어떤거는 url을 보내야 한다.
             */
+        // image url이 왔다는건 이미지 수정이 있다는 것
+        List<ProductImageDto> productImageDtos = requestVO.getProductImages();
+        // 새로운 Product Image가 기존 Product Image가 없으면 기존 Product Image 참조 해제
+        List<ProductImage> oldProductImages = oldProduct.getProductImages();
+        oldProductImages.forEach(productImage -> {
+            String fileName = productImage.getFileName();
+            if (!existProductImageFromNewData(fileName, productImageDtos)) {  // 포함되어 있지 않으므로 tmp로 옮기고 참조를 끊는다.
 
-            // 새로운 Product Image가 기존 Product Image가 없으면 기존 Product Image 참조 해제
-            List<ProductImage> oldProductImages = oldProduct.getProductImages();
-            oldProductImages.forEach(productImage -> {
-                String fileName = productImage.getFileName();
+                // file move product/{id} dir to tmp dir
+//                FileUtil.moveFile(productImage.getImageUploadPath() + "/" + fileName, productImage.getImageUploadTempPath());
+                productImage.setProduct(null);
+            }
+        });
 
-                if (!existProductImageFromNewData(fileName, productImageDtos)) {  // 포함되어 있지 않으므로 tmp로 옮기고 참조를 끊는다.
+        // 기존 Product Image에 새로운 Product Image가 없으면 참조 연결 -> tmp dir에 파일 존재
+        productImageDtos.forEach(productImageDto -> {
+            String fileName = ProductImage.getFileNameFromUrl(productImageDto.getUrl());
 
-                    // file move product/{id} dir to tmp dir
-                    FileUtil.moveFile(productImage.getImageUploadPath() + "/" + fileName, productImage.getImageUploadTempPath());
-                    productImage.setProduct(null);
+            if (!existProductImageFromOldData(fileName, oldProductImages)) {
+                ProductImage productImage = productImageRepository.findByFileName(fileName);
+                if (!productImage.isEnabled()) {
+                    throw new IdNotFoundException("product update -> productImage not found");
                 }
-            });
+                productImage.setProduct(oldProduct);
 
-            // 기존 Product Image에 새로운 Product Image가 없으면 참조 연결 -> tmp dir에 파일 존재
-            productImageDtos.forEach(productImageDto -> {
-                String fileName = ProductImage.getFileNameFromUrl(productImageDto.getUrl());
+                // file move tmp dir to product/{id} dir
+                FileUtil.moveFile(productImage.getImageUploadTempPath() + "/" + productImage.getFileName(),
+                        productImage.getImageUploadPath());
+            }
+        });
 
-                if (!existProductImageFromOldData(fileName, oldProductImages)) {
-                    ProductImage productImage = productImageRepository.findByFileName(fileName);
-                    productImage.setProduct(oldProduct);
-
-                    // file move tmp dir to product/{id} dir
-                    FileUtil.moveFile(productImage.getImageUploadTempPath() + "/" + productImage.getFileName(),
-                            productImage.getImageUploadPath());
-                }
-            });
-        }
-
+        requestVO.setStatus(oldProduct.getStatus().name());  // 이전상태 유지
+        oldProduct.update(requestVO.toProductEntity(), category);
         return productRepository.save(oldProduct);
     }
 
@@ -307,10 +273,16 @@ public class ProductService {
         //Todo: 상품이 이미 존재할 경우 예외처리. 상품을 뭐로 find할지 생각이 안난다..
         Shop shop = shopRepository.findByUserId(userId);
         Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("product create -> seller Infomation not found"));
+        if (!shop.isEnabled()) {
+            throw new IdNotFoundException("product create -> seller Infomation not found");
+        }
         product.setShop(shop);
 
-        Category category = categoryRepository.findByMainAndSubAllIgnoreCase(requestVO.getMainCategory(), requestVO.getSubCategory());
+        Category category = categoryRepository.findByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
         Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("product create -> category not found"));
+        if (!category.isEnabled()) {
+            throw new IdNotFoundException("product create -> category not found");
+        }
         product.setCategory(category);
 
         Product savedProduct = productRepository.save(product);
@@ -318,11 +290,14 @@ public class ProductService {
         // SellerProduct 저장
         Seller seller = sellerRepository.findByUserId(userId);
         SellerProduct sellerProduct = new SellerProduct(seller, savedProduct);
-        seller.getSellerProducts().add(sellerProduct);
+        seller.addSellerProduct(sellerProduct);
 
         requestVO.getProductImages().forEach(productImageDto -> {
             ProductImage productImage
                     = productImageRepository.findByFileName(ProductImage.getFileNameFromUrl(productImageDto.getUrl()));
+            if (!productImage.isEnabled()) {
+                throw new IdNotFoundException("product create -> productImage not found");
+            }
             productImage.setProduct(product);
 
             // file move tmp dir to product id dir
@@ -335,50 +310,19 @@ public class ProductService {
 
     @Transactional
     public void delete(Long userId, Long productId) {
-        Product oldProduct = productRepository.findOne(productId);
+        Product oldProduct = productRepository.findOneById(productId);
         Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product delete -> product not found"));
 
-        User user = userRepository.findOne(userId);
-        if (!Objects.equals(user.getSeller().getShop().getId(), oldProduct.getShop().getId())) {  // 등록한 shop의 seller만 삭제 가능
+        Seller seller = sellerRepository.findByUserId(userId);
+        if (!oldProduct.matchShop(seller)) {  // 등록한 shop의 seller만 삭제 가능
             throw new UserIdNotMatchedException("product update -> user id not matched");
         }
+        oldProduct.disable();
 
         // 이미지 디렉토리 삭제
-        FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
+//        FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
 
-        productRepository.delete(productId);
-    }
-
-    /**
-     * 상품이 찜 되었는지 확인
-     *
-     * @param zzimProducts 유저의 찜한 상품 목록
-     * @param product      확인할 상품
-     * @return 결과
-     */
-    private boolean checkProductZzim(List<ZzimProduct> zzimProducts, Product product) {
-        for (ZzimProduct zzimProduct : zzimProducts) {
-            if (Objects.equals(zzimProduct.getProduct().getId(), product.getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 상품이 내가 등록한 상품인지 확인
-     *
-     * @param sellerProducts 판매자가 등록한 상품 목록
-     * @param product        확인할 상품
-     * @return 내가 등록한 상품인지 여부
-     */
-    private boolean checkSeller(List<SellerProduct> sellerProducts, Product product) {
-        for (SellerProduct sellerProduct : sellerProducts) {
-            if (Objects.equals(sellerProduct.getProduct().getId(), product.getId())) {
-                return true;
-            }
-        }
-        return false;
+        productRepository.save(oldProduct);
     }
 
     /**
@@ -413,5 +357,26 @@ public class ProductService {
             }
         }
         return false;
+    }
+
+    public Product updateStatus(Long userId, Long productId, ProductRequestVO requestVO) {
+        Product oldProduct = productRepository.findOne(productId);
+
+        Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product update -> product not found"));
+        if (!oldProduct.isEnabled()) {
+            throw new IdNotFoundException("product update -> product not found");
+        }
+
+        Seller seller = sellerRepository.findByUserId(userId);
+        Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("product update -> seller not found"));
+        if (!seller.isEnabled()) {
+            throw new IdNotFoundException("product update -> seller not found");
+        }
+        if (!oldProduct.matchShop(seller)) {  // 등록한 seller의 shop만 수정 가능
+            throw new UserIdNotMatchedException("product update -> user id not matched");
+        }
+
+        oldProduct.setStatus(requestVO.getStatus());
+        return productRepository.save(oldProduct);
     }
 }

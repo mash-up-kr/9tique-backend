@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository(value = "categoryRepository")
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryRepositoryCustom {
     List<Category> findByMain(String main);
-
-    Category findByMainAndSubAllIgnoreCase(String main, String sub);
 }

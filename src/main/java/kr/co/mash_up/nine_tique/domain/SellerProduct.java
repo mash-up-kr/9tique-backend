@@ -23,11 +23,21 @@ public class SellerProduct extends AbstractEntity<SellerProduct.Id> {
     @MapsId(value = "productId")
     private Product product;
 
-    public SellerProduct(Seller seller, Product product){
+    @Column
+    private boolean enabled;
+
+    public SellerProduct(Seller seller, Product product) {
         this.id.sellerId = seller.getId();
         this.id.productId = product.getId();
         this.seller = seller;
         this.product = product;
+    }
+
+    public boolean matchProduct(Product newProduct) {
+        if (newProduct == null) {
+            return false;
+        }
+        return this.product.equals(newProduct);
     }
 
     @Embeddable
@@ -40,5 +50,17 @@ public class SellerProduct extends AbstractEntity<SellerProduct.Id> {
 
         @Column(name = "product_id")
         private Long productId;
+    }
+
+    public void disable() {
+        if (enabled) {
+            this.enabled = false;
+        }
+    }
+
+    public void enable() {
+        if (!enabled) {
+            this.enabled = true;
+        }
     }
 }

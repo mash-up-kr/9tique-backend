@@ -27,7 +27,11 @@ public class QSeller extends EntityPathBase<Seller> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final BooleanPath enabled = createBoolean("enabled");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final ListPath<SellerProduct, QSellerProduct> sellerProducts = this.<SellerProduct, QSellerProduct>createList("sellerProducts", SellerProduct.class, QSellerProduct.class, PathInits.DIRECT2);
 
     public final QShop shop;
 

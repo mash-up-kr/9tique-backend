@@ -27,6 +27,8 @@ public class QZzimProduct extends EntityPathBase<ZzimProduct> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final BooleanPath enabled = createBoolean("enabled");
+
     public final QZzimProduct_Id id;
 
     public final QProduct product;

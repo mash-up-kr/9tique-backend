@@ -53,13 +53,18 @@ public class ProductRequestVO extends RequestVO {
         product.setSize(size);
         product.setPrice(price);
         product.setDescription(description);
-
-        if (status.equalsIgnoreCase("SELL")) {
-            product.setStatus(Product.Status.SELL);
-        } else if (status.equalsIgnoreCase("SOLD_OUT")) {
-            product.setStatus(Product.Status.SOLD_OUT);
-        }
+        product.setStatus(getStatus());
+        product.setEnabled(true);
 
         return product;
+    }
+
+    public Product.Status getStatus() {
+        if (status != null && status.equalsIgnoreCase("SELL")) {
+            return Product.Status.SELL;
+        } else if (status != null && status.equalsIgnoreCase("SOLD_OUT")) {
+            return Product.Status.SOLD_OUT;
+        }
+        return null;
     }
 }

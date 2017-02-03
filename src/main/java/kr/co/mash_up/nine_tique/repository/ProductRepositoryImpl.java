@@ -19,6 +19,17 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
+    public Product findOneById(Long id) {
+        JPAQuery query = new JPAQuery(entityManager);
+        QProduct qProduct = QProduct.product;
+
+        query.from(qProduct)
+                .where(qProduct.id.eq(id).and(qProduct.enabled.isTrue()));
+
+        return query.uniqueResult(qProduct);
+    }
+
+    @Override
     public Page<Product> findByCategory(Pageable pageable, Category category) {
         JPAQuery query = new JPAQuery(entityManager);
         QProduct qProduct = QProduct.product;
@@ -26,7 +37,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         query.from(qProduct)
                 .join(qProduct.category, qCategory)
-                .where(qCategory.id.eq(category.getId()))
+                .where(qCategory.id.eq(category.getId()).and(qProduct.enabled.isTrue()))
                 .orderBy(qProduct.status.asc(), qProduct.createdAt.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
@@ -39,6 +50,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         QProduct qProduct = QProduct.product;
 
         query.from(qProduct)
+                .where(qProduct.enabled.isTrue())
                 .orderBy(qProduct.status.asc(), qProduct.createdAt.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
@@ -53,7 +65,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         query.from(qProduct)
                 .join(qProduct.category, qCategory)
-                .where(qCategory.main.eq(mainCategory))
+                .where(qCategory.main.eq(mainCategory).and(qCategory.enabled.isTrue()).and(qProduct.enabled.isTrue()))
                 .orderBy(qProduct.status.asc(), qProduct.createdAt.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());

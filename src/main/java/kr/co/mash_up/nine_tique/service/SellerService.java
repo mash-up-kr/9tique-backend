@@ -1,8 +1,8 @@
 package kr.co.mash_up.nine_tique.service;
 
 import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
-import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
@@ -10,8 +10,6 @@ import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
 import kr.co.mash_up.nine_tique.repository.SellerRepository;
-import kr.co.mash_up.nine_tique.repository.UserRepository;
-import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
 import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,9 +34,6 @@ public class SellerService {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     /**
      * 판매자가 등록한 상품 리스트 조회
@@ -113,17 +107,14 @@ public class SellerService {
 
         Optional.ofNullable(sellerProducts).orElseThrow(() -> new IdNotFoundException("sell product delete all -> product not found"));
 
-//        if (sellerProducts == null || sellerProducts.isEmpty()) {
-//            throw new IdNotFoundException("sell product delete all -> product not found");
-//        }
-
         sellerProducts.forEach(sellerProduct -> {
             Product oldProduct = sellerProduct.getProduct();
+            oldProduct.disable();
 
             // 이미지 디렉토리 삭제
-            FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
+//            FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
 
-            productRepository.delete(oldProduct.getId());
+            productRepository.save(oldProduct);
         });
     }
 
@@ -139,19 +130,18 @@ public class SellerService {
                 .map(ProductRequestVO::getId)
                 .forEach(productId -> {
                     Product oldProduct = productRepository.findOne(productId);
-
+                    productRepository.findOneById(productId);
                     Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product delete -> product not found"));
 
-                    //Todo: 지워도 되지 않나?? 쓸데없는 I/O가 아닐까?
-                    User user = userRepository.findOne(userId);
-                    if (!Objects.equals(oldProduct.getShop().getId(), user.getSeller().getShop().getId())) {
+                    Seller seller = sellerRepository.findByUserId(userId);
+                    if (!oldProduct.matchShop(seller)) {
                         throw new UserIdNotMatchedException("product delete -> user id not matched");
                     }
 
                     // 이미지 디렉토리 삭제
-                    FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
-
-                    productRepository.delete(oldProduct.getId());
+//                    FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
+                    oldProduct.disable();
+                    productRepository.save(oldProduct);
                 });
     }
 }

@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,19 +21,40 @@ public class Seller extends AbstractEntity<Long> {
     private Long id;
 
     @ManyToOne  // Seller(Many) : Shop(One)
-    @JoinColumn(name = "shop_id")
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_seller_to_shop_id"))
     private Shop shop;
 
     @OneToOne
 //    @MapsId
-    @JoinColumn(name = "user_id")
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_seller_to_user_id"))
     private User user;
 
+    @Column
+    private boolean enabled;
+
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SellerProduct> sellerProducts = new ArrayList<>();
+    private List<SellerProduct> sellerProducts;
 
     public Seller(Shop shop, User user) {
         this.shop = shop;
         this.user = user;
+    }
+
+    public void addSellerProduct(SellerProduct sellerProduct) {
+        this.sellerProducts.add(sellerProduct);
+    }
+
+    public void disable() {
+        if (enabled) {
+            this.enabled = false;
+            sellerProducts.forEach(SellerProduct::disable);
+        }
+    }
+
+    public void enable() {
+        if (!enabled) {
+            this.enabled = true;
+            sellerProducts.forEach(SellerProduct::enable);
+        }
     }
 }

@@ -39,28 +39,42 @@ public class CategorySservice {
     @Transactional
     public Category update(Long id, Category newCategory) {
         Category oldCategory = categoryRepository.findOne(id);
+
         Optional.ofNullable(oldCategory).orElseThrow(() -> new IdNotFoundException("category update -> category not found"));
 
-        oldCategory.setMain(newCategory.getMain());
-        oldCategory.setSub(newCategory.getSub());
+        oldCategory.update(newCategory);
         return categoryRepository.save(oldCategory);
     }
 
     @Transactional
     public Category create(CategoryRequestVO requestVO) {
-        Category oldCategory = categoryRepository.findByMainAndSubAllIgnoreCase(requestVO.getMain(), requestVO.getSub());
+        Category oldCategory = categoryRepository.findByMainAndSub(requestVO.getMain(), requestVO.getSub());
 
-        Optional.ofNullable(oldCategory).ifPresent(category -> {  // 이미 존재할 경우
+        // 이미 존재할 경우
+        if (oldCategory != null && oldCategory.isEnabled()) {  // enable된걸 다시 등록하는 경우 -> error
             throw new AlreadyExistException("category create -> category already exist");
-        });
+        } else if (oldCategory != null && !oldCategory.isEnabled()) {  // disable된걸 다시 등록하는 경우 enable
+            oldCategory.enable();
+            return categoryRepository.save(oldCategory);
+        }
 
+        // 아에 등록이 안된거면 새로 등록
+//        savedCategory = Optional.ofNullable(oldCategory).orElseGet(() -> categoryRepository.save(requestVO.toCategoryEntity()));
         return categoryRepository.save(requestVO.toCategoryEntity());
     }
 
+    /**
+     * 카테고리 삭제
+     * 실제로 삭제시키는게 아니라 disable시켜서 데이터는 보존. 유저들에겐 삭제된 것처럼 인식시킨다.
+     *
+     * @param categoryId 카테고리 id
+     */
     @Transactional
-    public void delete(Long id) {
-        Category oldCategory = categoryRepository.findOne(id);
+    public void delete(Long categoryId) {
+        Category oldCategory = categoryRepository.findOne(categoryId);
         Optional.ofNullable(oldCategory).orElseThrow(() -> new IdNotFoundException("category delete -> category not found"));
-        categoryRepository.delete(id);
+
+        oldCategory.disable();
+        categoryRepository.save(oldCategory);
     }
 }

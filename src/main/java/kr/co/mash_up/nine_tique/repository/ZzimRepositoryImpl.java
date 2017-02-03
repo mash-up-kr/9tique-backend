@@ -1,10 +1,7 @@
 package kr.co.mash_up.nine_tique.repository;
 
 import com.mysema.query.jpa.impl.JPAQuery;
-import kr.co.mash_up.nine_tique.domain.QUser;
-import kr.co.mash_up.nine_tique.domain.QZzim;
-import kr.co.mash_up.nine_tique.domain.QZzimProduct;
-import kr.co.mash_up.nine_tique.domain.ZzimProduct;
+import kr.co.mash_up.nine_tique.domain.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,31 +21,42 @@ public class ZzimRepositoryImpl implements ZzimRepositoryCustom {
     @Override
     public Page<ZzimProduct> getZzimProducts(Long userId, Pageable pageable) {
         JPAQuery query = new JPAQuery(entityManager);
-        QZzimProduct zzimProduct = QZzimProduct.zzimProduct;
-        QZzim zzim = QZzim.zzim;
-        QUser user = QUser.user;
+        QZzimProduct qZzimProduct = QZzimProduct.zzimProduct;
+        QZzim qZzim = QZzim.zzim;
+        QUser qUser = QUser.user;
 
-        query.from(zzimProduct).join(zzimProduct.zzim, zzim)
-                .join(zzim.user, user)
-                .where(user.id.eq(userId))
-                .orderBy(zzimProduct.createdAt.desc())
+        query.from(qZzimProduct).join(qZzimProduct.zzim, qZzim)
+                .join(qZzim.user, qUser)
+                .where(qUser.id.eq(userId).and(qZzimProduct.enabled.isTrue()))
+                .orderBy(qZzimProduct.createdAt.desc())
                 .limit(pageable.getPageSize()).offset(pageable.getOffset());
 
-        return new PageImpl<ZzimProduct>(query.list(zzimProduct), pageable, query.count());
+        return new PageImpl<ZzimProduct>(query.list(qZzimProduct), pageable, query.count());
     }
 
     @Override
     public List<ZzimProduct> getZzimProducts(Long userId) {
         JPAQuery query = new JPAQuery(entityManager);
-        QZzimProduct zzimProduct = QZzimProduct.zzimProduct;
-        QZzim zzim = QZzim.zzim;
-        QUser user = QUser.user;
+        QZzimProduct qZzimProduct = QZzimProduct.zzimProduct;
+        QZzim qZzim = QZzim.zzim;
+        QUser qUser = QUser.user;
 
-        query.from(zzimProduct).join(zzimProduct.zzim, zzim)
-                .join(zzim.user, user)
-                .where(user.id.eq(userId))
-                .orderBy(zzimProduct.createdAt.desc());
+        query.from(qZzimProduct).join(qZzimProduct.zzim, qZzim)
+                .join(qZzim.user, qUser)
+                .where(qUser.id.eq(userId).and(qZzimProduct.enabled.isTrue()))
+                .orderBy(qZzimProduct.createdAt.desc());
 
-        return query.list(zzimProduct);
+        return query.list(qZzimProduct);
+    }
+
+    @Override
+    public ZzimProduct getZzimProduct(Zzim zzim, Product product) {
+        JPAQuery query = new JPAQuery(entityManager);
+        QZzimProduct qZzimProduct = QZzimProduct.zzimProduct;
+
+        query.from(qZzimProduct)
+                .where(qZzimProduct.zzim.eq(zzim).and(qZzimProduct.product.eq(product)));
+
+        return query.uniqueResult(qZzimProduct);
     }
 }

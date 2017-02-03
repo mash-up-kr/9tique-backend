@@ -27,17 +27,19 @@ public class QProductImage extends EntityPathBase<ProductImage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final BooleanPath enabled = createBoolean("enabled");
+
     public final StringPath fileName = createString("fileName");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath imageUrl = createString("imageUrl");
 
     public final StringPath originalFileName = createString("originalFileName");
 
     public final QProduct product;
 
     public final NumberPath<Long> size = createNumber("size", Long.class);
+
+    public final StringPath tempImageUrl = createString("tempImageUrl");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

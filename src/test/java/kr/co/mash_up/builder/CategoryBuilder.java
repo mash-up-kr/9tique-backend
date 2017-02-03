@@ -6,11 +6,9 @@ import kr.co.mash_up.nine_tique.domain.Category;
 public class CategoryBuilder {
 
     private Long id;
-
     private String main;
-
     private String sub;
-
+    private boolean enable;
 
 //    private Set<Product> products = new HashSet<>();
 
@@ -29,12 +27,17 @@ public class CategoryBuilder {
         return this;
     }
 
+    public CategoryBuilder withEnable(boolean enable) {
+        this.enable = enable;
+        return this;
+    }
+
     public Category build() {
         Category category = new Category();
         category.setId(id);
         category.setMain(main);
         category.setSub(sub);
-
+        category.setEnabled(enable);
         return category;
     }
 }

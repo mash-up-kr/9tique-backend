@@ -25,6 +25,8 @@ public class QShop extends EntityPathBase<Shop> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final BooleanPath enabled = createBoolean("enabled");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath info = createString("info");

@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductRepositoryCustom {
 
+    Product findOneById(Long id);
+
     Page<Product> findAll(Pageable pageable);
 
     Page<Product> findByCategory(Pageable pageable, Category category);

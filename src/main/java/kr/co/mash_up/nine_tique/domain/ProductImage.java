@@ -22,13 +22,16 @@ public class ProductImage extends AbstractEntity<Long> {
     private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
 
     @Column(length = 255, nullable = false, unique = true)
-    private String fileName;  // 중복방지용, 36byte(32글자 + 확장자)
+    private String fileName;  //Todo:length 조정. 중복방지용, 36byte(32글자 + 확장자)
 
     @Column(length = 255, nullable = false)
-    private String originalFileName;  // 260byte(window 최대 256글자 + 확장자)
+    private String originalFileName;  // Todo:length 조정. 260byte(window 최대 256글자 + 확장자)
 
     @Column
     private long size;
+
+    @Column
+    private boolean enabled;
 
     @ManyToOne
     @JoinColumn(name = "product_id")  // FK 매핑시 이용
@@ -88,5 +91,17 @@ public class ProductImage extends AbstractEntity<Long> {
         // uri/product/tmp/fileName
         //Todo: confirm url pattern matching??
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    }
+
+    public void disable() {
+        if (enabled) {
+            this.enabled = false;
+        }
+    }
+
+    public void enable() {
+        if (!enabled) {
+            this.enabled = true;
+        }
     }
 }

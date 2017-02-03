@@ -24,17 +24,26 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
 
     @ManyToOne
     @MapsId(value = "productId")
-    @JsonProperty
-    @JsonUnwrapped  // json object로 wrapping 안한다
+//    @JsonProperty
+//    @JsonUnwrapped  // json object로 wrapping 안한다
     private Product product;
 
-    //Todo: 필요한 필드 추가
+    @Column
+    private boolean enabled;
 
     public ZzimProduct(Zzim zzim, Product product){
         this.id.zzimId = zzim.getId();
         this.id.productId = product.getId();
         this.zzim = zzim;
         this.product = product;
+        enabled = true;
+    }
+
+    public boolean matchProduct(Product newProduct){
+        if(newProduct == null){
+            return false;
+        }
+        return this.product.equals(newProduct);
     }
 
     @Embeddable
@@ -47,5 +56,17 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
 
         @Column(name = "product_id")
         private Long productId;
+    }
+
+    public void disable() {
+        if (enabled) {
+            this.enabled = false;
+        }
+    }
+
+    public void enable() {
+        if (!enabled) {
+            this.enabled = true;
+        }
     }
 }

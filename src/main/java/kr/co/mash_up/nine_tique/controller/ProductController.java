@@ -87,13 +87,19 @@ public class ProductController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseVO update(@PathVariable("id") Long productId,
                              @RequestBody ProductRequestVO requestVO) {
-        // 바뀐 정보만 update하기 위해 service단에서 체크한다.
+        //Todo: status만 올때랑 name, brandName 등등이 올때를 구분해야 한다.. 좀더 개선 해보자
 //        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
 //                requestVO.getPrice(), requestVO.getDescription(), requestVO.getStatus(), requestVO.getMainCategory(),
 //                requestVO.getProductImages());
 
         Long userId = SecurityUtil.getCurrentUser().getId();
-        Product product = productService.update(userId, productId, requestVO);
+
+        Product product;
+        if (requestVO.getStatus() != null) {
+            product = productService.updateStatus(userId, productId, requestVO);
+        } else {
+            product = productService.update(userId, productId, requestVO);
+        }
 
         if (product != null) {
             return ResponseVO.ok();

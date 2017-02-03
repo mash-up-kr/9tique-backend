@@ -33,6 +33,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath description = createString("description");
 
+    public final BooleanPath enabled = createBoolean("enabled");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath name = createString("name");
@@ -40,6 +42,8 @@ public class QProduct extends EntityPathBase<Product> {
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final ListPath<ProductImage, QProductImage> productImages = this.<ProductImage, QProductImage>createList("productImages", ProductImage.class, QProductImage.class, PathInits.DIRECT2);
+
+    public final ListPath<SellerProduct, QSellerProduct> sellerProducts = this.<SellerProduct, QSellerProduct>createList("sellerProducts", SellerProduct.class, QSellerProduct.class, PathInits.DIRECT2);
 
     public final QShop shop;
 
@@ -49,6 +53,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    public final ListPath<ZzimProduct, QZzimProduct> zzimProducts = this.<ZzimProduct, QZzimProduct>createList("zzimProducts", ZzimProduct.class, QZzimProduct.class, PathInits.DIRECT2);
 
     public QProduct(String variable) {
         this(Product.class, forVariable(variable), INITS);
