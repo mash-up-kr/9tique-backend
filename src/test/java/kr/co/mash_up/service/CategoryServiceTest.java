@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.Matchers.is;
@@ -18,8 +19,11 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {NineTiqueApplication.class})
-//@ActiveProfiles(profiles = "test")
+@ActiveProfiles(profiles = "test")
 public class CategoryServiceTest {
+
+    public static final String TEST_MAIN = "testMain";
+    public static final String TEST_SUB = "testSub";
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -32,10 +36,11 @@ public class CategoryServiceTest {
     @Before
     public void setup() {
         testCategory = new CategoryBuilder()
-                .withMain("main1")
-                .withSub("sub1")
+                .withMain(TEST_MAIN)
+                .withSub(TEST_SUB)
+                .withEnable(true)
                 .build();
-//        categoryRepository.save(testCategory);
+        categoryRepository.save(testCategory);
     }
 
     @After
@@ -47,11 +52,12 @@ public class CategoryServiceTest {
     public void testCreate() {
         int beforeSize = categorySservice.findCategories().size();
 
-        categoryRepository.save(testCategory);
-
-        Category category = categoryRepository.findOne(testCategory.getId());
-        assertThat(category.getMain(), is("main1"));
-        assertThat(category.getSub(), is("sub1"));
+        Category category = new CategoryBuilder()
+                .withMain(TEST_MAIN)
+                .withSub(TEST_SUB + 1)
+                .withEnable(true)
+                .build();
+        categoryRepository.save(category);
 
         int afterSize = categorySservice.findCategories().size();
 

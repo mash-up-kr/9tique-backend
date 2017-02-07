@@ -8,12 +8,14 @@ import kr.co.mash_up.nine_tique.controller.CategoryController;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.service.CategorySservice;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,8 +35,11 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 //@WithMockUser(username = "opklnm102")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {NineTiqueApplication.class})
-//@ActiveProfiles(profiles = "test")
+@ActiveProfiles(profiles = "test")
 public class CategoryControllerTest {
+
+    public static final String TEST_MAIN = "testMain";
+    public static final String TEST_SUB = "testSub";
 
     Logger logger = Logger.getLogger(this.getClass());
 
@@ -50,7 +55,7 @@ public class CategoryControllerTest {
     private CategorySservice categoryService;
 
     @Before
-    public void setupMock() throws Exception {
+    public void setup() throws Exception {
         // 통합 테스트
 //        mockMvc = MockMvcBuilders
 //                .webAppContextSetup(webApplicationContext)
@@ -59,7 +64,10 @@ public class CategoryControllerTest {
         // 유닛 테스트
         mockMvc = standaloneSetup(categoryController)
                 .build();
+    }
 
+    @After
+    public void tearDown(){
 
     }
 
@@ -74,6 +82,7 @@ public class CategoryControllerTest {
         Category category = new CategoryBuilder()
                 .withMain("main1")
                 .withSub("sub1")
+                .withEnable(true)
                 .build();
 
         String jsonString = this.jsonStringFromObject(category);
@@ -106,6 +115,7 @@ public class CategoryControllerTest {
                 .withId(id)
                 .withMain("main1")
                 .withSub("sub1")
+                .withEnable(true)
                 .build();
         String jsonString = this.jsonStringFromObject(category);
 
