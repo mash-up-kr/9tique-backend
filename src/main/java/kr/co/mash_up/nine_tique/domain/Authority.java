@@ -21,7 +21,7 @@ import javax.persistence.*;
 public class Authority extends AbstractEntity<Long> implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(length = 30)

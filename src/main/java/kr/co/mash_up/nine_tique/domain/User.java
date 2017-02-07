@@ -24,7 +24,7 @@ import java.util.Set;
 public class User extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     //    @Column(length = 20, nullable = false)  // not null

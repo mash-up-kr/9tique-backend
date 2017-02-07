@@ -21,7 +21,7 @@ import java.util.Objects;
 public class Zzim extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @OneToOne

@@ -18,7 +18,7 @@ import javax.persistence.*;
 public class ProductImage extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
 
     @Column(length = 255, nullable = false, unique = true)

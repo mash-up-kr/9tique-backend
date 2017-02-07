@@ -17,7 +17,7 @@ import java.util.List;
 public class Product extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
 
     @Column(length = 50)
@@ -29,7 +29,7 @@ public class Product extends AbstractEntity<Long> {
     @Column(length = 50)
     private String size;
 
-    @Column(columnDefinition = "default 0")
+    @Column(columnDefinition = "integer default 0")
     private int price;
 
     @Lob  // text type으로 사용하기 위해

@@ -17,7 +17,7 @@ import java.util.List;
 public class Seller extends AbstractEntity<Long> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne  // Seller(Many) : Shop(One)

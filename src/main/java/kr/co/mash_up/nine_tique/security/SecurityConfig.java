@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/storage/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyAuthority(Authorities.USER)
 
                 .and()
