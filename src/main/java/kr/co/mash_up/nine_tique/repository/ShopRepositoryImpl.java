@@ -5,6 +5,9 @@ import kr.co.mash_up.nine_tique.domain.QSeller;
 import kr.co.mash_up.nine_tique.domain.QShop;
 import kr.co.mash_up.nine_tique.domain.QUser;
 import kr.co.mash_up.nine_tique.domain.Shop;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,5 +34,19 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
                 .limit(1L);
 
         return query.list(qShop).get(0);
+    }
+
+    @Override
+    public Page<Shop> findShops(Pageable pageable) {
+        JPAQuery query = new JPAQuery(entityManager);
+        QShop qShop = QShop.shop;
+
+        query.from(qShop)
+                .where(qShop.enabled.isTrue())
+                .orderBy(qShop.createdAt.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset());
+
+        return new PageImpl<Shop>(query.list(qShop), pageable, query.count());
     }
 }

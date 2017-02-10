@@ -8,7 +8,11 @@ import org.springframework.stereotype.Repository;
 @Repository(value = "shopRepository")
 public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositoryCustom {
 
-    Shop findByname(String name);
+    Shop findByName(String name);
 
-    Shop findByphone(String phone);
+    Shop findByPhone(String phone);
+
+    Shop findByNameAndPhone(String name, String phone);
+
+    Shop findByAuthentiCode(String authentiCode);
 }

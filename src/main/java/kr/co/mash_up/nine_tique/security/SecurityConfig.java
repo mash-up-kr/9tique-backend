@@ -86,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyAuthority(Authorities.USER)
 
+                //Todo: 카테고리 권한 주석 제거
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/category/**").hasAnyAuthority(Authorities.USER)
@@ -112,6 +113,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
                 .antMatchers(HttpMethod.POST, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
                 .antMatchers(HttpMethod.DELETE, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
+
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/shops/**").hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.POST, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.PUT, "/api/shops/**").hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.DELETE, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
 
                 .and()
                 .authorizeRequests()

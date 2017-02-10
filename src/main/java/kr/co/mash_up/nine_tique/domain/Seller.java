@@ -38,6 +38,7 @@ public class Seller extends AbstractEntity<Long> {
     public Seller(Shop shop, User user) {
         this.shop = shop;
         this.user = user;
+        this.enabled = true;
     }
 
     public void addSellerProduct(SellerProduct sellerProduct) {
@@ -56,5 +57,12 @@ public class Seller extends AbstractEntity<Long> {
             this.enabled = true;
             sellerProducts.forEach(SellerProduct::enable);
         }
+    }
+
+    public boolean matchShop(Shop shop) {
+        if (shop == null) {
+            return false;
+        }
+        return this.shop.equals(shop);
     }
 }
