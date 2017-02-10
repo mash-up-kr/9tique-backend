@@ -1,6 +1,6 @@
 package kr.co.mash_up.nine_tique.exception;
 
-import kr.co.mash_up.nine_tique.vo.ResultCodes;
+import kr.co.mash_up.nine_tique.util.Constant;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class AlreadyExistException extends BaseException {
 
     public AlreadyExistException(String message) {
-        super(ResultCodes.BAD_REQUEST, message);
+        super(Constant.ResultCodes.BAD_REQUEST, message);
     }
 }

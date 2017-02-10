@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_SELLER;
+
 @RestController
-@RequestMapping(value = "/api/seller")
+@RequestMapping(value = API_SELLER)
 public class SellerController {
 
     @Autowired

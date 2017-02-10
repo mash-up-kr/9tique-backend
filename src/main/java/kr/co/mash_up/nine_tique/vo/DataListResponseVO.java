@@ -1,6 +1,7 @@
 package kr.co.mash_up.nine_tique.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kr.co.mash_up.nine_tique.util.Constant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,17 +30,17 @@ public class DataListResponseVO<T> extends ResponseVO {
     @JsonProperty(value = "page_total")
     private int pageTotal;  // pageNo total count
 
-    public DataListResponseVO(Integer resultCode, String message){
+    public DataListResponseVO(Integer resultCode, String message) {
         super(resultCode, message);
     }
 
-    public DataListResponseVO(List<T> list){
-        this(ResultCodes.OK, "success");
+    public DataListResponseVO(List<T> list) {
+        this(Constant.ResultCodes.OK, "success");
         this.list = list;
     }
 
-    public DataListResponseVO(Page<T> page){
-        this(ResultCodes.OK, "success");
+    public DataListResponseVO(Page<T> page) {
+        this(Constant.ResultCodes.OK, "success");
         this.list = page.getContent();  // 검색된 데이터
         this.pageSize = page.getSize();
         this.pageNo = page.getNumber();

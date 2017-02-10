@@ -15,6 +15,8 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.*;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -83,50 +85,56 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/storage/**").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers(STORAGE + SUFFIX).permitAll()
+                .antMatchers(H2_CONSOLE + SUFFIX).permitAll()
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/api/users/login/**").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/users/register/**").hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.POST, API_USER + "/login" + SUFFIX).permitAll()
+                .antMatchers(HttpMethod.PUT, API_USER + "/register" + SUFFIX).hasAnyAuthority(Authorities.USER)
 
                 //Todo: 카테고리 권한 주석 제거
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/category/**").hasAnyAuthority(Authorities.USER)
-//                .antMatchers(HttpMethod.POST, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
-//                .antMatchers(HttpMethod.PUT, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
-//                .antMatchers(HttpMethod.DELETE, "/api/category/**").hasAnyAuthority(Authorities.ADMIN)
-                .antMatchers(HttpMethod.POST, "/api/category/**").hasAnyAuthority(Authorities.USER)
-                .antMatchers(HttpMethod.PUT, "/api/category/**").hasAnyAuthority(Authorities.USER)
-                .antMatchers(HttpMethod.DELETE, "/api/category/**").hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.GET, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.USER)
+//                .antMatchers(HttpMethod.POST, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+//                .antMatchers(HttpMethod.PUT, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+//                .antMatchers(HttpMethod.DELETE, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.POST, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.PUT, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.DELETE, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.USER)
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/product/**").hasAnyAuthority(Authorities.USER)
-                .antMatchers(HttpMethod.POST, "/api/product/**").hasAnyAuthority(Authorities.SELLER)
-                .antMatchers(HttpMethod.PUT, "/api/product/**").hasAnyAuthority(Authorities.SELLER)
-                .antMatchers(HttpMethod.DELETE, "/api/product/**").hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.GET, API_PRODUCT + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.POST, API_PRODUCT + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.PUT, API_PRODUCT + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.DELETE, API_PRODUCT + SUFFIX).hasAnyAuthority(Authorities.SELLER)
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/api/product_image/**").hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.POST, API_PRODUCT_IMAGE + SUFFIX).hasAnyAuthority(Authorities.SELLER)
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
-                .antMatchers(HttpMethod.POST, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
-                .antMatchers(HttpMethod.DELETE, "/api/zzim/**").hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.GET, API_ZZIM + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.POST, API_ZZIM + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.DELETE, API_ZZIM + SUFFIX).hasAnyAuthority(Authorities.USER)
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/shops/**").hasAnyAuthority(Authorities.SELLER)
-                .antMatchers(HttpMethod.GET, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
-                .antMatchers(HttpMethod.POST, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
-                .antMatchers(HttpMethod.PUT, "/api/shops/**").hasAnyAuthority(Authorities.SELLER)
-                .antMatchers(HttpMethod.PUT, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
-                .antMatchers(HttpMethod.DELETE, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.GET, API_SHOP + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.GET, API_SHOP + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.POST, API_SHOP + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.PUT, API_SHOP + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.PUT, API_SHOP + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.DELETE, API_SHOP + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.DELETE, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.DELETE, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
 
                 .and()
                 .authorizeRequests()
@@ -142,8 +150,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers(HttpMethod.POST, "/api/users/login/**")
-                .antMatchers("/storage/**")
-                .antMatchers("/h2-console/**");
+                .antMatchers(HttpMethod.POST, API_USER + "/login" + SUFFIX)
+                .antMatchers(STORAGE + SUFFIX)
+                .antMatchers(H2_CONSOLE + SUFFIX);
+
     }
 }

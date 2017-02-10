@@ -4,7 +4,6 @@ import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.service.ProductImageService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.vo.DataListResponseVO;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_PRODUCT_IMAGE;
+
 @RestController
-@RequestMapping(value = "/api/product_image")
+@RequestMapping(value = API_PRODUCT_IMAGE)
 public class ProductImageController {
 
     @Autowired

@@ -10,8 +10,10 @@ import kr.co.mash_up.nine_tique.vo.UserResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_USER;
+
 @RestController
-@RequestMapping(value = "/api/users")
+@RequestMapping(value = API_USER)
 public class UserController {
 
     @Autowired

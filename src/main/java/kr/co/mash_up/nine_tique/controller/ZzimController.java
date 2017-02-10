@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_ZZIM;
+
 @RestController
-@RequestMapping(value = "/api/zzim")
+@RequestMapping(value = API_ZZIM)
 @Slf4j
 public class ZzimController {
 

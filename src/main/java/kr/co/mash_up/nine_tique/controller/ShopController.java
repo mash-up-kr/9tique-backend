@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_SHOP;
+
 
 @RestController
-@RequestMapping(value = "/api/shops")
+@RequestMapping(value = API_SHOP)
 @Slf4j
 public class ShopController {
 

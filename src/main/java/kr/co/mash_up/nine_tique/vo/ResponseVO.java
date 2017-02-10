@@ -3,6 +3,7 @@ package kr.co.mash_up.nine_tique.vo;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kr.co.mash_up.nine_tique.util.Constant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -35,14 +36,14 @@ public class ResponseVO {
     }
 
     public static ResponseVO ok(){
-        return new ResponseVO(ResultCodes.OK, "success");
+        return new ResponseVO(Constant.ResultCodes.OK, "success");
     }
 
     public static ResponseVO created(){
-        return new ResponseVO(ResultCodes.CREATED, "created");
+        return new ResponseVO(Constant.ResultCodes.CREATED, "created");
     }
 
     public static ResponseVO noContent(){
-        return new ResponseVO(ResultCodes.NO_CONTENT, "no content");
+        return new ResponseVO(Constant.ResultCodes.NO_CONTENT, "no content");
     }
 }

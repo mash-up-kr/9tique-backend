@@ -1,6 +1,7 @@
 package kr.co.mash_up.nine_tique.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kr.co.mash_up.nine_tique.util.Constant;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,7 +22,7 @@ public class UserResponseVO extends ResponseVO {
     }
 
     public UserResponseVO(String token, String level) {
-        super(ResultCodes.OK, "success");
+        super(Constant.ResultCodes.OK, "success");
         this.token = token;
         this.level = level;
     }

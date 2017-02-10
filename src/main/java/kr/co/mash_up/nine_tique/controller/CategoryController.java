@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_CATEGORY;
+
 @RestController
-@RequestMapping(value = "/api/category")
+@RequestMapping(value = API_CATEGORY)
 //자동으로 logging을 위한 필드인 ‘private static final Logger log’가 추가, Slf4j를 사용하여 출력
 @Slf4j
 public class CategoryController {
