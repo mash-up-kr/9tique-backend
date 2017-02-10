@@ -91,4 +91,13 @@ public class User extends AbstractEntity<Long> {
         this.oauthType = oauthType;
         this.authorities = authorities;
     }
+
+    public boolean matchAuthority(String strAuthority){
+        for(Authority authority : authorities){
+            if(strAuthority.equals(authority.getAuthority())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

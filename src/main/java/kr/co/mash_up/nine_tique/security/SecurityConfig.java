@@ -21,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * create 401 error handler Bean
+     *
      * @return 401 error handler
      */
     @Bean
@@ -30,6 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * create 403 error handler Bean
+     *
      * @return 403 error handler
      */
     @Bean
@@ -81,10 +83,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
                 .antMatchers("/storage/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.PUT, "/api/user/**").hasAnyAuthority(Authorities.USER)
+
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/users/login/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/api/users/register/**").hasAnyAuthority(Authorities.USER)
 
                 //Todo: 카테고리 권한 주석 제거
                 .and()
@@ -117,8 +122,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/shops/**").hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.GET, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
                 .antMatchers(HttpMethod.POST, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
                 .antMatchers(HttpMethod.PUT, "/api/shops/**").hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.PUT, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
                 .antMatchers(HttpMethod.DELETE, "/api/shops/**").hasAnyAuthority(Authorities.ADMIN)
 
                 .and()
@@ -131,9 +138,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().cacheControl();
     }
 
+    //Todo: 동작을 안한다....
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/login");
+                .antMatchers(HttpMethod.POST, "/api/users/login/**")
+                .antMatchers("/storage/**")
+                .antMatchers("/h2-console/**");
     }
 }

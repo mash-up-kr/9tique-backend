@@ -68,30 +68,47 @@ public class UserService {
 
     /**
      * 판매자 권한 추가
-     * Access Token으로 user정보를 찾아 SELLER 권한을 추가한다.
+     * 인증코드로 shop정보를 찾아 seller로 등록한다
      *
-     * @param id user를 찾을 id
+     * @param userId       유저 id
+     * @param authentiCode 인증코드
+     * @return 생성된 access token
      */
     @Transactional
-    public String addSellerAuthority(Long id) {
-        User user = userRepository.findOne(id);
+    public String addSellerAuthority(Long userId, String authentiCode) {
+        User user = userRepository.findOne(userId);
+        Optional.ofNullable(user).orElseThrow(() -> new IdNotFoundException("register seller -> user not found"));
 
-        Optional.ofNullable(user).orElseThrow(() -> new IdNotFoundException("user not found"));
+        Shop shop = shopRepository.findByAuthentiCode(authentiCode);
+        Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("register seller -> shop not found, invalid authenti code"));
+        if (!shop.isEnabled()) {
+            throw new IdNotFoundException("register seller -> shop not found, invalid authenti code");
+        }
 
-        //Todo: 인증코드 검증
-        // Seller Infomation 저장
-        // Todo: Seller Infomation 저장된거랑 맞춘다.
-        Shop shop = new Shop();
-        shop.setName("매장 name" + id);
-        shop.setInfo("매장 info" + id);
-        shop.setPhone("010-3222-2222" + id);
-        shopRepository.save(shop);
-
+        // Seller 저장
         Seller seller = new Seller(shop, user);
         sellerRepository.save(seller);
 
         // Seller 권한 저장
         Authority authority = authorityRepository.findByAuthority(Authorities.SELLER);
+        user.getAuthorities().add(authority);
+        userRepository.save(user);
+
+        return jwtTokenUtil.generateToken(user);
+    }
+
+    /**
+     * 관리자 권한 추가
+     * ????로 admin 권한 등록
+     *
+     * @param userId 유저 id
+     * @return 생성된 access token
+     */
+    public String addAdminAuthority(Long userId) {
+        User user = userRepository.findOne(userId);
+        Optional.ofNullable(user).orElseThrow(() -> new IdNotFoundException("register admin -> user not found"));
+
+        Authority authority = authorityRepository.findByAuthority(Authorities.ADMIN);
         user.getAuthorities().add(authority);
         userRepository.save(user);
 

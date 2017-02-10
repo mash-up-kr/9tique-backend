@@ -4,21 +4,20 @@ import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.UserService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.vo.AuthentiCodeRequestVO;
 import kr.co.mash_up.nine_tique.vo.UserRequestVO;
 import kr.co.mash_up.nine_tique.vo.UserResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(value = "/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @PostMapping(value = "/login")
     public UserResponseVO login(@RequestBody UserRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getOauthToken(), requestVO.getType());
 
@@ -28,23 +27,31 @@ public class UserController {
         return new UserResponseVO(token, Authorities.USER);
     }
 
-    /*
-    인증 절차
-    1. 존재하는 user가 인증코드를 보내면 seller info를 보내준다.
-    request
-        token - userid
-        인증코드 - 검증용
-    response
-        seller info
-        token
-    2. seller info를 비교하여 업데이트 한다.
+    /**
+     * 판매자 권한 등록
+     *
+     * @param requestVO 인증코드 Wrapper
+     * @return access token, 권한
      */
-    @RequestMapping(value = "/api/user", method = RequestMethod.PUT)
-    public UserResponseVO registerSeller(/*인증코드가 와야한다.*/) {
+    @PutMapping(value = "/register/seller")
+    public UserResponseVO registerSeller(@RequestBody AuthentiCodeRequestVO requestVO) {
+        ParameterUtil.checkParameterEmpty(requestVO.getAuthentiCode());
         Long userId = SecurityUtil.getCurrentUser().getId();
-        //Todo: 인증코드 passing
-        String token = userService.addSellerAuthority(userId);
 
+        String token = userService.addSellerAuthority(userId, requestVO.getAuthentiCode());
         return new UserResponseVO(token, Authorities.SELLER);
+    }
+
+    /**
+     * 관리자 권한 등록
+     *
+     * @return access token, 권한
+     */
+    @PutMapping(value = "/register/admin")
+    public UserResponseVO registerAdmin(/* 뭐가 와야할까..?*/) {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+
+        String token = userService.addAdminAuthority(userId);
+        return new UserResponseVO(token, Authorities.ADMIN);
     }
 }

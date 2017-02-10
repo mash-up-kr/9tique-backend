@@ -11,7 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class UserRequestVO extends RequestVO{
+public class UserRequestVO extends RequestVO {
 
     @JsonProperty(value = "oauth_token")
     private String oauthToken;
@@ -19,11 +19,10 @@ public class UserRequestVO extends RequestVO{
     @JsonProperty(value = "type")
     private User.OauthType type;
 
-    public User toUserEntity(){
+    public User toUserEntity() {
         User user = new User();
         user.setOauthToken(oauthToken);
         user.setOauthType(type);
         return user;
     }
-
 }

@@ -1,13 +1,14 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.Shop;
+import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
-import kr.co.mash_up.nine_tique.repository.SellerRepository;
 import kr.co.mash_up.nine_tique.repository.ShopRepository;
+import kr.co.mash_up.nine_tique.repository.UserRepository;
+import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
 import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ShopRequestVO;
@@ -31,7 +32,7 @@ public class ShopService {
     private ShopRepository shopRepository;
 
     @Autowired
-    private SellerRepository sellerRepository;
+    private UserRepository userRepository;
 
     public Shop create(ShopRequestVO requestVO) {
         Shop newShop = requestVO.toShopEntitiy();
@@ -46,7 +47,7 @@ public class ShopService {
         }
 
         oldShop.enable();
-        return shopRepository.save(newShop);
+        return shopRepository.save(oldShop);
     }
 
     public Page<ShopDto> list(DataListRequestVO requestVO) {
@@ -93,9 +94,11 @@ public class ShopService {
             throw new IdNotFoundException("shop update -> shop not found");
         }
 
-        Seller seller = sellerRepository.findByUserId(userId);
-        if (!seller.matchShop(oldShop)) {  // 판매자가 해당 shop에 속해있나
-            throw new UserIdNotMatchedException("shop update -> forbbiden access");
+        User user = userRepository.findOne(userId);
+        if (!user.matchAuthority(Authorities.ADMIN)) {  // 관리자라면 shop check pass
+            if (!user.getSeller().matchShop(oldShop)) {  // 판매자가 해당 shop에 속해있나
+                throw new UserIdNotMatchedException("shop update -> forbbiden access");
+            }
         }
 
         oldShop.update(requestVO.toShopEntitiy());
