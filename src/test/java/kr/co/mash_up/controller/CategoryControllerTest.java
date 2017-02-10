@@ -21,6 +21,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_CATEGORY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -93,7 +94,7 @@ public class CategoryControllerTest {
          * Do -> 테스트시 직접 실행
          * Return -> 테스트 결과 반환
          */
-        this.mockMvc.perform(post("/api/category")
+        this.mockMvc.perform(post(API_CATEGORY)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString))
                 .andExpect(handler().handlerType(CategoryController.class))  //요청에 매핑된 클래스 확인
@@ -119,7 +120,7 @@ public class CategoryControllerTest {
                 .build();
         String jsonString = this.jsonStringFromObject(category);
 
-        this.mockMvc.perform(put("/api/category/{id}", id)
+        this.mockMvc.perform(put(API_CATEGORY + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString))
                 .andExpect(handler().handlerType(CategoryController.class))
@@ -131,7 +132,7 @@ public class CategoryControllerTest {
     public void testDelete() throws Exception {
         Long id = 1L;
 
-        this.mockMvc.perform(delete("/api/category/{id}", id))
+        this.mockMvc.perform(delete(API_CATEGORY + "/{id}", id))
                 .andExpect(handler().handlerType(CategoryController.class))
                 .andExpect(handler().methodName("delete"))
                 .andExpect(status().isOk());
@@ -142,7 +143,7 @@ public class CategoryControllerTest {
 
 //        when(categoryService.findCategories()).thenReturn(anyList());
 
-        MvcResult result = mockMvc.perform(get("/api/category"))
+        MvcResult result = mockMvc.perform(get(API_CATEGORY))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(handler().handlerType(CategoryController.class))
@@ -159,7 +160,7 @@ public class CategoryControllerTest {
     public void testDetail() throws Exception {
         Long id = 2L;
 
-        mockMvc.perform(get("/api/category/{id}", id))
+        mockMvc.perform(get(API_CATEGORY + "/{id}", id))
                 .andExpect(handler().handlerType(CategoryController.class))
                 .andExpect(handler().methodName("detail"))
                 .andExpect(status().isOk())
