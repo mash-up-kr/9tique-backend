@@ -9,7 +9,6 @@ import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
 import kr.co.mash_up.nine_tique.repository.ShopRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.security.Authorities;
-import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
 import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ShopRequestVO;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +37,7 @@ public class ShopService {
         Shop newShop = requestVO.toShopEntitiy();
         Shop oldShop = shopRepository.findByNameAndPhone(newShop.getName(), newShop.getPhone());
 
-        if (oldShop == null) {  // oldShop 1번도 등록 안된경우 -> 인증코드 생성 후 등록
-            newShop.setAuthentiCode(CodeGeneratorUtil.generateAuthentiCode());
+        if (oldShop == null) {  // 1번도 등록 안된경우 -> 등록
             return shopRepository.save(newShop);
         }
         if (oldShop.isEnabled()) {
@@ -60,7 +58,6 @@ public class ShopService {
                         .withName(shop.getName())
                         .withInfo(shop.getInfo())
                         .withPhone(shop.getPhone())
-                        .withAuthentiCode(shop.getAuthentiCode())
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -83,7 +80,6 @@ public class ShopService {
                 .withName(shop.getName())
                 .withInfo(shop.getInfo())
                 .withPhone(shop.getPhone())
-                .withAuthentiCode(shop.getAuthentiCode())
                 .build();
     }
 

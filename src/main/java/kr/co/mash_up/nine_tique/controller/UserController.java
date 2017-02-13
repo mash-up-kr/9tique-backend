@@ -4,7 +4,6 @@ import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.UserService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
-import kr.co.mash_up.nine_tique.vo.AuthentiCodeRequestVO;
 import kr.co.mash_up.nine_tique.vo.UserRequestVO;
 import kr.co.mash_up.nine_tique.vo.UserResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +26,6 @@ public class UserController {
         String token = userService.login(requestVO);
 
         return new UserResponseVO(token, Authorities.USER);
-    }
-
-    /**
-     * 판매자 권한 등록
-     *
-     * @param requestVO 인증코드 Wrapper
-     * @return access token, 권한
-     */
-    @PutMapping(value = "/register/seller")
-    public UserResponseVO registerSeller(@RequestBody AuthentiCodeRequestVO requestVO) {
-        ParameterUtil.checkParameterEmpty(requestVO.getAuthentiCode());
-        Long userId = SecurityUtil.getCurrentUser().getId();
-
-        String token = userService.addSellerAuthority(userId, requestVO.getAuthentiCode());
-        return new UserResponseVO(token, Authorities.SELLER);
     }
 
     /**

@@ -13,6 +13,4 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
     Shop findByPhone(String phone);
 
     Shop findByNameAndPhone(String name, String phone);
-
-    Shop findByAuthentiCode(String authentiCode);
 }

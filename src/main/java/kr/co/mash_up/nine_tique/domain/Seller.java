@@ -20,6 +20,9 @@ public class Seller extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(updatable = false, unique = true)
+    private String authentiCode;  // 인증 코드
+
     @ManyToOne  // Seller(Many) : Shop(One)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_seller_to_shop_id"))
     private Shop shop;
@@ -37,6 +40,17 @@ public class Seller extends AbstractEntity<Long> {
 
     public Seller(Shop shop, User user) {
         this.shop = shop;
+        this.user = user;
+        this.enabled = true;
+    }
+
+    public Seller(Shop shop, String authentiCode){
+        this.shop = shop;
+        this.authentiCode = authentiCode;
+        this.enabled = false;
+    }
+
+    public void registerSeller(User user){
         this.user = user;
         this.enabled = true;
     }

@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository(value = "sellerRepository")
 public interface SellerRepository extends JpaRepository<Seller, Long>, SellerRepositoryCustom {
+
+    Seller findByAuthentiCode(String authentiCode);
 }

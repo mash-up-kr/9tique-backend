@@ -13,6 +13,9 @@ import lombok.ToString;
 @NoArgsConstructor
 public class ShopDto {
 
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty(value = "name")
     private String name;
 
@@ -22,42 +25,39 @@ public class ShopDto {
     @JsonProperty(value = "phone")
     private String phone;
 
-    @JsonProperty(value = "authenti_code")
-    private String authentiCode;
-
     public static class Builder {
 
-        private String name;
-        private String info;
-        private String phone;
-        private String authentiCode;
+        private Long id = 0L;
+        private String name = "";
+        private String info = "";
+        private String phone = "";
 
-        public ShopDto build(){
+        public ShopDto build() {
             ShopDto shopDto = new ShopDto();
+            shopDto.setId(id);
             shopDto.setName(name);
             shopDto.setInfo(info);
             shopDto.setPhone(phone);
-            shopDto.setAuthentiCode(authentiCode);
             return shopDto;
         }
 
-        public Builder withName(String name){
+        public Builder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder withInfo(String info){
+        public Builder withInfo(String info) {
             this.info = info;
             return this;
         }
 
-        public Builder withPhone(String phone){
+        public Builder withPhone(String phone) {
             this.phone = phone;
-            return this;
-        }
-
-        public Builder withAuthentiCode(String authentiCode){
-            this.authentiCode = authentiCode;
             return this;
         }
     }

@@ -32,6 +32,10 @@ public class Zzim extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "zzim", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ZzimProduct> zzimProducts;
 
+    public Zzim(User user) {
+        this.user = user;
+    }
+
 //    /**
 //     * 찜되어 있는지 확인
 //     *

@@ -67,6 +67,10 @@ public class User extends AbstractEntity<Long> {
             inverseJoinColumns = @JoinColumn(name = "authority_id"))
     private Set<Authority> authorities = new HashSet<>();
 
+    public void addAuthority(Authority authority) {
+        this.authorities.add(authority);
+    }
+
     /**
      * 사용자로부터 권한 조회
      *
@@ -92,12 +96,16 @@ public class User extends AbstractEntity<Long> {
         this.authorities = authorities;
     }
 
-    public boolean matchAuthority(String strAuthority){
-        for(Authority authority : authorities){
-            if(strAuthority.equals(authority.getAuthority())){
+    public boolean matchAuthority(String strAuthority) {
+        for (Authority authority : authorities) {
+            if (strAuthority.equals(authority.getAuthority())) {
                 return true;
             }
         }
         return false;
+    }
+
+    public void updateName(String newName) {
+        this.name = newName;
     }
 }

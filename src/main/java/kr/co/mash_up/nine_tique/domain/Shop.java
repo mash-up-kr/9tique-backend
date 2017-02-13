@@ -33,9 +33,6 @@ public class Shop extends AbstractEntity<Long> {
     @Column
     private boolean enabled;
 
-    @Column(updatable = false, unique = true)
-    private String authentiCode;  // 인증 코드
-
     //Todo:  매장위치 추가
 
     @Column(length = 20, nullable = false, unique = true)

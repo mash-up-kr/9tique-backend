@@ -133,6 +133,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.POST, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
+                .antMatchers(HttpMethod.PUT, API_SELLER + "/register" + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.PUT, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
                 .antMatchers(HttpMethod.DELETE, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
                 .antMatchers(HttpMethod.DELETE, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
 
@@ -153,6 +156,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, API_USER + "/login" + SUFFIX)
                 .antMatchers(STORAGE + SUFFIX)
                 .antMatchers(H2_CONSOLE + SUFFIX);
-
     }
 }
