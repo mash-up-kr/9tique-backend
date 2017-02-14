@@ -4,7 +4,7 @@ package kr.co.mash_up.nine_tique.controller;
 import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.SellerDto;
-import kr.co.mash_up.nine_tique.security.Authorities;
+import kr.co.mash_up.nine_tique.dto.UserDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.SellerService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
@@ -81,12 +81,12 @@ public class SellerController {
      * @return access token, 권한
      */
     @PutMapping(value = "/register")
-    public UserResponseVO registerSeller(@RequestBody AuthentiCodeRequestVO requestVO) {
+    public DataResponseVO<UserDto> registerSeller(@RequestBody AuthentiCodeRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getAuthentiCode());
         Long userId = SecurityUtil.getCurrentUser().getId();
 
-        String token = sellerService.sellerAuthenticateAndAddAuthority(userId, requestVO.getAuthentiCode());
-        return new UserResponseVO(token, Authorities.SELLER);
+        UserDto userDto = sellerService.sellerAuthenticateAndAddAuthority(userId, requestVO.getAuthentiCode());
+        return new DataResponseVO<UserDto>(userDto);
     }
 
     /**

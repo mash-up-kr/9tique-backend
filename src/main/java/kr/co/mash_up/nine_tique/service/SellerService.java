@@ -195,7 +195,7 @@ public class SellerService {
      * @return 생성된 access token
      */
     @Transactional
-    public String sellerAuthenticateAndAddAuthority(Long userId, String authentiCode) {
+    public UserDto sellerAuthenticateAndAddAuthority(Long userId, String authentiCode) {
         Seller seller = sellerRepository.findByAuthentiCode(authentiCode);
         Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("register seller -> seller not found, invalid authenti code"));
         if (seller.isEnabled()) {
@@ -214,7 +214,10 @@ public class SellerService {
         user.addAuthority(authority);
         userRepository.save(user);
 
-        return jwtTokenUtil.generateToken(user);
+        return new UserDto.Builder()
+                .withAccessToken(jwtTokenUtil.generateToken(user))
+                .withAuthorityLevel(user.findAuthority())
+                .build();
     }
 
     /**

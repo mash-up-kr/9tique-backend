@@ -3,6 +3,7 @@ package kr.co.mash_up.nine_tique.service;
 import kr.co.mash_up.nine_tique.domain.Authority;
 import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.domain.Zzim;
+import kr.co.mash_up.nine_tique.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.AuthorityRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
@@ -41,7 +42,7 @@ public class UserService {
     }
 
     @Transactional
-    public String login(UserRequestVO requestVO) {
+    public UserDto login(UserRequestVO requestVO) {
         User oldUser = userRepository.findByOauthTokenAndOauthType(requestVO.getOauthToken(), requestVO.getType());
 
         oldUser = Optional.ofNullable(oldUser).orElseGet(() -> {  // User가 없으면 정보 저장
@@ -59,7 +60,10 @@ public class UserService {
             return newUser;
         });
 
-        return jwtTokenUtil.generateToken(oldUser);
+        return new UserDto.Builder()
+                .withAccessToken(jwtTokenUtil.generateToken(oldUser))
+                .withAuthorityLevel(oldUser.findAuthority())
+                .build();
     }
 
     /**
@@ -69,7 +73,7 @@ public class UserService {
      * @param userId 유저 id
      * @return 생성된 access token
      */
-    public String addAdminAuthority(Long userId) {
+    public UserDto addAdminAuthority(Long userId) {
         User user = userRepository.findOne(userId);
         Optional.ofNullable(user).orElseThrow(() -> new IdNotFoundException("register admin -> user not found"));
 
@@ -77,6 +81,9 @@ public class UserService {
         user.addAuthority(authority);
         userRepository.save(user);
 
-        return jwtTokenUtil.generateToken(user);
+        return new UserDto.Builder()
+                .withAccessToken(jwtTokenUtil.generateToken(user))
+                .withAuthorityLevel(user.findAuthority())
+                .build();
     }
 }

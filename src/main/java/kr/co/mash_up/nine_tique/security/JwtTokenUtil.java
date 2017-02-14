@@ -69,18 +69,7 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public String generateToken(User user) {
-        String authority = Authorities.USER;
-
-        for (GrantedAuthority grantedAuthority : user.getAuthoritiesWithoutPersistence()) {
-            String tmp = grantedAuthority.getAuthority();
-            if (tmp.equals(Authorities.ADMIN)) {
-                authority = Authorities.ADMIN;
-                break;
-            } else if (tmp.equals(Authorities.SELLER)) {
-                authority = Authorities.SELLER;
-                break;
-            }
-        }
+        String authority = user.findAuthority();
 
         Map<String, Object> claims = new HashMap<>();
         // public 클레임

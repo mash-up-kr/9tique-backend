@@ -24,6 +24,8 @@ public class QSeller extends EntityPathBase<Seller> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
+    public final StringPath authentiCode = createString("authentiCode");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

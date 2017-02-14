@@ -1,6 +1,7 @@
 package kr.co.mash_up.nine_tique.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kr.co.mash_up.nine_tique.security.Authorities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -107,5 +108,19 @@ public class User extends AbstractEntity<Long> {
 
     public void updateName(String newName) {
         this.name = newName;
+    }
+
+    public String findAuthority() {
+        String result = Authorities.USER;
+        for (Authority authority : this.authorities) {
+            String tmp = authority.getAuthority();
+            if (tmp.equals(Authorities.ADMIN)) {
+                result = Authorities.ADMIN;
+                break;
+            } else if (tmp.equals(Authorities.SELLER) && !result.equals(Authorities.ADMIN)) {
+                result = Authorities.SELLER;
+            }
+        }
+        return result;
     }
 }

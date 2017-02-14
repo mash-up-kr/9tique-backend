@@ -1,11 +1,11 @@
 package kr.co.mash_up.nine_tique.controller;
 
-import kr.co.mash_up.nine_tique.security.Authorities;
+import kr.co.mash_up.nine_tique.dto.UserDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.UserService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.vo.DataResponseVO;
 import kr.co.mash_up.nine_tique.vo.UserRequestVO;
-import kr.co.mash_up.nine_tique.vo.UserResponseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +19,12 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(value = "/login")
-    public UserResponseVO login(@RequestBody UserRequestVO requestVO) {
+    public DataResponseVO<UserDto> login(@RequestBody UserRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getOauthToken(), requestVO.getType());
 
-        // return access token
-        String token = userService.login(requestVO);
+        UserDto userDto = userService.login(requestVO);
 
-        return new UserResponseVO(token, Authorities.USER);
+        return new DataResponseVO<UserDto>(userDto);
     }
 
     /**
@@ -34,10 +33,10 @@ public class UserController {
      * @return access token, 권한
      */
     @PutMapping(value = "/register/admin")
-    public UserResponseVO registerAdmin(/* 뭐가 와야할까..?*/) {
+    public DataResponseVO<UserDto> registerAdmin(/* 뭐가 와야할까..?*/) {
         Long userId = SecurityUtil.getCurrentUser().getId();
 
-        String token = userService.addAdminAuthority(userId);
-        return new UserResponseVO(token, Authorities.ADMIN);
+        UserDto userDto = userService.addAdminAuthority(userId);
+        return new DataResponseVO<UserDto>(userDto);
     }
 }
