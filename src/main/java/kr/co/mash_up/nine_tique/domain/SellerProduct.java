@@ -31,6 +31,7 @@ public class SellerProduct extends AbstractEntity<SellerProduct.Id> {
         this.id.productId = product.getId();
         this.seller = seller;
         this.product = product;
+        this.enabled = true;
     }
 
     public boolean matchProduct(Product newProduct) {
