@@ -137,7 +137,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, API_SELLER + "/register" + SUFFIX).hasAnyAuthority(Authorities.USER)
                 .antMatchers(HttpMethod.PUT, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
                 .antMatchers(HttpMethod.DELETE, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.SELLER)
-                .antMatchers(HttpMethod.DELETE, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+//                .antMatchers(HttpMethod.DELETE, API_SELLER + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
 
                 .and()
                 .authorizeRequests()

@@ -126,6 +126,9 @@ public class ZzimService {
                             .withSubCategory(product.getCategory().getSub())
                             .withShop(shopDto)
                             .withProductImages(productImageDtos)
+                            .withZzimStatus(true)
+                            .withCreatedAt(product.getCreatedTimestamp())
+                            .withUpdatedAt(product.getUpdatedTimestamp())
                             .build();
                 })
                 .collect(Collectors.toList());
