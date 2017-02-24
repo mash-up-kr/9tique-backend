@@ -13,15 +13,23 @@ import lombok.ToString;
 @ToString
 public class UserRequestVO extends RequestVO {
 
-    @JsonProperty(value = "oauth_token")
-    private String oauthToken;
+//    @JsonProperty(value = "oauth_token")
+//    private String oauthToken;
 
     @JsonProperty(value = "type")
     private User.OauthType type;
 
+    @JsonProperty(value = "name")
+    private String userName;
+
+    @JsonProperty(value = "email")
+    private String email;
+
     public User toUserEntity() {
         User user = new User();
-        user.setOauthToken(oauthToken);
+//        user.setOauthToken(oauthToken);
+        user.setName(userName);
+        user.setEmail(email);
         user.setOauthType(type);
         return user;
     }

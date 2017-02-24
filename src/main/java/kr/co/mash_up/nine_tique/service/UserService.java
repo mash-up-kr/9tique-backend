@@ -43,10 +43,11 @@ public class UserService {
 
     @Transactional
     public UserDto login(UserRequestVO requestVO) {
-        User oldUser = userRepository.findByOauthTokenAndOauthType(requestVO.getOauthToken(), requestVO.getType());
+//        User oldUser = userRepository.findByOauthTokenAndOauthType(requestVO.getOauthToken(), requestVO.getType());
+        User oldUser = userRepository.findByEmail(requestVO.getEmail());
 
         oldUser = Optional.ofNullable(oldUser).orElseGet(() -> {  // User가 없으면 정보 저장
-            User newUser = requestVO.toUserEntity();  // oauth token, oauth type setting
+            User newUser = requestVO.toUserEntity();
 
             // USER 권한 저장
             Authority authority = authorityRepository.findByAuthority(Authorities.USER);

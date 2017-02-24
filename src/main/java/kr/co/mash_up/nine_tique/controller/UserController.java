@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping(value = "/login")
     public DataResponseVO<UserDto> login(@RequestBody UserRequestVO requestVO) {
-        ParameterUtil.checkParameterEmpty(requestVO.getOauthToken(), requestVO.getType());
+        ParameterUtil.checkParameterEmpty(requestVO.getUserName(), requestVO.getEmail(), requestVO.getType());
 
         UserDto userDto = userService.login(requestVO);
 
