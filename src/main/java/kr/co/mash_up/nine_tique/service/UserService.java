@@ -87,4 +87,14 @@ public class UserService {
                 .withAuthorityLevel(user.findAuthority())
                 .build();
     }
+
+    public static final String HEADER_PREFIX = "Bearer ";
+
+    public UserDto tokenRefresh(String authHeader) {
+        String accessToken = authHeader.substring(HEADER_PREFIX.length());
+        String newAccessToken = jwtTokenUtil.refreshToken(accessToken);
+        return new UserDto.Builder()
+                .withAccessToken(newAccessToken)
+                .build();
+    }
 }

@@ -6,8 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import kr.co.mash_up.nine_tique.config.JwtSettings;
 import kr.co.mash_up.nine_tique.domain.User;
+import kr.co.mash_up.nine_tique.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -49,7 +49,7 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public String refreshToken(String token) throws ServletException {
+    public String refreshToken(String token) {
         String refreshedToken;
         final Claims claims = getClaimsFromToken(token);
         refreshedToken = generateToken(claims);
@@ -83,7 +83,7 @@ public class JwtTokenUtil implements Serializable {
         return generateToken(claims);
     }
 
-    public Claims getClaimsFromToken(String token) throws ServletException {
+    public Claims getClaimsFromToken(String token) {
         try {
 
             return Jwts.parser()
@@ -91,7 +91,7 @@ public class JwtTokenUtil implements Serializable {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (final SignatureException e) {
-            throw new ServletException("Invaild token.");
+            throw new InvalidTokenException();
         }
     }
 

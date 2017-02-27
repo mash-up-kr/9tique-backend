@@ -39,4 +39,10 @@ public class UserController {
         UserDto userDto = userService.addAdminAuthority(userId);
         return new DataResponseVO<UserDto>(userDto);
     }
+
+    @GetMapping(value = "/refresh")
+    public DataResponseVO<UserDto> refreshToken(@RequestHeader(value = "Authorization") String authHeader) {
+        UserDto userDto = userService.tokenRefresh(authHeader);
+        return new DataResponseVO<UserDto>(userDto);
+    }
 }
