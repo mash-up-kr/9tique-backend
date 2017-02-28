@@ -22,11 +22,15 @@ public class ShopRequestVO extends RequestVO {
     @JsonProperty
     private String phone;
 
+    @JsonProperty(value = "kakao_open_chat_url")
+    private String kakaoOpenChatUrl;
+
     public Shop toShopEntitiy() {
         Shop shop = new Shop();
         shop.setName(this.name);
         shop.setInfo(this.info);
         shop.setPhone(this.phone);
+        shop.setKakaoOpenChatUrl(this.kakaoOpenChatUrl);
         shop.setEnabled(true);
         return shop;
     }

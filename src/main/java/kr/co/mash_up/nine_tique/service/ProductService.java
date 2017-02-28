@@ -97,6 +97,7 @@ public class ProductService {
                             .withName(product.getShop().getName())
                             .withInfo(product.getShop().getInfo())
                             .withPhone(product.getShop().getPhone())
+                            .withKakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
                             .build();
 
                     boolean isZzim = product.checkProductZzim(zzimProducts);
@@ -146,6 +147,7 @@ public class ProductService {
                 .withName(product.getShop().getName())
                 .withInfo(product.getShop().getInfo())
                 .withPhone(product.getShop().getPhone())
+                .withKakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
                 .build();
 
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);

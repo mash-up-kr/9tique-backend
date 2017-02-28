@@ -25,12 +25,16 @@ public class ShopDto {
     @JsonProperty(value = "phone")
     private String phone;
 
+    @JsonProperty(value = "kakao_open_chat_url")
+    private String kakaoOpenChatUrl;
+
     public static class Builder {
 
         private Long id = 0L;
         private String name = "";
         private String info = "";
         private String phone = "";
+        private String kakaoOpenChatUrl = "";
 
         public ShopDto build() {
             ShopDto shopDto = new ShopDto();
@@ -38,6 +42,7 @@ public class ShopDto {
             shopDto.setName(name);
             shopDto.setInfo(info);
             shopDto.setPhone(phone);
+            shopDto.setKakaoOpenChatUrl(kakaoOpenChatUrl);
             return shopDto;
         }
 
@@ -58,6 +63,11 @@ public class ShopDto {
 
         public Builder withPhone(String phone) {
             this.phone = phone;
+            return this;
+        }
+
+        public Builder withKakaoOpenChatUrl(String kakaoOpenChatUrl) {
+            this.kakaoOpenChatUrl = kakaoOpenChatUrl;
             return this;
         }
     }

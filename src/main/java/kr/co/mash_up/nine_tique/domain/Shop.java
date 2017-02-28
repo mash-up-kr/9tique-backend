@@ -30,13 +30,16 @@ public class Shop extends AbstractEntity<Long> {
     @Column
     private String info;  // 매장정보
 
+    @Column(length = 20, nullable = false, unique = true)
+    private String phone;  // 전화
+
     @Column
-    private boolean enabled;
+    private String kakaoOpenChatUrl;
 
     //Todo:  매장위치 추가
 
-    @Column(length = 20, nullable = false, unique = true)
-    private String phone;  // 전화
+    @Column
+    private boolean enabled;
 
     // mappedBy - 연관관계 주인 설정. 주인O(읽기, 쓰기), 주인X(읽기)
     // mappedBy가 있으면 주인X.
