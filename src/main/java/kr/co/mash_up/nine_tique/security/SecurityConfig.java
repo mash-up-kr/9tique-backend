@@ -85,12 +85,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(STORAGE + SUFFIX).permitAll()
-                .antMatchers(H2_CONSOLE + SUFFIX).permitAll()
+//                .antMatchers(STORAGE + SUFFIX).permitAll()
+//                .antMatchers(H2_CONSOLE + SUFFIX).permitAll()
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, API_USER + "/login" + SUFFIX).permitAll()
+//                .antMatchers(HttpMethod.POST, API_USER + "/login" + SUFFIX).permitAll()
                 .antMatchers(HttpMethod.PUT, API_USER + "/register" + SUFFIX).hasAnyAuthority(Authorities.USER)
 
                 //Todo: 카테고리 권한 주석 제거
@@ -149,10 +149,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().cacheControl();
     }
 
-    //Todo: 동작을 안한다....
+    /*
+    설정은 덮어쓰기 된다
+    http configure에 설정되어 있는게 우선시 된다
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
+                .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html")
+//                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**")
                 .antMatchers(HttpMethod.POST, API_USER + "/login" + SUFFIX)
                 .antMatchers(STORAGE + SUFFIX)
                 .antMatchers(H2_CONSOLE + SUFFIX);

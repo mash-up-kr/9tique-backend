@@ -54,6 +54,10 @@ dependencies {
     // queryDSL
     compile 'com.mysema.querydsl:querydsl-jpa:3.7.2'
     compile 'com.mysema.querydsl:querydsl-apt:3.7.2'
+
+    // Swagger
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
 }
 
 // https://gist.github.com/EdwardBeckett/5377401

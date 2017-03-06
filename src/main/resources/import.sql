@@ -18,9 +18,9 @@ INSERT INTO category(main, sub, created_at, enabled) VALUES ('BOTTOM', 'SKIRT', 
 INSERT INTO category(main, sub, created_at, enabled) VALUES ('SHOSE', '', CURRENT_TIMESTAMP(), true);
 INSERT INTO category(main, sub, created_at, enabled) VALUES ('CAP', '', CURRENT_TIMESTAMP(), true);
 
-INSERT INTO authority(authority) VALUES ('USER');
-INSERT INTO authority(authority) VALUES ('SELLER');
-INSERT INTO authority(authority) VALUES ('ADMIN');
+INSERT INTO authority(authority, created_at) VALUES ('USER', CURRENT_TIMESTAMP());
+INSERT INTO authority(authority, created_at) VALUES ('SELLER', CURRENT_TIMESTAMP());
+INSERT INTO authority(authority, created_at) VALUES ('ADMIN', CURRENT_TIMESTAMP());
 
 -- INSERT INTO user(name, email, oauth_token, created_at) VALUES ('admin', '9tique@naver.com', '9tique', CURRENT_TIMESTAMP());
 -- INSERT INTO user(name, email, oauth_token, created_at) VALUES ('유저2', 'bb@naver.com', 'bbfsdfsd434', CURRENT_TIMESTAMP());
