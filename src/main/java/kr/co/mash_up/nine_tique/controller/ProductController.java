@@ -1,5 +1,7 @@
 package kr.co.mash_up.nine_tique.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
@@ -16,6 +18,7 @@ import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_PRODUCT;
 @RestController
 @RequestMapping(value = API_PRODUCT)
 @Slf4j
+@Api(description = "상품", tags = {"product"})
 public class ProductController {
 
     @Autowired
@@ -27,6 +30,7 @@ public class ProductController {
      * @param requestVO 생성할 상품 정보
      * @return 생성 결과
      */
+    @ApiOperation(value = "상품 생성")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
@@ -86,6 +90,7 @@ public class ProductController {
      * @param requestVO 수정할 상품 정보
      * @return 수정 결과
      */
+    @ApiOperation(value = "상품 정보 수정")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseVO update(@PathVariable("id") Long productId,
                              @RequestBody ProductRequestVO requestVO) {
@@ -117,6 +122,7 @@ public class ProductController {
      * @param productId 상세조회할 상품 id
      * @return 조회한 상품 정보
      */
+    @ApiOperation(value = "상품 정보 조회")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public DataResponseVO<ProductDto> detail(@PathVariable("id") Long productId) {
         Long userId = SecurityUtil.getCurrentUser().getId();
@@ -125,11 +131,12 @@ public class ProductController {
     }
 
     /**
-     * 카테고리별 리스트 조회
+     * 카테고리별 상품 리스트 조회
      *
      * @param requestVO request parameter가 담긴 VO
      * @return 카테고리별 상품 리스트
      */
+    @ApiOperation(value = "카테고리별 상품 리스트 조회")
     @RequestMapping(method = RequestMethod.GET)
     public DataListResponseVO<ProductDto> list(ProductListRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
@@ -144,11 +151,12 @@ public class ProductController {
     }
 
     /**
-     * 상품 삭제
+     * 상품 정보 삭제
      *
      * @param productId 삭제할 상품 id
      * @return 삭제 결과
      */
+    @ApiOperation(value = "상품 정보 삭제")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseVO delete(@PathVariable("id") Long productId) {
         Long userId = SecurityUtil.getCurrentUser().getId();

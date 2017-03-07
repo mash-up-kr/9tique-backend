@@ -1,5 +1,9 @@
 package kr.co.mash_up.nine_tique.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.service.CategorySservice;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
@@ -19,6 +23,7 @@ import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_CATEGORY;
 @RequestMapping(value = API_CATEGORY)
 //자동으로 logging을 위한 필드인 ‘private static final Logger log’가 추가, Slf4j를 사용하여 출력
 @Slf4j
+@Api(description = "카테고리", tags = {"category"})
 public class CategoryController {
 
     @Autowired
@@ -30,6 +35,7 @@ public class CategoryController {
      * @param requestVO 생성할 카테고리 정보
      * @return 생성 결과
      */
+    @ApiOperation(value = "카테고리 생성")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseVO add(@RequestBody CategoryRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMain(), requestVO.getSub());
@@ -51,6 +57,7 @@ public class CategoryController {
      * @param requestVO 수정할 내용
      * @return 수정 결과
      */
+    @ApiOperation(value = "카테고리 수정")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseVO update(@PathVariable Long id, @RequestBody CategoryRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMain(), requestVO.getSub());
@@ -70,6 +77,7 @@ public class CategoryController {
      * @param id 삭제할 카테고리 id
      * @return 삭제 결과
      */
+    @ApiOperation(value = "카테고리 삭제")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseVO delete(@PathVariable Long id) {
         categorySservice.delete(id);
@@ -77,10 +85,11 @@ public class CategoryController {
     }
 
     /**
-     * 카테고리 목록 조회
+     * 카테고리 리스트 조회
      *
      * @return 카테고리 목록
      */
+    @ApiOperation(value = "카테고리 리스트 조회")
     @RequestMapping(method = RequestMethod.GET)
     public DataListResponseVO<Category> list() {
         List<Category> categories = categorySservice.findCategories();
@@ -93,6 +102,7 @@ public class CategoryController {
      * @param categoryId 상세조회할 카테고리 id
      * @return 조회한 카테고리 정보
      */
+    @ApiOperation(value = "카테고리 상세정보 조회")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public DataResponseVO<Category> detail(@PathVariable("id") Long categoryId) {
         Category category = categorySservice.findById(categoryId);
