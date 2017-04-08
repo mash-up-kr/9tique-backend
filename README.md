@@ -1,5 +1,6 @@
 # 구티크
 [![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/opklnm102/9tique)  
+[![Stories in Ready](https://badge.waffle.io/mash-up-kr/9tique-backend.svg?label=ready&title=Ready)](http://waffle.io/mash-up-kr/9tique-backend)
 
 온/오프라인 구제의류 쇼핑몰 상품들을 한군데로 모아 고객에게 편리한 구매 경험을 제공하는 모바일 커머스 서비스  
 현재 구제 의류 시장에서 구매자의 니즈는 질좋고 희소성 있는 브랜드 의류를 값싸게 구매하는 것이지만 **여기저기 둘러봐야하는 문제**가 있고, 판매자는 **구제 의류 매장 및 상품을 소개해주는 마케팅 플랫폼의 부재**로 현재 인스타그램, 페이스북을 활용하고 있었습니다. 이런 현재 구제의류 시장에서의 문제점을 해결하기 위해 시작한 서비스입니다.  
