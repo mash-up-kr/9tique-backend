@@ -1,0 +1,92 @@
+2017-05-10 02:00:07.606  INFO 8020 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Starting CoreApplicationTests on Dong-PC with PID 8020 (started by Dong in D:\Dev\nine_tique\core)
+2017-05-10 02:00:07.608  INFO 8020 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : No active profile set, falling back to default profiles: default
+2017-05-10 02:00:07.632  INFO 8020 --- [Test worker] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5b8f2555: startup date [Wed May 10 02:00:07 KST 2017]; root of context hierarchy
+2017-05-10 02:00:08.537  INFO 8020 --- [Test worker] f.a.AutowiredAnnotationBeanPostProcessor : JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-05-10 02:00:09.462  INFO 8020 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2017-05-10 02:00:09.481  INFO 8020 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-05-10 02:00:09.563  INFO 8020 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2017-05-10 02:00:09.565  INFO 8020 --- [Test worker] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2017-05-10 02:00:09.568  INFO 8020 --- [Test worker] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2017-05-10 02:00:09.626  INFO 8020 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-05-10 02:00:09.742  INFO 8020 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2017-05-10 02:00:10.805  INFO 8020 --- [Test worker] org.hibernate.tool.hbm2ddl.SchemaUpdate  : HHH000228: Running hbm2ddl schema update
+2017-05-10 02:00:10.853  INFO 8020 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2017-05-10 02:00:11.087  INFO 8020 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Started CoreApplicationTests in 3.851 seconds (JVM running for 5.55)
+2017-05-10 02:00:11.130  INFO 8020 --- [Thread-7] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@5b8f2555: startup date [Wed May 10 02:00:07 KST 2017]; root of context hierarchy
+2017-05-10 02:00:11.133  INFO 8020 --- [Thread-7] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2017-05-10 02:13:04.673  INFO 5192 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Starting CoreApplicationTests on Dong-PC with PID 5192 (started by Dong in D:\Dev\nine_tique\core)
+2017-05-10 02:13:04.675  INFO 5192 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : No active profile set, falling back to default profiles: default
+2017-05-10 02:13:04.696  INFO 5192 --- [Test worker] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5b8f2555: startup date [Wed May 10 02:13:04 KST 2017]; root of context hierarchy
+2017-05-10 02:13:05.913  INFO 5192 --- [Test worker] f.a.AutowiredAnnotationBeanPostProcessor : JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-05-10 02:13:06.747  INFO 5192 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2017-05-10 02:13:06.765  INFO 5192 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-05-10 02:13:06.830  INFO 5192 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2017-05-10 02:13:06.831  INFO 5192 --- [Test worker] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2017-05-10 02:13:06.833  INFO 5192 --- [Test worker] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2017-05-10 02:13:06.874  INFO 5192 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-05-10 02:13:06.983  INFO 5192 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2017-05-10 02:13:07.724  INFO 5192 --- [Test worker] org.hibernate.tool.hbm2ddl.SchemaUpdate  : HHH000228: Running hbm2ddl schema update
+2017-05-10 02:13:07.770  INFO 5192 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2017-05-10 02:13:07.981  INFO 5192 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Started CoreApplicationTests in 3.654 seconds (JVM running for 4.592)
+2017-05-10 02:13:08.031  INFO 5192 --- [Thread-7] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@5b8f2555: startup date [Wed May 10 02:13:04 KST 2017]; root of context hierarchy
+2017-05-10 02:13:08.035  INFO 5192 --- [Thread-7] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2017-05-11 01:15:29.971  INFO 10060 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Starting CoreApplicationTests on Dong-PC with PID 10060 (started by Dong in D:\Dev\Android\EwhaApp\16-2\9tique-backend\core)
+2017-05-11 01:15:29.972  INFO 10060 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : No active profile set, falling back to default profiles: default
+2017-05-11 01:15:30.001  INFO 10060 --- [Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@35d0e20c: startup date [Thu May 11 01:15:29 KST 2017]; root of context hierarchy
+2017-05-11 01:15:32.108  INFO 10060 --- [Test worker] f.a.AutowiredAnnotationBeanPostProcessor : JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-05-11 01:15:33.545  INFO 10060 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2017-05-11 01:15:33.580  INFO 10060 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-05-11 01:15:33.705  INFO 10060 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2017-05-11 01:15:33.708  INFO 10060 --- [Test worker] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2017-05-11 01:15:33.710  INFO 10060 --- [Test worker] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2017-05-11 01:15:33.777  INFO 10060 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-05-11 01:15:33.899  INFO 10060 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2017-05-11 01:15:35.268  INFO 10060 --- [Test worker] org.hibernate.tool.hbm2ddl.SchemaUpdate  : HHH000228: Running hbm2ddl schema update
+2017-05-11 01:15:35.809  INFO 10060 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2017-05-11 01:15:37.570  INFO 10060 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@35d0e20c: startup date [Thu May 11 01:15:29 KST 2017]; root of context hierarchy
+2017-05-11 01:15:37.694  INFO 10060 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-05-11 01:15:37.695  INFO 10060 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-05-11 01:15:37.747  INFO 10060 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-11 01:15:37.749  INFO 10060 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-11 01:15:37.816  INFO 10060 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-11 01:15:38.258  INFO 10060 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: OrRequestMatcher [requestMatchers=[Ant [pattern='/css/**'], Ant [pattern='/js/**'], Ant [pattern='/images/**'], Ant [pattern='/webjars/**'], Ant [pattern='/**/favicon.ico'], Ant [pattern='/error']]], []
+2017-05-11 01:15:38.352  INFO 10060 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: org.springframework.boot.autoconfigure.security.SpringBootWebSecurityConfiguration$ApplicationNoWebSecurityConfigurerAdapter$1@6d12dd45, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7251427c, org.springframework.security.web.context.SecurityContextPersistenceFilter@1f036d3c, org.springframework.security.web.header.HeaderWriterFilter@590b655e, org.springframework.security.web.csrf.CsrfFilter@a9840e, org.springframework.security.web.authentication.logout.LogoutFilter@7e5ee924, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@654f54c9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@63ab2351, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7bcf92db, org.springframework.security.web.session.SessionManagementFilter@67c9ae4b, org.springframework.security.web.access.ExceptionTranslationFilter@d9e84d6]
+2017-05-11 01:15:38.618  INFO 10060 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Started CoreApplicationTests in 9.13 seconds (JVM running for 10.338)
+2017-05-11 01:15:38.690  INFO 10060 --- [Thread-7] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@35d0e20c: startup date [Thu May 11 01:15:29 KST 2017]; root of context hierarchy
+2017-05-11 01:15:38.696  INFO 10060 --- [Thread-7] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2017-05-13 10:25:21.371  INFO 10208 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Starting CoreApplicationTests on Dong-PC with PID 10208 (started by Dong in D:\Dev\Android\EwhaApp\16-2\9tique-backend\core)
+2017-05-13 10:25:21.371  INFO 10208 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : No active profile set, falling back to default profiles: default
+2017-05-13 10:25:21.418  INFO 10208 --- [Test worker] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@35d0e20c: startup date [Sat May 13 10:25:21 KST 2017]; root of context hierarchy
+2017-05-13 10:25:23.461  INFO 10208 --- [Test worker] f.a.AutowiredAnnotationBeanPostProcessor : JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-05-13 10:25:24.702  INFO 10208 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2017-05-13 10:25:24.733  INFO 10208 --- [Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-05-13 10:25:24.889  INFO 10208 --- [Test worker] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2017-05-13 10:25:24.889  INFO 10208 --- [Test worker] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2017-05-13 10:25:24.905  INFO 10208 --- [Test worker] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2017-05-13 10:25:24.995  INFO 10208 --- [Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-05-13 10:25:25.151  INFO 10208 --- [Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2017-05-13 10:25:26.554  INFO 10208 --- [Test worker] org.hibernate.tool.hbm2ddl.SchemaUpdate  : HHH000228: Running hbm2ddl schema update
+2017-05-13 10:25:26.962  INFO 10208 --- [Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2017-05-13 10:25:27.056  INFO 10208 --- [Test worker] o.s.s.c.ScheduledExecutorFactoryBean     : Initializing ExecutorService  'scheduledExecutorFactoryBean'
+2017-05-13 10:25:28.234  INFO 10208 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.web.context.support.GenericWebApplicationContext@35d0e20c: startup date [Sat May 13 10:25:21 KST 2017]; root of context hierarchy
+2017-05-13 10:25:28.327  INFO 10208 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2017-05-13 10:25:28.327  INFO 10208 --- [Test worker] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2017-05-13 10:25:28.374  INFO 10208 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/storage/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-13 10:25:28.374  INFO 10208 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-13 10:25:28.374  INFO 10208 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-13 10:25:28.429  INFO 10208 --- [Test worker] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2017-05-13 10:25:28.826  INFO 10208 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: OrRequestMatcher [requestMatchers=[Ant [pattern='/css/**'], Ant [pattern='/js/**'], Ant [pattern='/images/**'], Ant [pattern='/webjars/**'], Ant [pattern='/**/favicon.ico'], Ant [pattern='/error']]], []
+2017-05-13 10:25:28.942  INFO 10208 --- [Test worker] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: org.springframework.boot.autoconfigure.security.SpringBootWebSecurityConfiguration$ApplicationNoWebSecurityConfigurerAdapter$1@63794f2b, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@18f909f8, org.springframework.security.web.context.SecurityContextPersistenceFilter@1560365f, org.springframework.security.web.header.HeaderWriterFilter@4dd91a6f, org.springframework.security.web.csrf.CsrfFilter@3fee5443, org.springframework.security.web.authentication.logout.LogoutFilter@541a1b65, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7cab3e32, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@204c3612, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1c3cf8b1, org.springframework.security.web.session.SessionManagementFilter@786039f2, org.springframework.security.web.access.ExceptionTranslationFilter@3b0734c]
+2017-05-13 10:25:29.370  INFO 10208 --- [Test worker] k.c.mash_up_9tique.CoreApplicationTests  : Started CoreApplicationTests in 8.363 seconds (JVM running for 9.384)
+2017-05-13 10:25:29.448  INFO 10208 --- [Thread-7] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@35d0e20c: startup date [Sat May 13 10:25:21 KST 2017]; root of context hierarchy
+2017-05-13 10:25:29.464  INFO 10208 --- [Thread-7] o.s.s.c.ScheduledExecutorFactoryBean     : Shutting down ExecutorService 'scheduledExecutorFactoryBean'
+2017-05-13 10:25:29.464  INFO 10208 --- [Thread-7] o.s.s.c.ScheduledExecutorFactoryBean     : Shutting down ExecutorService 'scheduledExecutorFactoryBean'
+2017-05-13 10:25:29.464  INFO 10208 --- [Thread-7] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'

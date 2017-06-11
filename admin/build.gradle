@@ -1,0 +1,12 @@
+/**
+ * 관리 웹 애플리케이션
+ * 매장, 판매자, 상품 관리
+ */
+dependencies {
+    compile project(':core')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-aop')
+//    compile('org.springframework.boot:spring-boot-starter-security')
+//	compile('org.springframework.boot:spring-boot-starter-freemarker')
+}

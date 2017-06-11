@@ -1,0 +1,3 @@
+rootProject.name = 'nine_tique'
+
+include 'core', 'admin', 'restapi'

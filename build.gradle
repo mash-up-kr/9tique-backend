@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.4.1.RELEASE'
+        springBootVersion = '1.5.3.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -10,99 +10,40 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'spring-boot'
-apply plugin: 'idea'
+subprojects {
+    group 'kr.co.mash-up-9tique'
+    version '1.0-SNAPSHOT'
 
-jar {
-    baseName = 'nine_tique'
-    version = '0.0.1-SNAPSHOT'
-}
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'idea'
 
-repositories {
-    mavenCentral()
-}
+    sourceCompatibility = 1.8
 
-dependencies {
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-aop')
+    repositories {
+        mavenCentral()
+    }
 
-    // db
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    testCompile('com.h2database:h2')
-    runtime('mysql:mysql-connector-java')
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
 
-    // cache
-    compile('org.springframework.boot:spring-boot-starter-cache')
-
-    // lombok
-    compile('org.projectlombok:lombok')
-
-    // security
-    compile('org.springframework.boot:spring-boot-starter-security')
-//	testCompile('org.springframework.security:spring-security-test')
-    compile 'io.jsonwebtoken:jjwt:0.7.0'  // jwt
-
-    // apache commons
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'commons-io:commons-io:2.5'
-
-    // queryDSL
-    compile 'com.mysema.querydsl:querydsl-jpa:3.7.2'
-    compile 'com.mysema.querydsl:querydsl-apt:3.7.2'
-
-    // Swagger
-    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
-    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
-}
-
-// https://gist.github.com/EdwardBeckett/5377401
-// http://blog.jongminkim.co.kr/?p=386
-sourceSets {
-    querydsl {
-        java {
-            srcDirs = ['src/main/querydsl']
+    task hello {
+        doLast {
+            task -> println "I'm $task.project.name"
         }
     }
 }
 
-configurations {
-//    compile.exclude module: "spring-boot-starter-jdbc"  // 다른 commection pool 사용시 jdbc exclude
-    querydslapt
+project(':restapi') {
+    dependencies {
+        compile project(':core')
+    }
 }
 
-task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
-    source = sourceSets.main.java
-    classpath = configurations.compile + configurations.querydslapt
-    options.compilerArgs = [
-            '-proc:only', '-processor', 'com.mysema.query.apt.jpa.JPAAnnotationProcessor'
-    ]
-    destinationDir = sourceSets.querydsl.java.srcDirs.iterator().next()
-    dependencyCacheDir = compileJava.dependencyCacheDir
-}
-generateQueryDSL.mustRunAfter clean
-
-compileJava {
-    dependsOn generateQueryDSL
-    source generateQueryDSL.destinationDir
-}
-
-compileQuerydslJava {
-    dependsOn generateQueryDSL
-    options.warnings = false
-    classpath += sourceSets.main.runtimeClasspath
-}
-
-clean {
-    delete sourceSets.querydsl.java.srcDirs
-}
-
-idea {
-    module {
-        sourceDirs += file('src/main/querydsl')
+project(':admin') {
+    dependencies {
+        compile project(':core')
     }
 }

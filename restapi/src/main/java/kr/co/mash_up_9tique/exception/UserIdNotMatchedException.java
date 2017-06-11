@@ -1,0 +1,16 @@
+package kr.co.mash_up_9tique.exception;
+
+import kr.co.mash_up_9tique.util.Constant;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+/**
+ * user id가 맞지 않을 경우 발생
+ */
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "user id not matched")
+public class UserIdNotMatchedException extends BaseException {
+
+    public UserIdNotMatchedException(String message) {
+        super(Constant.ResultCodes.BAD_REQUEST, message);
+    }
+}

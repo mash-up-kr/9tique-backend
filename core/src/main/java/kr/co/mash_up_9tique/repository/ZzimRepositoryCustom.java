@@ -1,0 +1,21 @@
+package kr.co.mash_up_9tique.repository;
+
+import kr.co.mash_up_9tique.domain.Product;
+import kr.co.mash_up_9tique.domain.Zzim;
+import kr.co.mash_up_9tique.domain.ZzimProduct;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+/**
+ * Spring JPA에서 지원하지 않는 메소드를 QueryDSL을 이용하여 구현시 이용
+ */
+public interface ZzimRepositoryCustom {
+
+    ZzimProduct getZzimProduct(Zzim zzim, Product product);
+
+    Page<ZzimProduct> getZzimProducts(Long userId, Pageable pageable);
+
+    List<ZzimProduct> getZzimProducts(Long userId);
+}

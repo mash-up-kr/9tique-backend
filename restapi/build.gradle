@@ -1,0 +1,18 @@
+/**
+ * 서비스 api 애플리케이션
+ * 매장, 상품정보 API
+ */
+dependencies {
+    compile project(':core')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-aop')
+//	compile('org.springframework.boot:spring-boot-starter-security')
+    //	testCompile('org.springframework.security:spring-security-test')
+
+//    compile('org.springframework.boot:spring-boot-starter-cache')
+
+    // Swagger
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+}
