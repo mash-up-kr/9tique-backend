@@ -31,6 +31,8 @@ public class QShop extends EntityPathBase<Shop> {
 
     public final StringPath info = createString("info");
 
+    public final StringPath kakaoOpenChatUrl = createString("kakaoOpenChatUrl");
+
     public final StringPath name = createString("name");
 
     public final StringPath phone = createString("phone");
