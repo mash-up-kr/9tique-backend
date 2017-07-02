@@ -72,34 +72,34 @@ public class CategoryControllerTest {
 
     }
 
-    @Test
-    public void testAdd() throws Exception {
-
-//        given(categoryService.create(category)).willReturn(category);
-
-        // when절에 해당하는 메소드를 호출할 경우 then절에 정의된 내용 반환
-//        when(categoryService.create(category)).thenReturn(category);
-
-        Category category = new CategoryBuilder()
-                .withMain("main1")
-                .withSub("sub1")
-                .withEnable(true)
-                .build();
-
-        String jsonString = this.jsonStringFromObject(category);
-
-        /**
-         * Perform -> 요청 사전 조건
-         * Expect -> 응단 관련 테스트
-         * Do -> 테스트시 직접 실행
-         * Return -> 테스트 결과 반환
-         */
-        this.mockMvc.perform(post(API_CATEGORY)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonString))
-                .andExpect(handler().handlerType(CategoryController.class))  //요청에 매핑된 클래스 확인
-                .andExpect(handler().methodName("add"))  // 요청에 매핑된 메소드 확인
-                .andExpect(status().isOk());
+//    @Test
+//    public void testAdd() throws Exception {
+//
+////        given(categoryService.create(category)).willReturn(category);
+//
+//        // when절에 해당하는 메소드를 호출할 경우 then절에 정의된 내용 반환
+////        when(categoryService.create(category)).thenReturn(category);
+//
+//        Category category = new CategoryBuilder()
+//                .withMain("main1")
+//                .withSub("sub1")
+//                .withEnable(true)
+//                .build();
+//
+//        String jsonString = this.jsonStringFromObject(category);
+//
+//        /**
+//         * Perform -> 요청 사전 조건
+//         * Expect -> 응단 관련 테스트
+//         * Do -> 테스트시 직접 실행
+//         * Return -> 테스트 결과 반환
+//         */
+//        this.mockMvc.perform(post(API_CATEGORY)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(jsonString))
+//                .andExpect(handler().handlerType(CategoryController.class))  //요청에 매핑된 클래스 확인
+//                .andExpect(handler().methodName("add"))  // 요청에 매핑된 메소드 확인
+//                .andExpect(status().isOk());
 
 
 //        this.mockMvc.perform(get("/category/{id}", id))
@@ -107,26 +107,26 @@ public class CategoryControllerTest {
 //                .andExpect(model().attributeExists("categories"))
 //                .andExpect(model().attribute("categories", Matchers.hasSize(1)))
 //                .andExpect(model().attribute("categories", Matchers.contains(Matchers.samePropertyValuesAs(category))));
-    }
+//    }
 
-    @Test
-    public void testUpdate() throws Exception {
-        Long id = 3L;
-        Category category = new CategoryBuilder()
-                .withId(id)
-                .withMain("main1")
-                .withSub("sub1")
-                .withEnable(true)
-                .build();
-        String jsonString = this.jsonStringFromObject(category);
-
-        this.mockMvc.perform(put(API_CATEGORY + "/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonString))
-                .andExpect(handler().handlerType(CategoryController.class))
-                .andExpect(handler().methodName("update"))
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void testUpdate() throws Exception {
+//        Long id = 3L;
+//        Category category = new CategoryBuilder()
+//                .withId(id)
+//                .withMain("main1")
+//                .withSub("sub1")
+//                .withEnable(true)
+//                .build();
+//        String jsonString = this.jsonStringFromObject(category);
+//
+//        this.mockMvc.perform(put(API_CATEGORY + "/{id}", id)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(jsonString))
+//                .andExpect(handler().handlerType(CategoryController.class))
+//                .andExpect(handler().methodName("update"))
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     public void testDelete() throws Exception {
