@@ -68,7 +68,7 @@ public class ProductService {
             } else {
                 Category category = categoryRepository.findByMainAndSub(mainCategory, subCategory);
                 Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("find product by category -> category not found"));
-                if (!category.isEnabled()) {
+                if (!category.isActive()) {
                     throw new IdNotFoundException("find product by category -> category not found");
                 }
 
@@ -95,8 +95,8 @@ public class ProductService {
 
                     ShopDto shopDto = new ShopDto.Builder()
                             .withName(product.getShop().getName())
-                            .withInfo(product.getShop().getInfo())
-                            .withPhone(product.getShop().getPhone())
+                            .withInfo(product.getShop().getDescription())
+                            .withPhone(product.getShop().getPhoneNumber())
                             .withKakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
                             .build();
 
@@ -106,7 +106,7 @@ public class ProductService {
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
-                            .withBrandName(product.getBrandName())
+                            .withBrandName(product.getBrand().getName())
                             .withSize(product.getSize())
                             .withPrice(product.getPrice())
                             .withDescription(product.getDescription())
@@ -145,8 +145,8 @@ public class ProductService {
 
         ShopDto shopDto = new ShopDto.Builder()
                 .withName(product.getShop().getName())
-                .withInfo(product.getShop().getInfo())
-                .withPhone(product.getShop().getPhone())
+                .withInfo(product.getShop().getDescription())
+                .withPhone(product.getShop().getPhoneNumber())
                 .withKakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
                 .build();
 
@@ -159,7 +159,7 @@ public class ProductService {
         return new ProductDto.Builder()
                 .withId(product.getId())
                 .withName(product.getName())
-                .withBrandName(product.getBrandName())
+                .withBrandName(product.getBrand().getName())
                 .withSize(product.getSize())
                 .withPrice(product.getPrice())
                 .withDescription(product.getDescription())
@@ -183,13 +183,13 @@ public class ProductService {
         Product oldProduct = productRepository.findOne(productId);
 
         Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product update -> product not found"));
-        if (!oldProduct.isEnabled()) {
+        if (!oldProduct.isActive()) {
             throw new IdNotFoundException("product update -> product not found");
         }
 
         Seller seller = sellerRepository.findByUserId(userId);
         Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("product update -> seller not found"));
-        if (!seller.isEnabled()) {
+        if (!seller.isActive()) {
             throw new IdNotFoundException("product update -> seller not found");
         }
         if (!oldProduct.matchShop(seller)) {  // 등록한 seller의 shop만 수정 가능
@@ -198,7 +198,7 @@ public class ProductService {
 
         Category category = categoryRepository.findByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
         Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("product update -> category not found"));
-        if (!category.isEnabled()) {
+        if (!category.isActive()) {
             throw new IdNotFoundException("product update -> category not found");
         }
 
@@ -252,7 +252,7 @@ public class ProductService {
 
             if (!existProductImageFromOldData(fileName, oldProductImages)) {
                 ProductImage productImage = productImageRepository.findByFileName(fileName);
-                if (!productImage.isEnabled()) {
+                if (!productImage.isActive()) {
                     throw new IdNotFoundException("product update -> productImage not found");
                 }
                 productImage.setProduct(oldProduct);
@@ -275,14 +275,14 @@ public class ProductService {
         //Todo: 상품이 이미 존재할 경우 예외처리. 상품을 뭐로 find할지 생각이 안난다..
         Shop shop = shopRepository.findByUserId(userId);
         Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("product create -> seller Infomation not found"));
-        if (!shop.isEnabled()) {
+        if (!shop.isActive()) {
             throw new IdNotFoundException("product create -> seller Infomation not found");
         }
         product.setShop(shop);
 
         Category category = categoryRepository.findByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
         Optional.ofNullable(category).orElseThrow(() -> new IdNotFoundException("product create -> category not found"));
-        if (!category.isEnabled()) {
+        if (!category.isActive()) {
             throw new IdNotFoundException("product create -> category not found");
         }
         product.setCategory(category);
@@ -297,7 +297,7 @@ public class ProductService {
         requestVO.getProductImages().forEach(productImageDto -> {
             ProductImage productImage
                     = productImageRepository.findByFileName(ProductImage.getFileNameFromUrl(productImageDto.getUrl()));
-            if (!productImage.isEnabled()) {
+            if (!productImage.isActive()) {
                 throw new IdNotFoundException("product create -> productImage not found");
             }
             productImage.setProduct(product);
@@ -365,13 +365,13 @@ public class ProductService {
         Product oldProduct = productRepository.findOne(productId);
 
         Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product update -> product not found"));
-        if (!oldProduct.isEnabled()) {
+        if (!oldProduct.isActive()) {
             throw new IdNotFoundException("product update -> product not found");
         }
 
         Seller seller = sellerRepository.findByUserId(userId);
         Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("product update -> seller not found"));
-        if (!seller.isEnabled()) {
+        if (!seller.isActive()) {
             throw new IdNotFoundException("product update -> seller not found");
         }
         if (!oldProduct.matchShop(seller)) {  // 등록한 seller의 shop만 수정 가능

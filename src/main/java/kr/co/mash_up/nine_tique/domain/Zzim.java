@@ -1,27 +1,30 @@
 package kr.co.mash_up.nine_tique.domain;
 
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
-
 /**
- * 찜(좋아요)
+ * 유저의 찜(장바구니라고 생각하면 이해하기 쉬움)
  */
 @Entity
 @Table(name = "zzim")
 @Getter
 @Setter
-@ToString(exclude = {"user"})
 @NoArgsConstructor  // JPA는 default constructor 필요
+@ToString(exclude = {"zzimProducts"})
+@EqualsAndHashCode(callSuper = false, of = "id")
 public class Zzim extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", columnDefinition = "INT(11)")
     private Long id;
 
     @OneToOne
@@ -29,7 +32,7 @@ public class Zzim extends AbstractEntity<Long> {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "zzim", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "zzim", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ZzimProduct> zzimProducts;
 
     public Zzim(User user) {
@@ -51,6 +54,11 @@ public class Zzim extends AbstractEntity<Long> {
 //        return false;
 //    }
 
+    /**
+     * 찜된 상품에 추가
+     *
+     * @param zzimProduct
+     */
     public void addZzimProduct(ZzimProduct zzimProduct) {
         int position = searchProductZzimIndex(zzimProduct);
         if (position > -1) {
@@ -61,6 +69,11 @@ public class Zzim extends AbstractEntity<Long> {
         }
     }
 
+    /**
+     * 찜된 상품에서 삭제
+     *
+     * @param zzimProduct
+     */
     public void removeZzimProduct(ZzimProduct zzimProduct) {
         int deleteItemPosition = searchProductZzimIndex(zzimProduct);
         zzimProducts.get(deleteItemPosition).disable();

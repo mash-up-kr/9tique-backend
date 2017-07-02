@@ -10,7 +10,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
 
     Shop findByName(String name);
 
-    Shop findByPhone(String phone);
+    Shop findByPhoneNumber(String phoneNumber);
 
-    Shop findByNameAndPhone(String name, String phone);
+    Shop findByNameAndPhoneNumber(String name, String phoneNumber);
 }

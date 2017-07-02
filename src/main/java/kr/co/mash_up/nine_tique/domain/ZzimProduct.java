@@ -1,18 +1,29 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.*;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "zzim_product")
 @Getter
 @Setter
-@ToString(exclude = {"zzim", "product"})
 @NoArgsConstructor  // JPA는 default constructor 필요
+@ToString
+@EqualsAndHashCode(callSuper = false, of = "id")
 public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
 
     @EmbeddedId  //복합키 설정
@@ -22,29 +33,13 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
     @MapsId(value = "zzimId")  //식별관계 매핑(FK가 PK에 포함될 때). FK와 매핑한 연관관계를 기본키에도 매핑하겠다는 뜻
     private Zzim zzim;
 
-    @ManyToOne
+    @ManyToOne  // ZzimProduct(Many) : Product(One)
     @MapsId(value = "productId")
-//    @JsonProperty
-//    @JsonUnwrapped  // json object로 wrapping 안한다
     private Product product;
 
-    @Column
-    private boolean enabled;
-
-    public ZzimProduct(Zzim zzim, Product product){
-        this.id.zzimId = zzim.getId();
-        this.id.productId = product.getId();
-        this.zzim = zzim;
-        this.product = product;
-        enabled = true;
-    }
-
-    public boolean matchProduct(Product newProduct){
-        if(newProduct == null){
-            return false;
-        }
-        return this.product.equals(newProduct);
-    }
+    @Type(type = "yes_no")
+    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
+    private boolean active;
 
     @Embeddable
     @Data
@@ -58,15 +53,30 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
         private Long productId;
     }
 
+    public ZzimProduct(Zzim zzim, Product product) {
+        this.id.zzimId = zzim.getId();
+        this.id.productId = product.getId();
+        this.zzim = zzim;
+        this.product = product;
+        this.active = true;
+    }
+
+    public boolean matchProduct(Product newProduct) {
+        if (newProduct == null) {
+            return false;
+        }
+        return this.product.equals(newProduct);
+    }
+
     public void disable() {
-        if (enabled) {
-            this.enabled = false;
+        if (active) {
+            this.active = false;
         }
     }
 
     public void enable() {
-        if (!enabled) {
-            this.enabled = true;
+        if (!active) {
+            this.active = true;
         }
     }
 }

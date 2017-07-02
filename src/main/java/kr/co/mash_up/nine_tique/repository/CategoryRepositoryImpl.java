@@ -32,7 +32,7 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
         QCategory qCategory = QCategory.category;
 
         query.from(qCategory)
-                .where(qCategory.id.eq(id).and(qCategory.enabled.isTrue()));
+                .where(qCategory.id.eq(id).and(qCategory.active.isTrue()));
 
         return query.uniqueResult(qCategory);
     }
@@ -43,7 +43,7 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
         QCategory qCategory = QCategory.category;
 
         query.from(qCategory)
-                .where(qCategory.enabled.isTrue())
+                .where(qCategory.active.isTrue())
                 .orderBy(qCategory.createdAt.desc());
 
         return query.list(qCategory);

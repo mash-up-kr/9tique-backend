@@ -2,6 +2,7 @@
 /build/
 !gradle/wrapper/gradle-wrapper.jar
 /classes/
+/out/
 
 ### STS ###
 .apt_generated
@@ -30,3 +31,4 @@ nbdist/
 
 ### storage ###
 /storage/
+

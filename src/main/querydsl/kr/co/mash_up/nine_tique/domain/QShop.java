@@ -22,22 +22,28 @@ public class QShop extends EntityPathBase<Shop> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
+    public final BooleanPath active = createBoolean("active");
+
+    public final NumberPath<Long> commentCount = createNumber("commentCount", Long.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final BooleanPath enabled = createBoolean("enabled");
+    public final StringPath description = createString("description");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath info = createString("info");
+    public final StringPath kakaoOpenChatUrl = createString("kakaoOpenChatUrl");
 
     public final StringPath name = createString("name");
 
-    public final StringPath phone = createString("phone");
+    public final StringPath phoneNumber = createString("phoneNumber");
 
     public final ListPath<Product, QProduct> products = this.<Product, QProduct>createList("products", Product.class, QProduct.class, PathInits.DIRECT2);
 
     public final ListPath<Seller, QSeller> sellers = this.<Seller, QSeller>createList("sellers", Seller.class, QSeller.class, PathInits.DIRECT2);
+
+    public final ListPath<ShopComment, QShopComment> shopComments = this.<ShopComment, QShopComment>createList("shopComments", ShopComment.class, QShopComment.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

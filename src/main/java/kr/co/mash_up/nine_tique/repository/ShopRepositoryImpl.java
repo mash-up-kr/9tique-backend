@@ -42,7 +42,7 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
         QShop qShop = QShop.shop;
 
         query.from(qShop)
-                .where(qShop.enabled.isTrue())
+                .where(qShop.active.isTrue())
                 .orderBy(qShop.createdAt.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());

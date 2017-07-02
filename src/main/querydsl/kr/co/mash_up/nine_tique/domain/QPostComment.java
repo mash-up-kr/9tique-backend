@@ -11,56 +11,52 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QSeller is a Querydsl query type for Seller
+ * QPostComment is a Querydsl query type for PostComment
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QSeller extends EntityPathBase<Seller> {
+public class QPostComment extends EntityPathBase<PostComment> {
 
-    private static final long serialVersionUID = 1343991442L;
+    private static final long serialVersionUID = -2135028116L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QSeller seller = new QSeller("seller");
+    public static final QPostComment postComment = new QPostComment("postComment");
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final BooleanPath active = createBoolean("active");
-
-    public final StringPath authentiCode = createString("authentiCode");
+    public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<SellerProduct, QSellerProduct> sellerProducts = this.<SellerProduct, QSellerProduct>createList("sellerProducts", SellerProduct.class, QSellerProduct.class, PathInits.DIRECT2);
-
-    public final QShop shop;
+    public final QPost post;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public final QUser user;
 
-    public QSeller(String variable) {
-        this(Seller.class, forVariable(variable), INITS);
+    public QPostComment(String variable) {
+        this(PostComment.class, forVariable(variable), INITS);
     }
 
-    public QSeller(Path<? extends Seller> path) {
+    public QPostComment(Path<? extends PostComment> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSeller(PathMetadata<?> metadata) {
+    public QPostComment(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSeller(PathMetadata<?> metadata, PathInits inits) {
-        this(Seller.class, metadata, inits);
+    public QPostComment(PathMetadata<?> metadata, PathInits inits) {
+        this(PostComment.class, metadata, inits);
     }
 
-    public QSeller(Class<? extends Seller> type, PathMetadata<?> metadata, PathInits inits) {
+    public QPostComment(Class<? extends PostComment> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.shop = inits.isInitialized("shop") ? new QShop(forProperty("shop")) : null;
+        this.post = inits.isInitialized("post") ? new QPost(forProperty("post")) : null;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
     }
 

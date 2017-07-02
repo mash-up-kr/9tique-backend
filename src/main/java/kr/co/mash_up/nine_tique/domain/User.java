@@ -1,17 +1,18 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import kr.co.mash_up.nine_tique.security.Authorities;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import kr.co.mash_up.nine_tique.security.Authorities;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 유저
@@ -20,43 +21,40 @@ import java.util.Set;
 @Table(name = "user")
 @Getter
 @Setter
-@ToString(exclude = {"seller", "zzim"})
 @NoArgsConstructor  // JPA는 default constructor 필요
+@ToString(exclude = {"seller", "zzim"})
+@EqualsAndHashCode(callSuper = false, of = "id")
 public class User extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", columnDefinition = "INT(11)")
     private Long id;
 
-    //    @Column(length = 20, nullable = false)  // not null
-    @Column(length = 20)
-    @JsonProperty
-    private String name;
+    @Column(name = "name", length = 20)
+    private String name;  // 이름
 
-    //    @Column(length = 30, nullable = false, unique = true)  // not null, unique
-    @Column(length = 30)
-    @JsonProperty
-    private String email;
+    @Column(name = "email", length = 30)
+    private String email;  // 이메일
 
-    @Column(length = 255)
-    private String oauthToken;  // 카톡, FB
+    @Column(name = "oauth_token", length = 256)
+    private String oauthToken;  // 카톡, FB, token Todo: 필요없을 시 제거
 
     @Enumerated(EnumType.STRING)  // enum 이름을 DB에 저장
+    @Column(name = "oauth_type", length = 20)
     private OauthType oauthType;
 
-    //    @Column(nullable = false, unique = true)
-//    private String accessToken;  // api 접근 인증용
+    // Todo: 푸시 구현시 주석 해제
+//    @Column(name = "cloud_msg_reg_id", length = 256)
+//    private String cloudMsgRegId;
 
-//    private String gcmToken;  // 푸쉬
-
-    //    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Seller seller;
 
     // mappedBy - 연관관계 주인 설정. 주인O(읽기, 쓰기), 주인X(읽기)
     // mappedBy가 있으면 주인X.
     // orphanRemoval 연관관계가 끊어진 엔티티를 자동으로 삭제
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Zzim zzim;
 
     /**
@@ -65,7 +63,7 @@ public class User extends AbstractEntity<Long> {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",
             joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = @JoinColumn(name = "authority_id"))
+            inverseJoinColumns = @JoinColumn(name = "authority_id", columnDefinition = "INT(11)"))
     private Set<Authority> authorities = new HashSet<>();
 
     public void addAuthority(Authority authority) {

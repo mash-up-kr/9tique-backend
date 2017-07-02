@@ -24,7 +24,7 @@ public class CategoryRequestVO extends RequestVO {
         Category category = new Category();
         category.setMain(this.main);
         category.setSub(this.sub);
-        category.setEnabled(true);
+        category.setActive(true);
         return category;
     }
 }

@@ -1,15 +1,29 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import lombok.*;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "seller_product")
 @Getter
 @Setter
-@ToString(exclude = {"seller", "product"})
 @NoArgsConstructor
+@ToString
+@EqualsAndHashCode(callSuper = false, of = "id")
 public class SellerProduct extends AbstractEntity<SellerProduct.Id> {
 
     @EmbeddedId
@@ -19,19 +33,32 @@ public class SellerProduct extends AbstractEntity<SellerProduct.Id> {
     @MapsId(value = "sellerId")
     private Seller seller;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne  // SellerProduct(Many) : Product(One)
     @MapsId(value = "productId")
     private Product product;
 
-    @Column
-    private boolean enabled;
+    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
+    @Type(type = "yes_no")
+    private boolean active;
+
+    @Embeddable
+    @Data
+    @EqualsAndHashCode(callSuper = false, of = {"sellerId", "productId"})
+    public static class Id extends AbstractEntityId {
+
+        @Column(name = "seller_id", columnDefinition = "INT(11)")
+        private Long sellerId;
+
+        @Column(name = "product_id", columnDefinition = "INT(11)")
+        private Long productId;
+    }
 
     public SellerProduct(Seller seller, Product product) {
         this.id.sellerId = seller.getId();
         this.id.productId = product.getId();
         this.seller = seller;
         this.product = product;
-        this.enabled = true;
+        this.active = true;
     }
 
     public boolean matchProduct(Product newProduct) {
@@ -41,27 +68,15 @@ public class SellerProduct extends AbstractEntity<SellerProduct.Id> {
         return this.product.equals(newProduct);
     }
 
-    @Embeddable
-    @Data
-    @EqualsAndHashCode(callSuper = false, of = {"sellerId", "productId"})
-    public static class Id extends AbstractEntityId {
-
-        @Column(name = "seller_id")
-        private Long sellerId;
-
-        @Column(name = "product_id")
-        private Long productId;
-    }
-
     public void disable() {
-        if (enabled) {
-            this.enabled = false;
+        if (active) {
+            this.active = false;
         }
     }
 
     public void enable() {
-        if (!enabled) {
-            this.enabled = true;
+        if (!active) {
+            this.active = true;
         }
     }
 }

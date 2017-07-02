@@ -11,16 +11,16 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QProductImage is a Querydsl query type for ProductImage
+ * QPostImage is a Querydsl query type for PostImage
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QProductImage extends EntityPathBase<ProductImage> {
+public class QPostImage extends EntityPathBase<PostImage> {
 
-    private static final long serialVersionUID = 426716799L;
+    private static final long serialVersionUID = 365258920L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QProductImage productImage = new QProductImage("productImage");
+    public static final QPostImage postImage = new QPostImage("postImage");
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
@@ -35,7 +35,7 @@ public class QProductImage extends EntityPathBase<ProductImage> {
 
     public final StringPath originalFileName = createString("originalFileName");
 
-    public final QProduct product;
+    public final QPost post;
 
     public final NumberPath<Long> size = createNumber("size", Long.class);
 
@@ -44,25 +44,25 @@ public class QProductImage extends EntityPathBase<ProductImage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public QProductImage(String variable) {
-        this(ProductImage.class, forVariable(variable), INITS);
+    public QPostImage(String variable) {
+        this(PostImage.class, forVariable(variable), INITS);
     }
 
-    public QProductImage(Path<? extends ProductImage> path) {
+    public QPostImage(Path<? extends PostImage> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QProductImage(PathMetadata<?> metadata) {
+    public QPostImage(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QProductImage(PathMetadata<?> metadata, PathInits inits) {
-        this(ProductImage.class, metadata, inits);
+    public QPostImage(PathMetadata<?> metadata, PathInits inits) {
+        this(PostImage.class, metadata, inits);
     }
 
-    public QProductImage(Class<? extends ProductImage> type, PathMetadata<?> metadata, PathInits inits) {
+    public QPostImage(Class<? extends PostImage> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.product = inits.isInitialized("product") ? new QProduct(forProperty("product"), inits.get("product")) : null;
+        this.post = inits.isInitialized("post") ? new QPost(forProperty("post")) : null;
     }
 
 }

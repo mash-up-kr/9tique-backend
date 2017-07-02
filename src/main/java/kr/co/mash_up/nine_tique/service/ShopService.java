@@ -35,12 +35,12 @@ public class ShopService {
 
     public Shop create(ShopRequestVO requestVO) {
         Shop newShop = requestVO.toShopEntitiy();
-        Shop oldShop = shopRepository.findByNameAndPhone(newShop.getName(), newShop.getPhone());
+        Shop oldShop = shopRepository.findByNameAndPhoneNumber(newShop.getName(), newShop.getPhoneNumber());
 
         if (oldShop == null) {  // 1번도 등록 안된경우 -> 등록
             return shopRepository.save(newShop);
         }
-        if (oldShop.isEnabled()) {
+        if (oldShop.isActive()) {
             throw new AlreadyExistException("shop create -> shop already exist");
         }
 
@@ -56,8 +56,8 @@ public class ShopService {
         List<ShopDto> shopDtos = shopPage.getContent().stream()
                 .map(shop -> new ShopDto.Builder()
                         .withName(shop.getName())
-                        .withInfo(shop.getInfo())
-                        .withPhone(shop.getPhone())
+                        .withInfo(shop.getDescription())
+                        .withPhone(shop.getPhoneNumber())
                         .build()
                 )
                 .collect(Collectors.toList());
@@ -72,21 +72,21 @@ public class ShopService {
         Shop shop = shopRepository.findOne(shopId);
 
         Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("shop find by id -> shop not found"));
-        if (!shop.isEnabled()) {
+        if (!shop.isActive()) {
             throw new IdNotFoundException("shop find by id -> shop not found");
         }
 
         return new ShopDto.Builder()
                 .withName(shop.getName())
-                .withInfo(shop.getInfo())
-                .withPhone(shop.getPhone())
+                .withInfo(shop.getDescription())
+                .withPhone(shop.getPhoneNumber())
                 .build();
     }
 
     public Shop update(Long userId, Long shopId, ShopRequestVO requestVO) {
         Shop oldShop = shopRepository.findOne(shopId);
         Optional.ofNullable(oldShop).orElseThrow(() -> new IdNotFoundException("shop update -> shop not found"));
-        if (!oldShop.isEnabled()) {
+        if (!oldShop.isActive()) {
             throw new IdNotFoundException("shop update -> shop not found");
         }
 
@@ -104,7 +104,7 @@ public class ShopService {
     public void delete(Long shopId) {
         Shop oldShop = shopRepository.findOne(shopId);
         Optional.ofNullable(oldShop).orElseThrow(() -> new IdNotFoundException("shop find by id -> shop not found"));
-        if (!oldShop.isEnabled()) {
+        if (!oldShop.isActive()) {
             throw new IdNotFoundException("shop find by id -> shop not found");
         }
 

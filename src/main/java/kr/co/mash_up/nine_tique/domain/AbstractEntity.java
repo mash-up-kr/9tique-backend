@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 도메인 클래스 추상화
@@ -44,6 +45,10 @@ public abstract class AbstractEntity<K extends Serializable> implements Serializ
     }
 
     public abstract String toString();
+
+    public abstract boolean equals(Object o);
+
+    public abstract int hashCode();
 
     public abstract K getId();
 

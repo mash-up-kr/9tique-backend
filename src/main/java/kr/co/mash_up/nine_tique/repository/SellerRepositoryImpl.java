@@ -25,7 +25,7 @@ public class SellerRepositoryImpl implements SellerRepositoryCustom {
         QSeller qSeller = QSeller.seller;
 
         query.from(qSeller).join(qSeller.user, qUser)
-                .where(qUser.id.eq(userId).and(qSeller.enabled.isTrue()));
+                .where(qUser.id.eq(userId).and(qSeller.active.isTrue()));
 
         return query.uniqueResult(qSeller);
     }
@@ -39,7 +39,7 @@ public class SellerRepositoryImpl implements SellerRepositoryCustom {
 
         query.from(qSellerProduct).join(qSellerProduct.seller, qSeller)
                 .join(qSeller.user, qUser)
-                .where(qUser.id.eq(userId).and(qSellerProduct.enabled.isTrue()))
+                .where(qUser.id.eq(userId).and(qSellerProduct.active.isTrue()))
                 .orderBy(qSellerProduct.createdAt.desc());
 
         return query.list(qSellerProduct);
@@ -56,7 +56,7 @@ public class SellerRepositoryImpl implements SellerRepositoryCustom {
         query.from(qSellerProduct).join(qSellerProduct.seller, qSeller)
                 .join(qSellerProduct.product, qProduct)
                 .join(qSeller.user, qUser)
-                .where(qUser.id.eq(userId).and(qSellerProduct.enabled.isTrue()))
+                .where(qUser.id.eq(userId).and(qSellerProduct.active.isTrue()))
                 .orderBy(qProduct.status.asc(), qProduct.createdAt.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());

@@ -28,8 +28,8 @@ public class SellerRequestVO extends RequestVO {
     public Shop toShopEntity() {
         Shop shop = new Shop();
         shop.setName(shopName);
-        shop.setInfo(shopInfo);
-        shop.setPhone(shopPhone);
+        shop.setDescription(shopInfo);
+        shop.setPhoneNumber(shopPhone);
         return shop;
     }
 }

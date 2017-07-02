@@ -1,4 +1,4 @@
-package kr.co.mash_up.domain;
+package kr.co.mash_up.repository;
 
 import kr.co.mash_up.builder.ShopBuilder;
 import kr.co.mash_up.nine_tique.NineTiqueApplication;
@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,12 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {NineTiqueApplication.class})
+@DataJpaTest
 @ActiveProfiles(profiles = "test")
 public class ShopTest {
 
-    public static final String TEST_NAME = "name";
-    public static final String TEST_INFO = "info";
-    public static final String TEST_PHONE = "phone";
+    private static final String TEST_NAME = "name";
+    private static final String TEST_DESCRIPTION = "info";
+    private static final String TEST_PHONE = "phone";
 
     @Autowired
     private ShopRepository shopRepository;
@@ -33,9 +35,10 @@ public class ShopTest {
     public void setup() {
         Shop shop = new ShopBuilder()
                 .withName(TEST_NAME)
-                .withInfo(TEST_INFO)
-                .withPhone(TEST_PHONE)
-                .withEnabled(true)
+                .withDescription(TEST_DESCRIPTION)
+                .withPhoneNumber(TEST_PHONE)
+                .withCommentCount(0L)
+                .withActive(true)
                 .build();
         testShop = shopRepository.save(shop);
     }
@@ -57,19 +60,19 @@ public class ShopTest {
     @Test
     public void testFindByPhone() {
         // when
-        Shop findShop = shopRepository.findByPhone(TEST_PHONE);
+        Shop findShop = shopRepository.findByPhoneNumber(TEST_PHONE);
 
         // then
-        assertThat(TEST_PHONE).isEqualTo(findShop.getPhone());
+        assertThat(TEST_PHONE).isEqualTo(findShop.getPhoneNumber());
     }
 
     @Test
     public void testFindByNameAndPhone() {
         // when
-        Shop findShop = shopRepository.findByNameAndPhone(TEST_NAME, TEST_PHONE);
+        Shop findShop = shopRepository.findByNameAndPhoneNumber(TEST_NAME, TEST_PHONE);
 
         // then
         assertThat(TEST_NAME).isEqualTo(findShop.getName());
-        assertThat(TEST_PHONE).isEqualTo(findShop.getPhone());
+        assertThat(TEST_PHONE).isEqualTo(findShop.getPhoneNumber());
     }
 }

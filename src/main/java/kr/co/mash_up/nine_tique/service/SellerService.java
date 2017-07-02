@@ -74,14 +74,14 @@ public class SellerService {
 
                     ShopDto shopDto = new ShopDto.Builder()
                             .withName(product.getShop().getName())
-                            .withInfo(product.getShop().getInfo())
-                            .withPhone(product.getShop().getPhone())
+                            .withInfo(product.getShop().getDescription())
+                            .withPhone(product.getShop().getPhoneNumber())
                             .build();
 
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
-                            .withBrandName(product.getBrandName())
+                            .withBrandName(product.getBrand().getName())
                             .withSize(product.getSize())
                             .withPrice(product.getPrice())
                             .withDescription(product.getDescription())
@@ -176,8 +176,8 @@ public class SellerService {
         Shop shop = seller.getShop();
         ShopDto shopDto = new ShopDto.Builder()
                 .withName(shop.getName())
-                .withInfo(shop.getInfo())
-                .withPhone(shop.getPhone())
+                .withInfo(shop.getDescription())
+                .withPhone(shop.getPhoneNumber())
                 .build();
 
         return new SellerDto.Builder()
@@ -198,7 +198,7 @@ public class SellerService {
     public UserDto sellerAuthenticateAndAddAuthority(Long userId, String authentiCode) {
         Seller seller = sellerRepository.findByAuthentiCode(authentiCode);
         Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("register seller -> seller not found, invalid authenti code"));
-        if (seller.isEnabled()) {
+        if (seller.isActive()) {
             throw new AlreadyExistException("register seller -> already register seller");
         }
 
@@ -230,7 +230,7 @@ public class SellerService {
     public Seller create(Long shopId) {
         Shop shop = shopRepository.findOne(shopId);
         Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("seller create -> shop not found"));
-        if (!shop.isEnabled()) {
+        if (!shop.isActive()) {
             throw new IdNotFoundException("seller create -> shop not found");
         }
 
@@ -249,7 +249,7 @@ public class SellerService {
     public Seller update(Long userId, SellerRequestVO requestVO) {
         Seller seller = sellerRepository.findByUserId(userId);
         Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("seller update -> seller not found"));
-        if (!seller.isEnabled()) {
+        if (!seller.isActive()) {
             throw new IdNotFoundException("seller update -> seller not found");
         }
 
@@ -273,8 +273,8 @@ public class SellerService {
                     ShopDto shopDto = new ShopDto.Builder()
                             .withId(shop.getId())
                             .withName(shop.getName())
-                            .withInfo(shop.getInfo())
-                            .withPhone(shop.getPhone())
+                            .withInfo(shop.getDescription())
+                            .withPhone(shop.getPhoneNumber())
                             .build();
 
                     return new SellerDto.Builder()
