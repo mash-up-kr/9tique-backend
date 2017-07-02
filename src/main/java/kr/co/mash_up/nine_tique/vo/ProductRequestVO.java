@@ -49,12 +49,12 @@ public class ProductRequestVO extends RequestVO {
     public Product toProductEntity() {
         Product product = new Product();
         product.setName(name);
-        product.setBrandName(brandName);
+//        product.getBrand(brandName);  Todo: 수정
         product.setSize(size);
         product.setPrice(price);
         product.setDescription(description);
         product.setStatus(getStatus());
-        product.setEnabled(true);
+        product.setActive(true);
 
         return product;
     }

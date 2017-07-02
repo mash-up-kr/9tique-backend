@@ -1,54 +1,55 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 @Entity
 @Table(name = "category")
 @Getter
 @Setter
-@ToString(exclude = {"products"})
 @NoArgsConstructor  // JPA는 default constructor 필요
+@ToString(exclude = {"products"})
+@EqualsAndHashCode(callSuper = false, of = "id")
 public class Category extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonProperty
-    private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
+    @Column(name = "id", columnDefinition = "INT(11)")
+    private Long id;  // Todo: id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
 
-    @Column(nullable = false)
-    @JsonProperty
-    private String main;
+    @Column(name = "main", length = 255, nullable = false)
+    private String main;   // 상위 카테고리 이름
 
-    @Column
-    @JsonProperty
-    private String sub;
+    @Column(name = "sub", length = 255)
+    private String sub;  // 하위 카테고리 이름
 
-    @Column
-    private boolean enabled;
+    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
+    @Type(type = "yes_no")
+    private boolean active;
 
-    //Todo: User와의 관계 추가 -> ???
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<Product> products = new HashSet<>();
 
     //Todo: products count도 넣을까?
 
     public void disable() {
-        if (enabled) {
-            this.enabled = false;
+        if (active) {
+            this.active = false;
         }
     }
 
     public void enable() {
-        if (!enabled) {
-            this.enabled = true;
+        if (!active) {
+            this.active = true;
         }
     }
 

@@ -11,16 +11,16 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QProductImage is a Querydsl query type for ProductImage
+ * QPromotionImage is a Querydsl query type for PromotionImage
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QProductImage extends EntityPathBase<ProductImage> {
+public class QPromotionImage extends EntityPathBase<PromotionImage> {
 
-    private static final long serialVersionUID = 426716799L;
+    private static final long serialVersionUID = 958383755L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QProductImage productImage = new QProductImage("productImage");
+    public static final QPromotionImage promotionImage = new QPromotionImage("promotionImage");
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
@@ -35,7 +35,7 @@ public class QProductImage extends EntityPathBase<ProductImage> {
 
     public final StringPath originalFileName = createString("originalFileName");
 
-    public final QProduct product;
+    public final QPromotion promotion;
 
     public final NumberPath<Long> size = createNumber("size", Long.class);
 
@@ -44,25 +44,25 @@ public class QProductImage extends EntityPathBase<ProductImage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public QProductImage(String variable) {
-        this(ProductImage.class, forVariable(variable), INITS);
+    public QPromotionImage(String variable) {
+        this(PromotionImage.class, forVariable(variable), INITS);
     }
 
-    public QProductImage(Path<? extends ProductImage> path) {
+    public QPromotionImage(Path<? extends PromotionImage> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QProductImage(PathMetadata<?> metadata) {
+    public QPromotionImage(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QProductImage(PathMetadata<?> metadata, PathInits inits) {
-        this(ProductImage.class, metadata, inits);
+    public QPromotionImage(PathMetadata<?> metadata, PathInits inits) {
+        this(PromotionImage.class, metadata, inits);
     }
 
-    public QProductImage(Class<? extends ProductImage> type, PathMetadata<?> metadata, PathInits inits) {
+    public QPromotionImage(Class<? extends PromotionImage> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.product = inits.isInitialized("product") ? new QProduct(forProperty("product"), inits.get("product")) : null;
+        this.promotion = inits.isInitialized("promotion") ? new QPromotion(forProperty("promotion")) : null;
     }
 
 }

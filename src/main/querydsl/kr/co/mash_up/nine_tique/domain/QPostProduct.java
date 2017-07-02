@@ -11,54 +11,52 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QZzimProduct is a Querydsl query type for ZzimProduct
+ * QPostProduct is a Querydsl query type for PostProduct
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QZzimProduct extends EntityPathBase<ZzimProduct> {
+public class QPostProduct extends EntityPathBase<PostProduct> {
 
-    private static final long serialVersionUID = -471321416L;
+    private static final long serialVersionUID = 900066556L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QZzimProduct zzimProduct = new QZzimProduct("zzimProduct");
+    public static final QPostProduct postProduct = new QPostProduct("postProduct");
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
-
-    public final BooleanPath active = createBoolean("active");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final QZzimProduct_Id id;
+    public final QPostProduct_Id id;
+
+    public final QPost post;
 
     public final QProduct product;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final QZzim zzim;
-
-    public QZzimProduct(String variable) {
-        this(ZzimProduct.class, forVariable(variable), INITS);
+    public QPostProduct(String variable) {
+        this(PostProduct.class, forVariable(variable), INITS);
     }
 
-    public QZzimProduct(Path<? extends ZzimProduct> path) {
+    public QPostProduct(Path<? extends PostProduct> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QZzimProduct(PathMetadata<?> metadata) {
+    public QPostProduct(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QZzimProduct(PathMetadata<?> metadata, PathInits inits) {
-        this(ZzimProduct.class, metadata, inits);
+    public QPostProduct(PathMetadata<?> metadata, PathInits inits) {
+        this(PostProduct.class, metadata, inits);
     }
 
-    public QZzimProduct(Class<? extends ZzimProduct> type, PathMetadata<?> metadata, PathInits inits) {
+    public QPostProduct(Class<? extends PostProduct> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.id = inits.isInitialized("id") ? new QZzimProduct_Id(forProperty("id")) : null;
+        this.id = inits.isInitialized("id") ? new QPostProduct_Id(forProperty("id")) : null;
+        this.post = inits.isInitialized("post") ? new QPost(forProperty("post")) : null;
         this.product = inits.isInitialized("product") ? new QProduct(forProperty("product"), inits.get("product")) : null;
-        this.zzim = inits.isInitialized("zzim") ? new QZzim(forProperty("zzim"), inits.get("zzim")) : null;
     }
 
 }

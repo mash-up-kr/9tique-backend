@@ -24,7 +24,9 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final StringPath brandName = createString("brandName");
+    public final BooleanPath active = createBoolean("active");
+
+    public final QBrand brand;
 
     public final QCategory category;
 
@@ -32,8 +34,6 @@ public class QProduct extends EntityPathBase<Product> {
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath description = createString("description");
-
-    public final BooleanPath enabled = createBoolean("enabled");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -53,6 +53,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    public final NumberPath<Long> zzimCount = createNumber("zzimCount", Long.class);
 
     public final ListPath<ZzimProduct, QZzimProduct> zzimProducts = this.<ZzimProduct, QZzimProduct>createList("zzimProducts", ZzimProduct.class, QZzimProduct.class, PathInits.DIRECT2);
 
@@ -74,6 +76,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public QProduct(Class<? extends Product> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.brand = inits.isInitialized("brand") ? new QBrand(forProperty("brand")) : null;
         this.category = inits.isInitialized("category") ? new QCategory(forProperty("category")) : null;
         this.shop = inits.isInitialized("shop") ? new QShop(forProperty("shop")) : null;
     }

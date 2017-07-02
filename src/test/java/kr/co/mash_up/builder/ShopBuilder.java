@@ -11,11 +11,15 @@ public class ShopBuilder {
 
     private String name;
 
-    private String info;
+    private String description;
 
-    private boolean enabled;
+    private String phoneNumber;
 
-    private String phone;
+    private String kakaoOpenChatUrl;
+
+    private Long commentCount;
+
+    private boolean active;
 
     public ShopBuilder withId(Long id){
         this.id = id;
@@ -27,18 +31,28 @@ public class ShopBuilder {
         return this;
     }
 
-    public ShopBuilder withInfo(String info){
-        this.info = info;
+    public ShopBuilder withDescription(String description){
+        this.description = description;
         return this;
     }
 
-    public ShopBuilder withPhone(String phone){
-        this.phone = phone;
+    public ShopBuilder withPhoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
         return this;
     }
 
-    public ShopBuilder withEnabled(boolean enabled){
-        this.enabled = enabled;
+    public ShopBuilder withKakaoOpenChatUrl(String kakaoOpenChatUrl){
+        this.kakaoOpenChatUrl = kakaoOpenChatUrl;
+        return this;
+    }
+
+    public ShopBuilder withCommentCount(Long commentCount){
+        this.commentCount = commentCount;
+        return this;
+    }
+
+    public ShopBuilder withActive(boolean active){
+        this.active = active;
         return this;
     }
 
@@ -46,9 +60,11 @@ public class ShopBuilder {
         Shop shop = new Shop();
         shop.setId(id);
         shop.setName(name);
-        shop.setInfo(info);
-        shop.setPhone(phone);
-        shop.setEnabled(enabled);
+        shop.setDescription(description);
+        shop.setPhoneNumber(phoneNumber);
+        shop.setKakaoOpenChatUrl(kakaoOpenChatUrl);
+        shop.setCommentCount(commentCount);
+        shop.setActive(active);
         return shop;
     }
 }

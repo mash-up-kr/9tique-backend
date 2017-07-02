@@ -36,7 +36,7 @@ public class ProductImageService {
                     productImage.setFileName(saveName);
                     productImage.setOriginalFileName(file.getOriginalFilename());
                     productImage.setSize(file.getSize());
-                    productImage.setEnabled(true);
+                    productImage.setActive(true);
 
                     // 파일 저장
                     FileUtil.upload(file, productImage.getImageUploadTempPath(), saveName);

@@ -11,29 +11,25 @@ import com.mysema.query.types.path.PathInits;
 
 
 /**
- * QSeller is a Querydsl query type for Seller
+ * QShopComment is a Querydsl query type for ShopComment
  */
 @Generated("com.mysema.query.codegen.EntitySerializer")
-public class QSeller extends EntityPathBase<Seller> {
+public class QShopComment extends EntityPathBase<ShopComment> {
 
-    private static final long serialVersionUID = 1343991442L;
+    private static final long serialVersionUID = -1596743850L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QSeller seller = new QSeller("seller");
+    public static final QShopComment shopComment = new QShopComment("shopComment");
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final BooleanPath active = createBoolean("active");
-
-    public final StringPath authentiCode = createString("authentiCode");
+    public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final ListPath<SellerProduct, QSellerProduct> sellerProducts = this.<SellerProduct, QSellerProduct>createList("sellerProducts", SellerProduct.class, QSellerProduct.class, PathInits.DIRECT2);
 
     public final QShop shop;
 
@@ -42,23 +38,23 @@ public class QSeller extends EntityPathBase<Seller> {
 
     public final QUser user;
 
-    public QSeller(String variable) {
-        this(Seller.class, forVariable(variable), INITS);
+    public QShopComment(String variable) {
+        this(ShopComment.class, forVariable(variable), INITS);
     }
 
-    public QSeller(Path<? extends Seller> path) {
+    public QShopComment(Path<? extends ShopComment> path) {
         this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSeller(PathMetadata<?> metadata) {
+    public QShopComment(PathMetadata<?> metadata) {
         this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
     }
 
-    public QSeller(PathMetadata<?> metadata, PathInits inits) {
-        this(Seller.class, metadata, inits);
+    public QShopComment(PathMetadata<?> metadata, PathInits inits) {
+        this(ShopComment.class, metadata, inits);
     }
 
-    public QSeller(Class<? extends Seller> type, PathMetadata<?> metadata, PathInits inits) {
+    public QShopComment(Class<? extends ShopComment> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this.shop = inits.isInitialized("shop") ? new QShop(forProperty("shop")) : null;
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;

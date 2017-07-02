@@ -53,7 +53,7 @@ public class ZzimService {
             return;
         }
 
-        if (oldZzimProduct.isEnabled()) { // 1번 등록했고, enable되있을 경우
+        if (oldZzimProduct.isActive()) { // 1번 등록했고, enable되있을 경우
             throw new AlreadyExistException("zzim add product -> zzim already exist");
         }
         // 1번 등록했고, disable되있을 경우
@@ -110,14 +110,14 @@ public class ZzimService {
 
                     ShopDto shopDto = new ShopDto.Builder()
                             .withName(product.getShop().getName())
-                            .withInfo(product.getShop().getInfo())
-                            .withPhone(product.getShop().getPhone())
+                            .withInfo(product.getShop().getDescription())
+                            .withPhone(product.getShop().getPhoneNumber())
                             .build();
 
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
-                            .withBrandName(product.getBrandName())
+                            .withBrandName(product.getBrand().getName())
                             .withSize(product.getSize())
                             .withPrice(product.getPrice())
                             .withDescription(product.getDescription())

@@ -27,7 +27,7 @@ public class ZzimRepositoryImpl implements ZzimRepositoryCustom {
 
         query.from(qZzimProduct).join(qZzimProduct.zzim, qZzim)
                 .join(qZzim.user, qUser)
-                .where(qUser.id.eq(userId).and(qZzimProduct.enabled.isTrue()))
+                .where(qUser.id.eq(userId).and(qZzimProduct.active.isTrue()))
                 .orderBy(qZzimProduct.createdAt.desc())
                 .limit(pageable.getPageSize()).offset(pageable.getOffset());
 
@@ -43,7 +43,7 @@ public class ZzimRepositoryImpl implements ZzimRepositoryCustom {
 
         query.from(qZzimProduct).join(qZzimProduct.zzim, qZzim)
                 .join(qZzim.user, qUser)
-                .where(qUser.id.eq(userId).and(qZzimProduct.enabled.isTrue()))
+                .where(qUser.id.eq(userId).and(qZzimProduct.active.isTrue()))
                 .orderBy(qZzimProduct.createdAt.desc());
 
         return query.list(qZzimProduct);

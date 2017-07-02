@@ -28,10 +28,10 @@ public class ShopRequestVO extends RequestVO {
     public Shop toShopEntitiy() {
         Shop shop = new Shop();
         shop.setName(this.name);
-        shop.setInfo(this.info);
-        shop.setPhone(this.phone);
+        shop.setDescription(this.info);
+        shop.setPhoneNumber(this.phone);
         shop.setKakaoOpenChatUrl(this.kakaoOpenChatUrl);
-        shop.setEnabled(true);
+        shop.setActive(true);
         return shop;
     }
 }

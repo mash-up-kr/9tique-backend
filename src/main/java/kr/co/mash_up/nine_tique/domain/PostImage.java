@@ -1,6 +1,5 @@
 package kr.co.mash_up.nine_tique.domain;
 
-
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -12,14 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Created by ethankim on 2017. 7. 2..
+ */
 @Entity
-@Table(name = "product_image")
+@Table(name = "post_image")
 @Getter
 @Setter
 @NoArgsConstructor  // JPA는 default constructor 필요
 @ToString
 @EqualsAndHashCode(callSuper = false, of = "id")
-public class ProductImage extends AbstractEntity<Long> {
+public class PostImage extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -46,8 +48,8 @@ public class ProductImage extends AbstractEntity<Long> {
 //    private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_product_image_to_product_id"))  // FK 매핑시 이용
-    private Product product;
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_post_image_to_post_id"))  // FK 매핑시 이용
+    private Post post;
 
     /**
      * 임시 저장할 물리적인 image upload path 제공
@@ -76,7 +78,7 @@ public class ProductImage extends AbstractEntity<Long> {
     @Transient  // 매핑하지 않는다.
     public String getImageUrl() {
         return String.format("%s/product/%d/%s",
-                System.getProperty(SystemPropertiesConfig.STORAGE_URI), this.product.getId(), this.fileName);
+                System.getProperty(SystemPropertiesConfig.STORAGE_URI), this.post.getId(), this.fileName);
     }
 
     /**
@@ -86,7 +88,7 @@ public class ProductImage extends AbstractEntity<Long> {
      */
     @Transient  // 매핑하지 않는다.
     public String getImageUploadPath() {
-        return String.format("%s/product/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), product.getId());
+        return String.format("%s/product/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), post.getId());
     }
 
     /**
@@ -100,17 +102,5 @@ public class ProductImage extends AbstractEntity<Long> {
         // uri/product/tmp/fileName
         //Todo: confirm url pattern matching??
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-    }
-
-    public void disable() {
-        if (active) {
-            this.active = false;
-        }
-    }
-
-    public void enable() {
-        if (!active) {
-            this.active = true;
-        }
     }
 }

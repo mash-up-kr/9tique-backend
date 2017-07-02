@@ -1,66 +1,86 @@
 package kr.co.mash_up.nine_tique.domain;
 
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+import java.util.List;
+
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.*;
-import java.util.List;
-
 @Entity
 @Table(name = "product")
 @Getter
 @Setter
-@ToString(exclude = {"shop", "category", "productImages"})
-@NoArgsConstructor  // JPA는 default constructor 필요
+@NoArgsConstructor
+@ToString(exclude = {"productImages", "sellerProducts", "zzimProducts"})
+@EqualsAndHashCode(callSuper = false, of = "id")
 public class Product extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;  // id의 수동적인 제어를 막기 위해 setter를 생성하지 않는다.
+    @Column(name = "id", columnDefinition = "INT(11)")
+    private Long id;
 
-    @Column(length = 50)
-    private String name;  //이름
+    @Column(name = "name", length = 50, nullable = false)
+    private String name;  // 상품 이름
 
-    @Column(length = 50)
-    private String brandName;
+    @Column(name = "size", length = 20, nullable = false)
+    private String size;  // 상품 사이즈
 
-    @Column(length = 50)
-    private String size;
-
-    @Column(columnDefinition = "integer default 0")
-    private int price;
+    @Column(name = "price", nullable = false, columnDefinition = "INT(11) default 0")
+    private int price;  // 상품 가격
 
     @Lob  // text type으로 사용하기 위해
-    private String description;  // 상세설명
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    private String description;  // 상품 설명
 
     @Enumerated(EnumType.STRING)  // enum 이름을 DB에 저장
-    private Status status;  // 판매중/완료
+    @Column(name = "status", length = 20, nullable = false)
+    private Status status;  // 상품 상태(판매중 / 완료)
 
-    @Column
-    private boolean enabled;
+    @Column(name = "zzim_count", columnDefinition = "INT(11) default 0")
+    private Long zzimCount;  // 찜 갯수
+
+    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
+    @Type(type = "yes_no")
+    private boolean active;
+
+    @ManyToOne
+    @JoinColumn(name = "brand_id", foreignKey = @ForeignKey(name = "fk_product_to_brand_id"))
+    private Brand brand;  // 브랜드 정보
 
     //    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_product_to_shop_id"))
-    private Shop shop;  // 판매자 정보
+    @JoinColumn(name = "shop_id", columnDefinition = "INT(11)", foreignKey = @ForeignKey(name = "fk_product_to_shop_id"))
+    private Shop shop;  // 매장 정보
 
-    // Memo : Lazy 함부로 쓰지말자... 해당 테이블 쿼리 안날릴시 정보가 안나온다.
-//    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_product_to_category_id"))  // FK 매핑시 이용
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_product_to_category_id"))  // FK 매핑시 이용
     private Category category;  // 카테고리
 
     // One(Product) : Many(ProductImage) - Many쪽이 FK를 가지고(주인O), One쪽이 mappedBy(주인X)를 적용
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ProductImage> productImages;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SellerProduct> sellerProducts;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ZzimProduct> zzimProducts;
+
+    // Todo: 프로모션 상품, 포스트 상품 추가
+
+    /**
+     * 상품의 판매중/판매 완료 여부
+     */
+    public enum Status {
+        SELL,  // 판매중
+        SOLD_OUT  // 판매 완료
+    }
 
     public boolean matchShop(Seller seller) {
         if (seller == null) {
@@ -71,7 +91,7 @@ public class Product extends AbstractEntity<Long> {
 
     public void update(Product newProduct, Category category) {
         this.name = newProduct.name;
-        this.brandName = newProduct.brandName;
+        this.brand = newProduct.brand;
         this.size = newProduct.size;
         this.price = newProduct.price;
         this.description = newProduct.description;
@@ -79,19 +99,9 @@ public class Product extends AbstractEntity<Long> {
         this.category = category;
     }
 
-    //Todo: 이벤트 여부 추가?
-
-    /**
-     * 상품의 판매중/판매 완료 여부
-     */
-    public enum Status {
-        SELL,  // 판매중
-        SOLD_OUT  // 판매 완료
-    }
-
     public void disable() {
-        if (enabled) {
-            this.enabled = false;
+        if (active) {
+            this.active = false;
             productImages.forEach(ProductImage::disable);
             sellerProducts.forEach(SellerProduct::disable);
             zzimProducts.forEach(ZzimProduct::disable);
@@ -99,8 +109,8 @@ public class Product extends AbstractEntity<Long> {
     }
 
     public void enable() {
-        if (!enabled) {
-            this.enabled = true;
+        if (!active) {
+            this.active = true;
             productImages.forEach(ProductImage::enable);
             sellerProducts.forEach(SellerProduct::enable);
             zzimProducts.forEach(ZzimProduct::enable);
@@ -135,20 +145,5 @@ public class Product extends AbstractEntity<Long> {
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Product product = (Product) o;
-
-        return id != null ? id.equals(product.id) : product.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
     }
 }

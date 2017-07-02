@@ -51,9 +51,9 @@ public class CategorySservice {
         Category oldCategory = categoryRepository.findByMainAndSub(requestVO.getMain(), requestVO.getSub());
 
         // 이미 존재할 경우
-        if (oldCategory != null && oldCategory.isEnabled()) {  // enable된걸 다시 등록하는 경우 -> error
+        if (oldCategory != null && oldCategory.isActive()) {  // enable된걸 다시 등록하는 경우 -> error
             throw new AlreadyExistException("category create -> category already exist");
-        } else if (oldCategory != null && !oldCategory.isEnabled()) {  // disable된걸 다시 등록하는 경우 enable
+        } else if (oldCategory != null && !oldCategory.isActive()) {  // disable된걸 다시 등록하는 경우 enable
             oldCategory.enable();
             return categoryRepository.save(oldCategory);
         }

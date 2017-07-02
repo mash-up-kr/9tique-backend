@@ -37,7 +37,7 @@ public class CategoryBuilder {
         category.setId(id);
         category.setMain(main);
         category.setSub(sub);
-        category.setEnabled(enable);
+        category.setActive(enable);
         return category;
     }
 }

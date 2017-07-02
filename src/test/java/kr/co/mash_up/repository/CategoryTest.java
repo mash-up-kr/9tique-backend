@@ -1,14 +1,11 @@
-package kr.co.mash_up.domain;
+package kr.co.mash_up.repository;
 
-import kr.co.mash_up.builder.CategoryBuilder;
-import kr.co.mash_up.nine_tique.NineTiqueApplication;
-import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.repository.CategoryRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,15 +13,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.co.mash_up.builder.CategoryBuilder;
+import kr.co.mash_up.nine_tique.NineTiqueApplication;
+import kr.co.mash_up.nine_tique.domain.Category;
+import kr.co.mash_up.nine_tique.repository.CategoryRepository;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {NineTiqueApplication.class})
+@DataJpaTest
 @ActiveProfiles(profiles = "test")
 public class CategoryTest {
 
     public static final String TEST_MAIN = "testMain";
+
     public static final String TEST_SUB = "testSub";
 
     @Autowired
@@ -61,7 +64,7 @@ public class CategoryTest {
         // then
         assertThat(TEST_MAIN).isEqualTo(category.getMain());
         assertThat(TEST_SUB + 0).isEqualTo(category.getSub());
-        assertThat(category.isEnabled()).isTrue();
+        assertThat(category.isActive()).isTrue();
     }
 
     @Test
@@ -72,7 +75,7 @@ public class CategoryTest {
         // then
         assertThat(TEST_MAIN).isEqualTo(oldCategory.getMain());
         assertThat(TEST_SUB + 0).isEqualTo(oldCategory.getSub());
-        assertThat(oldCategory.isEnabled()).isTrue();
+        assertThat(oldCategory.isActive()).isTrue();
     }
 
     @Test
@@ -82,7 +85,7 @@ public class CategoryTest {
 
         // then
         for (Category category : categories) {
-            assertThat(category.isEnabled()).isTrue();
+            assertThat(category.isActive()).isTrue();
         }
     }
 
@@ -107,7 +110,7 @@ public class CategoryTest {
         Category category = categoryRepository.findOneById(testCategories.get(0).getId());
 
         // then
-        assertThat(category.isEnabled()).isTrue();
+        assertThat(category.isActive()).isTrue();
     }
 
     @Test
@@ -121,6 +124,6 @@ public class CategoryTest {
         Category findCategory = categoryRepository.findOne(testCategories.get(0).getId());
 
         // then
-        assertThat(findCategory.isEnabled()).isFalse();
+        assertThat(findCategory.isActive()).isFalse();
     }
 }
