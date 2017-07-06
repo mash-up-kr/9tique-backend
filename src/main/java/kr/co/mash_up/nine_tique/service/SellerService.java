@@ -81,7 +81,7 @@ public class SellerService {
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
-                            .withBrandName(product.getBrand().getName())
+                            .withBrandName(product.getBrand().getNameKo())
                             .withSize(product.getSize())
                             .withPrice(product.getPrice())
                             .withDescription(product.getDescription())
