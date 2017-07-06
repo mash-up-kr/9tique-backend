@@ -17,8 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.*;
 
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
@@ -103,6 +103,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.USER)
                 .antMatchers(HttpMethod.PUT, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.USER)
                 .antMatchers(HttpMethod.DELETE, API_CATEGORY + SUFFIX).hasAnyAuthority(Authorities.USER)
+
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, API_BRAND + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.POST, API_BRAND + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.PUT, API_BRAND + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.DELETE, API_BRAND + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
 
                 .and()
                 .authorizeRequests()

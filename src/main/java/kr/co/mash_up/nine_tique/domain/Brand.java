@@ -34,9 +34,17 @@ public class Brand extends AbstractEntity<Long> {
     @Column(name = "id", columnDefinition = "INT(11)")
     private Long id;
 
-    @Column(name = "name", length = 50, unique = true)
-    private String name;  // 브랜드 이름
+    @Column(name = "name_ko", length = 50, unique = true)
+    private String nameKo;  // 브랜드 이름(한글)
+
+    @Column(name = "name_eng", length = 50)
+    private String nameEng;  // 브랜드 이름(영어)
 
     @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
     private List<Product> products;
+
+    public void update(Brand newBrand) {
+        this.nameKo = newBrand.nameKo;
+        this.nameEng = newBrand.nameEng;
+    }
 }

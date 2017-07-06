@@ -27,11 +27,12 @@ COMMENT = '권한';
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nine_tique`.`brand` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL COMMENT '브랜드 이름',
+  `name_ko` VARCHAR(50) NOT NULL COMMENT '브랜드 이름(한글)',
+  `name_eng` VARCHAR (50) NOT NULL COMMENT '브랜드 이름(영어)',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+  UNIQUE INDEX `name_UNIQUE` (`name_ko` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = '상품의 브랜드';
