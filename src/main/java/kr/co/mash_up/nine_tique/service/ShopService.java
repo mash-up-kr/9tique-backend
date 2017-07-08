@@ -2,7 +2,9 @@ package kr.co.mash_up.nine_tique.service;
 
 import org.springframework.data.domain.Page;
 
+import kr.co.mash_up.nine_tique.dto.CommentDto;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
+import kr.co.mash_up.nine_tique.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ShopRequestVO;
 
@@ -53,4 +55,41 @@ public interface ShopService {
      * @return 매장 상세정보
      */
     public abstract ShopDto readShop(Long shopId);
+
+    /**
+     * 매장 댓글 추가
+     *
+     * @param shopId    Shop ID
+     * @param userId    댓글 작성자 ID
+     * @param requestVO 추가할 댓글 정보
+     */
+    public abstract void addShopComment(Long shopId, Long userId, CommentRequestVO requestVO);
+
+    /**
+     * 매장 댓글 수정
+     *
+     * @param shopId    Shop ID
+     * @param commentId Comment ID
+     * @param userId    댓글 작성자 ID
+     * @param requestVO 수정할 댓글 정보
+     */
+    public abstract void modifyShopComment(Long shopId, Long commentId, Long userId, CommentRequestVO requestVO);
+
+    /**
+     * 매장 댓글 삭제
+     *
+     * @param shopId    Shop ID
+     * @param commentId Comment ID
+     * @param userId    댓글 작성자 ID
+     */
+    public abstract void removeShopComment(Long shopId, Long commentId, Long userId);
+
+    /**
+     * 매장 댓글 리스트 조회
+     *
+     * @param shopId    Shop ID
+     * @param requestVO 페이징 정보
+     * @return
+     */
+    public abstract Page<CommentDto> readShopComments(Long shopId, DataListRequestVO requestVO);
 }

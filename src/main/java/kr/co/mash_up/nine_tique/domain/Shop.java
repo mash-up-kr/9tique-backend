@@ -72,7 +72,7 @@ public class Shop extends AbstractEntity<Long> {
             this.active = false;
             products.forEach(Product::disable);
             sellers.forEach(Seller::disable);
-            // Todo: shopComment deactive
+            shopComments.forEach(ShopComment::deactive);
         }
     }
 
@@ -81,7 +81,7 @@ public class Shop extends AbstractEntity<Long> {
             this.active = true;
             products.forEach(Product::enable);
             sellers.forEach(Seller::enable);
-            // Todo: shopComment active
+            shopComments.forEach(ShopComment::active);
         }
     }
 

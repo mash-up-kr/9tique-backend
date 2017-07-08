@@ -109,9 +109,9 @@ public class ZzimService {
                             }).collect(Collectors.toList());
 
                     ShopDto shopDto = new ShopDto.Builder()
-                            .withName(product.getShop().getName())
-                            .withInfo(product.getShop().getDescription())
-                            .withPhone(product.getShop().getPhoneNumber())
+                            .name(product.getShop().getName())
+                            .description(product.getShop().getDescription())
+                            .phoneNumber(product.getShop().getPhoneNumber())
                             .build();
 
                     return new ProductDto.Builder()

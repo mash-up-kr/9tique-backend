@@ -35,8 +35,8 @@ public class PostComment extends AbstractEntity<Long> {
     @Column(name = "id", columnDefinition = "INT(11)")
     private Long id;
 
-    @Column(name = "content", length = 255, nullable = false)
-    private String content;  // 댓글 내용
+    @Column(name = "contents", length = 255, nullable = false)
+    private String contents;  // 댓글 내용
 
     @ManyToOne  // PostComment(Many) : Post(One)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_post_comment_to_post_id"))

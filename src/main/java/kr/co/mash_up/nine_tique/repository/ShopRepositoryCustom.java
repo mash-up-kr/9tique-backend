@@ -12,9 +12,27 @@ import kr.co.mash_up.nine_tique.domain.Shop;
  */
 public interface ShopRepositoryCustom {
 
+    /**
+     * Shop 단건 조회
+     *
+     * @param shopId Shop ID
+     * @return
+     */
     public abstract Optional<Shop> findOneByShopId(Long shopId);
 
+    /**
+     * 판매자인 User ID로 shop 단건 조회
+     *
+     * @param userId 판매자인 User의 ID
+     * @return
+     */
     public abstract Shop findByUserId(Long userId);
 
+    /**
+     * 매장 리스트 조회
+     *
+     * @param pageable
+     * @return
+     */
     public abstract Page<Shop> findShops(Pageable pageable);
 }

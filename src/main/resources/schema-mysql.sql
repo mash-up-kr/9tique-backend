@@ -171,9 +171,10 @@ COMMENT = '매장의 판매자. 관리자가 생성한다';
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nine_tique`.`shop_comment` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `content` VARCHAR(255) NOT NULL COMMENT '댓글 내용',
+  `contents` VARCHAR(255) NOT NULL COMMENT '댓글 내용',
   `shop_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
+  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`, `shop_id`, `user_id`),
@@ -296,7 +297,7 @@ COMMENT = '유저의 찜(장바구니라고 생각하면 이해하기 쉬움)';
 CREATE TABLE IF NOT EXISTS `nine_tique`.`post` (
   `id` INT(11) NOT NULL,
   `name` VARCHAR(255) NOT NULL COMMENT '게시물 이름(제목)',
-  `content` TEXT NOT NULL COMMENT '게시물 내용(형식이 복잡할 수 있다)',
+  `contents` TEXT NOT NULL COMMENT '게시물 내용(형식이 복잡할 수 있다)',
   `comment_count` INT(11) NOT NULL DEFAULT '0' COMMENT '게시물의 댓글 갯수',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
@@ -310,7 +311,7 @@ COMMENT = '게시물';
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nine_tique`.`post_comment` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `content` VARCHAR(255) NOT NULL COMMENT '댓글 내용',
+  `contents` VARCHAR(255) NOT NULL COMMENT '댓글 내용',
   `post_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',

@@ -3,14 +3,17 @@ package kr.co.mash_up.nine_tique.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * 매장에 대한 데이터 전달을 담당한다
+ * <p>
+ * Created by ethankim on 2017. 7. 9..
+ */
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 public class ShopDto {
 
     @JsonProperty("id")
@@ -19,56 +22,62 @@ public class ShopDto {
     @JsonProperty(value = "name")
     private String name;
 
-    @JsonProperty(value = "info")
-    private String info;
+    @JsonProperty(value = "description")
+    private String description;
 
-    @JsonProperty(value = "phone")
-    private String phone;
+    @JsonProperty(value = "phone_number")
+    private String phoneNumber;
 
     @JsonProperty(value = "kakao_open_chat_url")
     private String kakaoOpenChatUrl;
 
+    private ShopDto(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.description = builder.description;
+        this.phoneNumber = builder.phoneNumber;
+        this.kakaoOpenChatUrl = builder.kakaoOpenChatUrl;
+    }
+
     public static class Builder {
 
         private Long id = 0L;
+
         private String name = "";
-        private String info = "";
-        private String phone = "";
+
+        private String description = "";
+
+        private String phoneNumber = "";
+
         private String kakaoOpenChatUrl = "";
 
-        public ShopDto build() {
-            ShopDto shopDto = new ShopDto();
-            shopDto.setId(id);
-            shopDto.setName(name);
-            shopDto.setInfo(info);
-            shopDto.setPhone(phone);
-            shopDto.setKakaoOpenChatUrl(kakaoOpenChatUrl);
-            return shopDto;
-        }
-
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder withName(String name) {
+        public Builder name(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder withInfo(String info) {
-            this.info = info;
+        public Builder description(String description) {
+            this.description = description;
             return this;
         }
 
-        public Builder withPhone(String phone) {
-            this.phone = phone;
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
             return this;
         }
 
-        public Builder withKakaoOpenChatUrl(String kakaoOpenChatUrl) {
+        public Builder kakaoOpenChatUrl(String kakaoOpenChatUrl) {
             this.kakaoOpenChatUrl = kakaoOpenChatUrl;
             return this;
+        }
+
+        public ShopDto build() {
+            return new ShopDto(this);
         }
     }
 }

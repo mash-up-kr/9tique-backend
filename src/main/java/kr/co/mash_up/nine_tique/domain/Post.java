@@ -38,8 +38,8 @@ public class Post extends AbstractEntity<Long> {
     @Column(name = "name", length = 255, nullable = false)
     private String name;  // 게시물 이름(제목)
 
-    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
-    private String content;  // 게시물 내용(형식이 복잡할 수 있다)
+    @Column(name = "contents", nullable = false, columnDefinition = "TEXT")
+    private String contents;  // 게시물 내용(형식이 복잡할 수 있다)
 
     @Column(name = "comment_count", nullable = false, columnDefinition = "INT(11) default 0")
     private Long commentCount;  // 게시물의 댓글 갯수
