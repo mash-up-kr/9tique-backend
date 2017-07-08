@@ -42,12 +42,12 @@ public class BrandController {
     @ApiOperation(value = "브랜드 생성", notes = "브랜드를 생성한다")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "생성 성공"),
-            @ApiResponse(code = 400, message = "잘못된 파라미터(필수 파라미터 누락, 존재하는 브랜드)"),
+            @ApiResponse(code = 400, message = "잘못된 파라미터(필수 파라미터 누락, 이미 존재하는 브랜드)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
     private ResponseVO addBrand(@RequestBody BrandVO brandVO) {
-        log.debug("addBrand nameKo : {}, nameEng : {}", brandVO.getNameKo(), brandVO.getNameEng());
+        log.info("addBrand brand : {}", brandVO);
 
         ParameterUtil.checkParameterEmpty(brandVO.getNameKo(), brandVO.getNameEng());
         brandService.addBrand(brandVO);
@@ -57,13 +57,14 @@ public class BrandController {
     @ApiOperation(value = "브랜드 수정", notes = "브랜드를 수정한다")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "수정 성공"),
+            @ApiResponse(code = 400, message = "잘못된 파라미터(필수 파라미터 누락)"),
             @ApiResponse(code = 404, message = "존재하지 않는 브랜드"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PutMapping(value = "/{brand_id}")
     private ResponseVO modifyBrand(@PathVariable(value = "brand_id") Long brandId,
                                    @RequestBody BrandVO brandVO) {
-        log.debug("modifyBrand id : {}, nameKo : {}, nameEng : {}", brandId, brandVO.getNameKo(), brandVO.getNameEng());
+        log.info("modifyBrand id : {}, brand : {}", brandId, brandVO);
 
         ParameterUtil.checkParameterEmpty(brandVO.getNameKo(), brandVO.getNameEng());
         brandService.modifyBrand(brandId, brandVO);
@@ -78,7 +79,7 @@ public class BrandController {
     })
     @DeleteMapping(value = "/{brand_id}")
     private ResponseVO removeBrand(@PathVariable(value = "brand_id") Long brandId) {
-        log.debug("removeBrand id {}", brandId);
+        log.info("removeBrand brandId : {}", brandId);
 
         brandService.removeBrand(brandId);
         return ResponseVO.ok();
@@ -91,7 +92,7 @@ public class BrandController {
     })
     @GetMapping
     private DataListResponseVO<BrandVO> readBrands() {
-        log.debug("readBrands");
+        log.info("readBrands");
 
         List<BrandVO> brands = brandService.readBrands();
         return new DataListResponseVO<BrandVO>(brands);

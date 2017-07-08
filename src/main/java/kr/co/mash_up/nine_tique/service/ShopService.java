@@ -1,114 +1,56 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.Shop;
-import kr.co.mash_up.nine_tique.domain.User;
+import org.springframework.data.domain.Page;
+
 import kr.co.mash_up.nine_tique.dto.ShopDto;
-import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
-import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
-import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
-import kr.co.mash_up.nine_tique.repository.ShopRepository;
-import kr.co.mash_up.nine_tique.repository.UserRepository;
-import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ShopRequestVO;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Shop과 관련된 비즈니스 로직 처리
+ * <p>
+ * Created by ethankim on 2017. 7. 7..
  */
-@Service(value = "shopService")
-@Slf4j
-public class ShopService {
+public interface ShopService {
 
-    @Autowired
-    private ShopRepository shopRepository;
+    /**
+     * 매장 정보 추가
+     *
+     * @param requestVO 추가할 매장 정보
+     * @return
+     */
+    public abstract void addShop(ShopRequestVO requestVO);
 
-    @Autowired
-    private UserRepository userRepository;
+    /**
+     * 매장 정보 수정
+     *
+     * @param userId
+     * @param shopId    Shop ID
+     * @param requestVO 수정할 매장 정보
+     * @return
+     */
+    public abstract void modifyShop(Long userId, Long shopId, ShopRequestVO requestVO);
 
-    public Shop create(ShopRequestVO requestVO) {
-        Shop newShop = requestVO.toShopEntitiy();
-        Shop oldShop = shopRepository.findByNameAndPhoneNumber(newShop.getName(), newShop.getPhoneNumber());
+    /**
+     * 매장 정보 삭제
+     *
+     * @param shopId Shop ID
+     */
+    public abstract void removeShop(Long shopId);
 
-        if (oldShop == null) {  // 1번도 등록 안된경우 -> 등록
-            return shopRepository.save(newShop);
-        }
-        if (oldShop.isActive()) {
-            throw new AlreadyExistException("shop create -> shop already exist");
-        }
+    /**
+     * 매장 리스트 조회
+     *
+     * @param requestVO 페이징 정보
+     * @return
+     */
+    public abstract Page<ShopDto> readShops(DataListRequestVO requestVO);
 
-        oldShop.enable();
-        return shopRepository.save(oldShop);
-    }
-
-    public Page<ShopDto> list(DataListRequestVO requestVO) {
-        Pageable pageable = requestVO.getPageable();
-
-        Page<Shop> shopPage = shopRepository.findShops(pageable);
-
-        List<ShopDto> shopDtos = shopPage.getContent().stream()
-                .map(shop -> new ShopDto.Builder()
-                        .withName(shop.getName())
-                        .withInfo(shop.getDescription())
-                        .withPhone(shop.getPhoneNumber())
-                        .build()
-                )
-                .collect(Collectors.toList());
-
-        Pageable resultPageable = new PageRequest(shopPage.getNumber(), shopPage.getSize(),
-                new Sort(Sort.Direction.DESC, "createdAt"));
-
-        return new PageImpl<ShopDto>(shopDtos, resultPageable, shopPage.getTotalElements());
-    }
-
-    public ShopDto findOne(Long shopId) {
-        Shop shop = shopRepository.findOne(shopId);
-
-        Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("shop find by id -> shop not found"));
-        if (!shop.isActive()) {
-            throw new IdNotFoundException("shop find by id -> shop not found");
-        }
-
-        return new ShopDto.Builder()
-                .withName(shop.getName())
-                .withInfo(shop.getDescription())
-                .withPhone(shop.getPhoneNumber())
-                .build();
-    }
-
-    public Shop update(Long userId, Long shopId, ShopRequestVO requestVO) {
-        Shop oldShop = shopRepository.findOne(shopId);
-        Optional.ofNullable(oldShop).orElseThrow(() -> new IdNotFoundException("shop update -> shop not found"));
-        if (!oldShop.isActive()) {
-            throw new IdNotFoundException("shop update -> shop not found");
-        }
-
-        User user = userRepository.findOne(userId);
-        if (!user.matchAuthority(Authorities.ADMIN)) {  // 관리자라면 shop check pass
-            if (!user.getSeller().matchShop(oldShop)) {  // 판매자가 해당 shop에 속해있나
-                throw new UserIdNotMatchedException("shop update -> forbbiden access");
-            }
-        }
-
-        oldShop.update(requestVO.toShopEntitiy());
-        return shopRepository.save(oldShop);
-    }
-
-    public void delete(Long shopId) {
-        Shop oldShop = shopRepository.findOne(shopId);
-        Optional.ofNullable(oldShop).orElseThrow(() -> new IdNotFoundException("shop find by id -> shop not found"));
-        if (!oldShop.isActive()) {
-            throw new IdNotFoundException("shop find by id -> shop not found");
-        }
-
-        oldShop.disable();
-        shopRepository.save(oldShop);
-    }
+    /**
+     * 매장 상세정보 조회
+     *
+     * @param shopId Shop ID
+     * @return 매장 상세정보
+     */
+    public abstract ShopDto readShop(Long shopId);
 }

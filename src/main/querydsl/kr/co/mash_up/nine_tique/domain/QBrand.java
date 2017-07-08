@@ -27,7 +27,9 @@ public class QBrand extends EntityPathBase<Brand> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath name = createString("name");
+    public final StringPath nameEng = createString("nameEng");
+
+    public final StringPath nameKo = createString("nameKo");
 
     public final ListPath<Product, QProduct> products = this.<Product, QProduct>createList("products", Product.class, QProduct.class, PathInits.DIRECT2);
 

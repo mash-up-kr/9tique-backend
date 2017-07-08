@@ -13,5 +13,11 @@ import kr.co.mash_up.nine_tique.domain.Brand;
 @Repository(value = "brandRepository")
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
+    /**
+     * 브랜드 이름(한글)로 브랜드를 조회한다
+     *
+     * @param name 브랜드 이름(한글)
+     * @return
+     */
     public abstract Optional<Brand> findByNameKo(String name);
 }

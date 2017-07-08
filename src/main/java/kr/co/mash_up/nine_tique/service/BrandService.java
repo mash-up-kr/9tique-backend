@@ -14,7 +14,7 @@ public interface BrandService {
     /**
      * 브랜드 정보 추가
      *
-     * @param brandVO
+     * @param brandVO 추가할 브랜드 정보
      */
     public abstract void addBrand(BrandVO brandVO);
 
@@ -22,7 +22,7 @@ public interface BrandService {
      * 브랜드 정보 수정
      *
      * @param brandId Brand ID
-     * @param brandVO
+     * @param brandVO 수정할 브랜드 정보
      */
     public abstract void modifyBrand(Long brandId, BrandVO brandVO);
 
@@ -32,7 +32,7 @@ public interface BrandService {
      * @param brandId Brand ID
      */
     public abstract void removeBrand(Long brandId);
-    
+
     /**
      * 브랜드 리스트 조회
      *

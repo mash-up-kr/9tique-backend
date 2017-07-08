@@ -17,10 +17,10 @@ public class ShopRequestVO extends RequestVO {
     private String name;
 
     @JsonProperty
-    private String info;
+    private String description;
 
-    @JsonProperty
-    private String phone;
+    @JsonProperty(value = "phone_number")
+    private String phoneNumber;
 
     @JsonProperty(value = "kakao_open_chat_url")
     private String kakaoOpenChatUrl;
@@ -28,8 +28,8 @@ public class ShopRequestVO extends RequestVO {
     public Shop toShopEntitiy() {
         Shop shop = new Shop();
         shop.setName(this.name);
-        shop.setDescription(this.info);
-        shop.setPhoneNumber(this.phone);
+        shop.setDescription(this.description);
+        shop.setPhoneNumber(this.phoneNumber);
         shop.setKakaoOpenChatUrl(this.kakaoOpenChatUrl);
         shop.setActive(true);
         return shop;

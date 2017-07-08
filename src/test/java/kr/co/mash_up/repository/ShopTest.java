@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -69,7 +71,9 @@ public class ShopTest {
     @Test
     public void testFindByNameAndPhone() {
         // when
-        Shop findShop = shopRepository.findByNameAndPhoneNumber(TEST_NAME, TEST_PHONE);
+        Optional<Shop> shopOptional = shopRepository.findByNameAndPhoneNumber(TEST_NAME, TEST_PHONE);
+
+        Shop findShop = shopOptional.get();
 
         // then
         assertThat(TEST_NAME).isEqualTo(findShop.getName());
