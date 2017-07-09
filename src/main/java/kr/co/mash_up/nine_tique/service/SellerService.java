@@ -73,9 +73,9 @@ public class SellerService {
                             }).collect(Collectors.toList());
 
                     ShopDto shopDto = new ShopDto.Builder()
-                            .withName(product.getShop().getName())
-                            .withInfo(product.getShop().getDescription())
-                            .withPhone(product.getShop().getPhoneNumber())
+                            .name(product.getShop().getName())
+                            .description(product.getShop().getDescription())
+                            .phoneNumber(product.getShop().getPhoneNumber())
                             .build();
 
                     return new ProductDto.Builder()
@@ -175,9 +175,9 @@ public class SellerService {
 
         Shop shop = seller.getShop();
         ShopDto shopDto = new ShopDto.Builder()
-                .withName(shop.getName())
-                .withInfo(shop.getDescription())
-                .withPhone(shop.getPhoneNumber())
+                .name(shop.getName())
+                .description(shop.getDescription())
+                .phoneNumber(shop.getPhoneNumber())
                 .build();
 
         return new SellerDto.Builder()
@@ -271,10 +271,10 @@ public class SellerService {
 
                     Shop shop = seller.getShop();
                     ShopDto shopDto = new ShopDto.Builder()
-                            .withId(shop.getId())
-                            .withName(shop.getName())
-                            .withInfo(shop.getDescription())
-                            .withPhone(shop.getPhoneNumber())
+                            .id(shop.getId())
+                            .name(shop.getName())
+                            .description(shop.getDescription())
+                            .phoneNumber(shop.getPhoneNumber())
                             .build();
 
                     return new SellerDto.Builder()

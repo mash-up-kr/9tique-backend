@@ -24,7 +24,9 @@ public class QShopComment extends EntityPathBase<ShopComment> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final StringPath content = createString("content");
+    public final BooleanPath active = createBoolean("active");
+
+    public final StringPath contents = createString("contents");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -36,7 +38,7 @@ public class QShopComment extends EntityPathBase<ShopComment> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final QUser user;
+    public final QUser writer;
 
     public QShopComment(String variable) {
         this(ShopComment.class, forVariable(variable), INITS);
@@ -57,7 +59,7 @@ public class QShopComment extends EntityPathBase<ShopComment> {
     public QShopComment(Class<? extends ShopComment> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this.shop = inits.isInitialized("shop") ? new QShop(forProperty("shop")) : null;
-        this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
+        this.writer = inits.isInitialized("writer") ? new QUser(forProperty("writer"), inits.get("writer")) : null;
     }
 
 }

@@ -24,7 +24,7 @@ public class QPostComment extends EntityPathBase<PostComment> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final StringPath content = createString("content");
+    public final StringPath contents = createString("contents");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

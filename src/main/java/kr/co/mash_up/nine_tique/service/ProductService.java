@@ -94,10 +94,10 @@ public class ProductService {
                             }).collect(Collectors.toList());
 
                     ShopDto shopDto = new ShopDto.Builder()
-                            .withName(product.getShop().getName())
-                            .withInfo(product.getShop().getDescription())
-                            .withPhone(product.getShop().getPhoneNumber())
-                            .withKakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
+                            .name(product.getShop().getName())
+                            .description(product.getShop().getDescription())
+                            .phoneNumber(product.getShop().getPhoneNumber())
+                            .kakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
                             .build();
 
                     boolean isZzim = product.checkProductZzim(zzimProducts);
@@ -144,10 +144,10 @@ public class ProductService {
                 }).collect(Collectors.toList());
 
         ShopDto shopDto = new ShopDto.Builder()
-                .withName(product.getShop().getName())
-                .withInfo(product.getShop().getDescription())
-                .withPhone(product.getShop().getPhoneNumber())
-                .withKakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
+                .name(product.getShop().getName())
+                .description(product.getShop().getDescription())
+                .phoneNumber(product.getShop().getPhoneNumber())
+                .kakaoOpenChatUrl(product.getShop().getKakaoOpenChatUrl())
                 .build();
 
         List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);

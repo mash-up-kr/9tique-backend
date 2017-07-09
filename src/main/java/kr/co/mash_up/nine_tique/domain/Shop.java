@@ -67,19 +67,21 @@ public class Shop extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
     private List<ShopComment> shopComments;
 
-    public void disable() {
+    public void deactive() {
         if (active) {
             this.active = false;
             products.forEach(Product::disable);
             sellers.forEach(Seller::disable);
+            shopComments.forEach(ShopComment::deactive);
         }
     }
 
-    public void enable() {
+    public void active() {
         if (!active) {
             this.active = true;
             products.forEach(Product::enable);
             sellers.forEach(Seller::enable);
+            shopComments.forEach(ShopComment::active);
         }
     }
 
@@ -87,5 +89,6 @@ public class Shop extends AbstractEntity<Long> {
         this.name = newShop.name;
         this.description = newShop.description;
         this.phoneNumber = newShop.phoneNumber;
+        this.kakaoOpenChatUrl = newShop.kakaoOpenChatUrl;
     }
 }

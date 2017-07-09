@@ -24,7 +24,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> commentCount = createNumber("commentCount", Long.class);
 
-    public final StringPath content = createString("content");
+    public final StringPath contents = createString("contents");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
