@@ -386,6 +386,11 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL COMMENT '프로모션 이름',
+  `description` TEXT NOT NULL COMMENT '프로모션 설명',
+  `priority` INT(11) NOT NULL DEFAULT '1000' COMMENT '프로모션 우선순위(높은 것 우선)',
+  `register` VARCHAR(50) NULL COMMENT '프로모션을 등록한 사람',
+  `start_at` TIMESTAMP NULL COMMENT '프로모션 시작 일시',
+  `end_at` TIMESTAMP NULL COMMENT '프로모션 종료 일시',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`))
