@@ -59,4 +59,12 @@ public class Promotion extends AbstractEntity<Long> {
 
     @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
     private List<PromotionProduct> promotionProducts;
+
+    public void addProduct(PromotionProduct promotionProduct) {
+        promotionProducts.add(promotionProduct);
+    }
+
+    public void addImage(PromotionImage image) {
+        promotionImages.add(image);
+    }
 }

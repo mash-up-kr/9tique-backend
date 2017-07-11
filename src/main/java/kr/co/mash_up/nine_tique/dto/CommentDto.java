@@ -43,7 +43,7 @@ public class CommentDto {
             return this;
         }
 
-        public Builder contents(String content) {
+        public Builder contents(String contents) {
             this.contents = contents;
             return this;
         }

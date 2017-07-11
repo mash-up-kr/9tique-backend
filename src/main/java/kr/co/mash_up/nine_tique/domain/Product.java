@@ -49,16 +49,15 @@ public class Product extends AbstractEntity<Long> {
     @Type(type = "yes_no")
     private boolean active;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", foreignKey = @ForeignKey(name = "fk_product_to_brand_id"))
     private Brand brand;  // 브랜드 정보
 
-    //    @ManyToOne(fetch = FetchType.LAZY)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_id", columnDefinition = "INT(11)", foreignKey = @ForeignKey(name = "fk_product_to_shop_id"))
     private Shop shop;  // 매장 정보
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_product_to_category_id"))  // FK 매핑시 이용
     private Category category;  // 카테고리
 

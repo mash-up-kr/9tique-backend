@@ -142,7 +142,7 @@ public class SellerService {
                 .map(ProductRequestVO::getId)
                 .forEach(productId -> {
                     Product oldProduct = productRepository.findOne(productId);
-                    productRepository.findOneById(productId);
+                    productRepository.findOneByProductId(productId);
                     Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product delete -> product not found"));
 
                     Seller seller = sellerRepository.findByUserId(userId);

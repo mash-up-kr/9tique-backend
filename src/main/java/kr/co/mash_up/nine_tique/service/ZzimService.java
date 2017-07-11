@@ -43,7 +43,7 @@ public class ZzimService {
     @Transactional
     public void addProduct(Long userId, Long productId) {
         Zzim zzim = zzimRepository.findOne(userId);  // query count down 가능
-        Product product = productRepository.findOneById(productId);
+        Product product = productRepository.findOneByProductId(productId);
 
         Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("zzim add product -> product not found"));
 

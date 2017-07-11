@@ -406,10 +406,10 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion_image` (
   `original_file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 원본 이름',
   `size` INT(11) NULL DEFAULT NULL COMMENT '파일 사이즈',
   `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `promotion_id` INT(11) NOT NULL,
+  `promotion_id` INT(11) NULL DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
-  PRIMARY KEY (`id`, `promotion_id`),
+  PRIMARY KEY (`id`),
   UNIQUE INDEX `UK_q3dl7t9fh6cx7bjk5pcxfg1oe` (`file_name` ASC),
   INDEX `fk_promotion_image_promotion1_idx` (`promotion_id` ASC),
   CONSTRAINT `fk_promotion_image_promotion1`
