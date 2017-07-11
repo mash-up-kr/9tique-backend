@@ -391,6 +391,7 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion` (
   `register` VARCHAR(50) NULL COMMENT '프로모션을 등록한 사람',
   `start_at` TIMESTAMP NULL COMMENT '프로모션 시작 일시',
   `end_at` TIMESTAMP NULL COMMENT '프로모션 종료 일시',
+  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`))

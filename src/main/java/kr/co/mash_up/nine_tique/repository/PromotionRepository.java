@@ -9,6 +9,6 @@ import kr.co.mash_up.nine_tique.domain.Promotion;
  * Created by ethankim on 2017. 7. 9..
  */
 @Repository
-public interface PromotionRepository extends JpaRepository<Promotion, Long> {
+public interface PromotionRepository extends JpaRepository<Promotion, Long>, PromotionRepositoryCustom {
 
 }

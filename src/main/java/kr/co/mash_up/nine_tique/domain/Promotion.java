@@ -1,5 +1,8 @@
 package kr.co.mash_up.nine_tique.domain;
 
+import org.hibernate.annotations.Type;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -54,10 +57,14 @@ public class Promotion extends AbstractEntity<Long> {
     @Column(name = "end_at")
     private LocalDateTime endAt;  // 프로모션 종료 일시
 
+    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
+    @Type(type = "yes_no")
+    private boolean active;
+
     @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
     private List<PromotionImage> promotionImages;
 
-    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PromotionProduct> promotionProducts;
 
     public void addProduct(PromotionProduct promotionProduct) {
@@ -66,5 +73,13 @@ public class Promotion extends AbstractEntity<Long> {
 
     public void addImage(PromotionImage image) {
         promotionImages.add(image);
+    }
+
+    public void deactive() {
+        if (active) {
+            this.active = false;
+            this.promotionProducts.clear();
+            // Todo: 이미지 entity refactoring 후 로직 추가
+        }
     }
 }

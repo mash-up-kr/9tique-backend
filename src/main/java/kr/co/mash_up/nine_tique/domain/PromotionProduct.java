@@ -40,6 +40,10 @@ public class PromotionProduct {
     @MapsId(value = "productId")
     private Product product;
 
+    public Long getProductId() {
+        return this.id.productId;
+    }
+
     @Embeddable
     @Data
     @EqualsAndHashCode(callSuper = false, of = {"promotionId", "productId"})
