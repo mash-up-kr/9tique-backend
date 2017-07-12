@@ -31,6 +31,7 @@ public final class Constant {
         public static final String API_USER = "/api/users";
         public static final String API_SELLER = "/api/sellers";
         public static final String API_BRAND = "/api/brands";
+        public static final String API_PROMOTION = "/api/promotions";
 
         public static final String STORAGE = "/storage";
         public static final String H2_CONSOLE = "/h2-console";

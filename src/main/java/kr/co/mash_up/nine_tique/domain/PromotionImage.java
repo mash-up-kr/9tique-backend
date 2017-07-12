@@ -57,7 +57,7 @@ public class PromotionImage extends AbstractEntity<Long> {
      * @return 임시 저장할 image upload path
      */
     public static String getImageUploadTempPath() {
-        return String.format("%s/product/tmp", System.getProperty(SystemPropertiesConfig.STORAGE_PATH));
+        return String.format("%s/promotion/tmp", System.getProperty(SystemPropertiesConfig.STORAGE_PATH));
     }
 
     /**
@@ -66,7 +66,7 @@ public class PromotionImage extends AbstractEntity<Long> {
      * @return temporarily image url
      */
     public String getTempImageUrl() {
-        return String.format("%s/product/tmp/%s",
+        return String.format("%s/promotion/tmp/%s",
                 System.getProperty(SystemPropertiesConfig.STORAGE_URI), this.fileName);
     }
 
@@ -77,7 +77,7 @@ public class PromotionImage extends AbstractEntity<Long> {
      */
     @Transient  // 매핑하지 않는다.
     public String getImageUrl() {
-        return String.format("%s/product/%d/%s",
+        return String.format("%s/promotion/%d/%s",
                 System.getProperty(SystemPropertiesConfig.STORAGE_URI), this.promotion.getId(), this.fileName);
     }
 
@@ -88,7 +88,7 @@ public class PromotionImage extends AbstractEntity<Long> {
      */
     @Transient  // 매핑하지 않는다.
     public String getImageUploadPath() {
-        return String.format("%s/product/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), promotion.getId());
+        return String.format("%s/promotion/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), promotion.getId());
     }
 
     /**
@@ -99,7 +99,7 @@ public class PromotionImage extends AbstractEntity<Long> {
      */
     @Transient
     public static String getFileNameFromUrl(String imageUrl) {
-        // uri/product/tmp/fileName
+        // uri/promotion/tmp/fileName
         //Todo: confirm url pattern matching??
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     }

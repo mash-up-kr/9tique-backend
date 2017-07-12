@@ -1,16 +1,17 @@
 package kr.co.mash_up.nine_tique.repository;
 
-import com.mysema.query.jpa.impl.JPAQuery;
-import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.domain.Product;
-import kr.co.mash_up.nine_tique.domain.QCategory;
-import kr.co.mash_up.nine_tique.domain.QProduct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import com.mysema.query.jpa.impl.JPAQuery;
+import kr.co.mash_up.nine_tique.domain.Category;
+import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.QCategory;
+import kr.co.mash_up.nine_tique.domain.QProduct;
 
 
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
@@ -19,12 +20,13 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Product findOneById(Long id) {
+    public Product findOneByProductId(Long productId) {
         JPAQuery query = new JPAQuery(entityManager);
         QProduct qProduct = QProduct.product;
 
         query.from(qProduct)
-                .where(qProduct.id.eq(id).and(qProduct.active.isTrue()));
+                .where(qProduct.id.eq(productId)
+                        .and(qProduct.active.isTrue()));
 
         return query.uniqueResult(qProduct);
     }

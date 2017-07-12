@@ -1,5 +1,8 @@
 package kr.co.mash_up.nine_tique.domain;
 
+import org.hibernate.annotations.Type;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
@@ -36,11 +40,46 @@ public class Promotion extends AbstractEntity<Long> {
     private Long id;
 
     @Column(name = "name", length = 255, nullable = false)
-    private String name;
+    private String name;  // 프로모션 이름
+
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    private String description;  // 프로모션 설명
+
+    @Column(name = "priority", columnDefinition = "INT(11)")
+    private Integer priority;  // 우선 순위(높은 것 우선)
+
+    @Column(name = "register")
+    private String register;  // 프로모션을 등록한 사람
+
+    @Column(name = "start_at")
+    private LocalDateTime startAt;  // 프로모션 시작 일시
+
+    @Column(name = "end_at")
+    private LocalDateTime endAt;  // 프로모션 종료 일시
+
+    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
+    @Type(type = "yes_no")
+    private boolean active;
 
     @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
     private List<PromotionImage> promotionImages;
 
-    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PromotionProduct> promotionProducts;
+
+    public void addProduct(PromotionProduct promotionProduct) {
+        promotionProducts.add(promotionProduct);
+    }
+
+    public void addImage(PromotionImage image) {
+        promotionImages.add(image);
+    }
+
+    public void deactive() {
+        if (active) {
+            this.active = false;
+            this.promotionProducts.clear();
+            // Todo: 이미지 entity refactoring 후 로직 추가
+        }
+    }
 }

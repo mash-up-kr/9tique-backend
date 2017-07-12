@@ -386,6 +386,12 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL COMMENT '프로모션 이름',
+  `description` TEXT NOT NULL COMMENT '프로모션 설명',
+  `priority` INT(11) NOT NULL DEFAULT '1000' COMMENT '프로모션 우선순위(높은 것 우선)',
+  `register` VARCHAR(50) NULL COMMENT '프로모션을 등록한 사람',
+  `start_at` TIMESTAMP NULL COMMENT '프로모션 시작 일시',
+  `end_at` TIMESTAMP NULL COMMENT '프로모션 종료 일시',
+  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`))
@@ -401,10 +407,10 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion_image` (
   `original_file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 원본 이름',
   `size` INT(11) NULL DEFAULT NULL COMMENT '파일 사이즈',
   `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `promotion_id` INT(11) NOT NULL,
+  `promotion_id` INT(11) NULL DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
-  PRIMARY KEY (`id`, `promotion_id`),
+  PRIMARY KEY (`id`),
   UNIQUE INDEX `UK_q3dl7t9fh6cx7bjk5pcxfg1oe` (`file_name` ASC),
   INDEX `fk_promotion_image_promotion1_idx` (`promotion_id` ASC),
   CONSTRAINT `fk_promotion_image_promotion1`

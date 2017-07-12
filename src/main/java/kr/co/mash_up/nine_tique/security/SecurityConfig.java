@@ -148,6 +148,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET, API_PROMOTION + SUFFIX).hasAnyAuthority(Authorities.USER)
+                .antMatchers(HttpMethod.POST, API_PROMOTION + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.PUT, API_PROMOTION + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+                .antMatchers(HttpMethod.DELETE, API_PROMOTION + SUFFIX).hasAnyAuthority(Authorities.ADMIN)
+
+                .and()
+                .authorizeRequests()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);

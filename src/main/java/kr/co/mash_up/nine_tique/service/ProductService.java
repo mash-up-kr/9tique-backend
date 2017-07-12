@@ -312,7 +312,7 @@ public class ProductService {
 
     @Transactional
     public void delete(Long userId, Long productId) {
-        Product oldProduct = productRepository.findOneById(productId);
+        Product oldProduct = productRepository.findOneByProductId(productId);
         Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product delete -> product not found"));
 
         Seller seller = sellerRepository.findByUserId(userId);
