@@ -95,7 +95,7 @@ public class PromotionController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public DataListResponseVO<PromotionDto> readPromotions(@RequestBody DataListRequestVO requestVO) {
+    public DataListResponseVO<PromotionDto> readPromotions(DataListRequestVO requestVO) {
         log.info("readPromotions - page : {}", requestVO);
 
         Page<PromotionDto> promotions = promotionService.readPromotions(requestVO);

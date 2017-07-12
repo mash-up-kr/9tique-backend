@@ -2,8 +2,12 @@ package kr.co.mash_up.nine_tique.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +20,7 @@ import kr.co.mash_up.nine_tique.domain.Promotion;
 import kr.co.mash_up.nine_tique.domain.PromotionImage;
 import kr.co.mash_up.nine_tique.domain.PromotionProduct;
 import kr.co.mash_up.nine_tique.domain.User;
+import kr.co.mash_up.nine_tique.dto.ImageDto;
 import kr.co.mash_up.nine_tique.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
@@ -71,6 +76,7 @@ public class PromotionServiceImpl implements PromotionService {
                 });
 
         // Todo: 이미지 entity refactoring 후 로직 수정
+        // Todo: 문제점, 이미지가 저장되고 FK가 null로 남아있는다
         // 이미지 추가, 다른 request에서 저장된 파일을 FK로 연결시킨다
         // 현재 프로모션엔 대표 이미지 1개지만 확장성을 고려해 Collection으로 구현
         promotionVO.getImages()
@@ -126,7 +132,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     @Override
     public void removePromotion(Long promotionId) {
-        Optional<Promotion> promotionOptional = promotionRepository.findOnebyPromotionId(promotionId);
+        Optional<Promotion> promotionOptional = promotionRepository.findOneByPromotionId(promotionId);
         promotionOptional.orElseThrow(() -> new IdNotFoundException("removePromotion -> promotion not found"));
 
         Promotion promotion = promotionOptional.get();
@@ -137,12 +143,53 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional(readOnly = true)
     @Override
     public Page<PromotionDto> readPromotions(DataListRequestVO requestVO) {
-        return null;
+        Pageable pageable = requestVO.getPageable();
+
+        Page<Promotion> promotionPage = promotionRepository.findPromotions(pageable);
+
+        List<PromotionDto> promotions = promotionPage.getContent().stream()
+                .map(promotion -> {
+                    List<PromotionImage> promotionImages = promotion.getPromotionImages();
+                    List<ImageDto> images = new ArrayList<>();
+                    if (!CollectionUtils.isEmpty(promotionImages)) {
+                        ImageDto image = new ImageDto.Builder()
+                                .url(promotionImages.get(0).getImageUrl())
+                                .build();
+                        images.add(image);
+                    }
+
+                    return new PromotionDto.Builder()
+                            .id(promotion.getId())
+                            .name(promotion.getName())
+                            .images(images)
+                            .build();
+                }).collect(Collectors.toList());
+
+        Pageable resultPageable = new PageRequest(promotionPage.getNumber(), promotionPage.getSize());
+
+        return new PageImpl<>(promotions, resultPageable, promotionPage.getTotalElements());
     }
 
     @Transactional(readOnly = true)
     @Override
     public PromotionDto readPromotion(Long promotionId) {
-        return null;
+        Optional<Promotion> promotionOptional = promotionRepository.findOneByPromotionId(promotionId);
+        promotionOptional.orElseThrow(() -> new IdNotFoundException("readPromotion -> promotion not found"));
+
+        Promotion promotion = promotionOptional.get();
+
+        List<ImageDto> images = new ArrayList<>();
+        for (PromotionImage promotionImage : promotion.getPromotionImages()) {
+            ImageDto image = new ImageDto.Builder()
+                    .url(promotionImage.getImageUrl())
+                    .build();
+            images.add(image);
+        }
+
+        return new PromotionDto.Builder()
+                .id(promotion.getId())
+                .name(promotion.getName())
+                .images(images)
+                .build();
     }
 }

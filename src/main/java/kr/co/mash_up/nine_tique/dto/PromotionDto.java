@@ -1,6 +1,5 @@
 package kr.co.mash_up.nine_tique.dto;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,24 +23,40 @@ public class PromotionDto {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("description")
-    private String description;
-
-    @JsonProperty("priority")
-    private Integer priority;
-
-    @JsonProperty("register")
-    private String register;
-
-    @JsonProperty("start_at")
-    private Timestamp startAt;
-
-    @JsonProperty("end_at")
-    private Timestamp endAt;
-
     @JsonProperty("images")
-    private List<ImageDto> promotionImages;
+    private List<ImageDto> images;
 
-    @JsonProperty("products")
-    private List<ProductDto> promotionProducts;
+    private PromotionDto(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.images = builder.images;
+    }
+
+    public static class Builder {
+
+        private Long id = 0L;
+
+        private String name = "";
+
+        private List<ImageDto> images = null;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder images(List<ImageDto> images) {
+            this.images = images;
+            return this;
+        }
+
+        public PromotionDto build() {
+            return new PromotionDto(this);
+        }
+    }
 }
