@@ -1,25 +1,44 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import kr.co.mash_up.nine_tique.domain.Category;
+import kr.co.mash_up.nine_tique.domain.Image;
+import kr.co.mash_up.nine_tique.domain.ImageType;
+import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.ProductImage;
+import kr.co.mash_up.nine_tique.domain.Seller;
+import kr.co.mash_up.nine_tique.domain.SellerProduct;
+import kr.co.mash_up.nine_tique.domain.Shop;
+import kr.co.mash_up.nine_tique.domain.ZzimProduct;
+import kr.co.mash_up.nine_tique.dto.ImageDto;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
-import kr.co.mash_up.nine_tique.repository.*;
+import kr.co.mash_up.nine_tique.repository.CategoryRepository;
+import kr.co.mash_up.nine_tique.repository.ImageRepository;
+import kr.co.mash_up.nine_tique.repository.ProductRepository;
+import kr.co.mash_up.nine_tique.repository.SellerRepository;
+import kr.co.mash_up.nine_tique.repository.ShopRepository;
+import kr.co.mash_up.nine_tique.repository.ZzimRepository;
 import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Product와 관련된 비즈니스 로직 처리
@@ -38,7 +57,7 @@ public class ProductService {
     private ShopRepository shopRepository;
 
     @Autowired
-    private ProductImageRepository productImageRepository;
+    private ImageRepository imageRepository;
 
     @Autowired
     private ZzimRepository zzimRepository;
@@ -85,13 +104,14 @@ public class ProductService {
         // DTO로 변환
         List<ProductDto> productDtos = productPage.getContent().stream()
                 .map(product -> {
-                    List<ProductImageDto> productImageDtos = product.getProductImages().stream()
-                            .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
-                            .map(productImage -> {
-                                return new ProductImageDto.Builder()
-                                        .withUrl(productImage.getImageUrl())
-                                        .build();
-                            }).collect(Collectors.toList());
+
+                    List<ImageDto> productImageDtos = product.getProductImages().stream()
+                            .map(ProductImage::getImage)
+                            .sorted(Comparator.comparingLong(Image::getId))
+                            .map(image ->
+                                    new ImageDto.Builder()
+                                            .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), image.getFileName()))
+                                            .build()).collect(Collectors.toList());
 
                     ShopDto shopDto = new ShopDto.Builder()
                             .name(product.getShop().getName())
@@ -114,7 +134,7 @@ public class ProductService {
                             .withMainCategory(product.getCategory().getMain())
                             .withSubCategory(product.getCategory().getSub())
                             .withShop(shopDto)
-                            .withProductImages(productImageDtos)
+                            .withImages(productImageDtos)
                             .withZzimStatus(isZzim)
                             .withCreatedAt(product.getCreatedTimestamp())
                             .withUpdatedAt(product.getUpdatedTimestamp())
@@ -135,11 +155,12 @@ public class ProductService {
 
         Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("product find by id -> product not found"));
 
-        List<ProductImageDto> productImageDtos = product.getProductImages().stream()
-                .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
+        List<ImageDto> productImageDtos = product.getProductImages().stream()
+                .map(ProductImage::getImage)
+                .sorted(Comparator.comparingLong(Image::getId))
                 .map(productImage -> {
-                    return new ProductImageDto.Builder()
-                            .withUrl(productImage.getImageUrl())
+                    return new ImageDto.Builder()
+                            .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), productImage.getFileName()))
                             .build();
                 }).collect(Collectors.toList());
 
@@ -167,7 +188,7 @@ public class ProductService {
                 .withMainCategory(product.getCategory().getMain())
                 .withSubCategory(product.getCategory().getSub())
                 .withShop(shopDto)
-                .withProductImages(productImageDtos)
+                .withImages(productImageDtos)
                 .withZzimStatus(isZzim)
                 .withCreatedAt(product.getCreatedTimestamp())
                 .withUpdatedAt(product.getUpdatedTimestamp())
@@ -233,11 +254,11 @@ public class ProductService {
             어떤거는 multipart로 만들고 어떤거는 url을 보내야 한다.
             */
         // image url이 왔다는건 이미지 수정이 있다는 것
-        List<ProductImageDto> productImageDtos = requestVO.getProductImages();
+        List<ImageDto> productImageDtos = requestVO.getProductImages();
         // 새로운 Product Image가 기존 Product Image가 없으면 기존 Product Image 참조 해제
         List<ProductImage> oldProductImages = oldProduct.getProductImages();
         oldProductImages.forEach(productImage -> {
-            String fileName = productImage.getFileName();
+            String fileName = productImage.getImage().getFileName();
             if (!existProductImageFromNewData(fileName, productImageDtos)) {  // 포함되어 있지 않으므로 tmp로 옮기고 참조를 끊는다.
 
                 // file move product/{id} dir to tmp dir
@@ -248,18 +269,18 @@ public class ProductService {
 
         // 기존 Product Image에 새로운 Product Image가 없으면 참조 연결 -> tmp dir에 파일 존재
         productImageDtos.forEach(productImageDto -> {
-            String fileName = ProductImage.getFileNameFromUrl(productImageDto.getUrl());
+            String fileName = FileUtil.getFileName(productImageDto.getUrl());
 
             if (!existProductImageFromOldData(fileName, oldProductImages)) {
-                ProductImage productImage = productImageRepository.findByFileName(fileName);
-                if (!productImage.isActive()) {
+                Image image = imageRepository.findByFileName(fileName);
+                if (image == null) {
                     throw new IdNotFoundException("product update -> productImage not found");
                 }
-                productImage.setProduct(oldProduct);
+//                image.setProduct(oldProduct);
 
                 // file move tmp dir to product/{id} dir
-                FileUtil.moveFile(productImage.getImageUploadTempPath() + "/" + productImage.getFileName(),
-                        productImage.getImageUploadPath());
+                FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),
+                        FileUtil.getImageUploadPath(ImageType.PRODUCT, oldProduct.getId()));
             }
         });
 
@@ -295,16 +316,16 @@ public class ProductService {
         seller.addSellerProduct(sellerProduct);
 
         requestVO.getProductImages().forEach(productImageDto -> {
-            ProductImage productImage
-                    = productImageRepository.findByFileName(ProductImage.getFileNameFromUrl(productImageDto.getUrl()));
-            if (!productImage.isActive()) {
+            Image image
+                    = imageRepository.findByFileName(FileUtil.getFileName(productImageDto.getUrl()));
+            if (image == null) {
                 throw new IdNotFoundException("product create -> productImage not found");
             }
-            productImage.setProduct(product);
+//            image.setProduct(product);
 
             // file move tmp dir to product id dir
-            FileUtil.moveFile(ProductImage.getImageUploadTempPath() + "/" + productImage.getFileName(),
-                    productImage.getImageUploadPath());
+            FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),
+                    FileUtil.getImageUploadPath(ImageType.PRODUCT, savedProduct.getId()));
         });
 
         return savedProduct;
@@ -334,10 +355,10 @@ public class ProductService {
      * @param productImageDtos 새로운 image list
      * @return true or false
      */
-    private boolean existProductImageFromNewData(String fileName, List<ProductImageDto> productImageDtos) {
-        for (ProductImageDto productImageDto : productImageDtos) {
-            log.info(ProductImage.getFileNameFromUrl(productImageDto.getUrl()));
-            if (fileName.equals(ProductImage.getFileNameFromUrl(productImageDto.getUrl()))) {
+    private boolean existProductImageFromNewData(String fileName, List<ImageDto> productImageDtos) {
+        for (ImageDto imageDto : productImageDtos) {
+            log.info(FileUtil.getFileName(imageDto.getUrl()));
+            if (fileName.equals(FileUtil.getFileName(imageDto.getUrl()))) {
                 return true;
             }
         }
@@ -353,10 +374,10 @@ public class ProductService {
      */
     private boolean existProductImageFromOldData(String fileName, List<ProductImage> productImages) {
         for (ProductImage productImage : productImages) {
-            log.info(productImage.getFileName());
-            if (fileName.equals(productImage.getFileName())) {
-                return true;
-            }
+//            log.info(productImage.getFileName());
+//            if (fileName.equals(productImage.getFileName())) {
+//                return true;
+//            }
         }
         return false;
     }

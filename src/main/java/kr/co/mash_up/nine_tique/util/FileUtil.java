@@ -9,6 +9,9 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import kr.co.mash_up.nine_tique.config.SystemPropertiesConfig;
+import kr.co.mash_up.nine_tique.domain.ImageType;
+
 public class FileUtil {
 
     public static File upload(MultipartFile multipartFile, String uploadDir, String fileName) {
@@ -101,20 +104,52 @@ public class FileUtil {
         return dir.delete();
     }
 
-//    /**
-//     * 업로드된 이미지를 다운받을 수 있는 url 제공
-//     * @return image url
-//     */
-//    public static String getImageUrl(long productId, String fileName){
-//        return String.format("$s/product/%d/%s",
-//                System.getProperty(SystemPropertiesConfig.STORAGE_URI), productId, fileName);
-//    }
-//
-//    /**
-//     * 물리적인 image upload path 제공
-//     * @return upload path
-//     */
-//    public static String getImageUploadPath(long productId){
-//        return String.format("%s/product/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), productId);
-//    }
+    /**
+     * url에서 file name 추출
+     *
+     * @param imageUrl image url
+     * @return file name
+     */
+    public static String getFileName(String imageUrl) {
+        // uri/promotion/tmp/fileName
+        //Todo: confirm url pattern matching??
+        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    }
+
+    /**
+     * 임시 저장할 물리적인 image upload path 제공
+     *
+     * @return 임시 저장할 image upload path
+     */
+    public static String getImageUploadTempPath() {
+        return String.format("%s/tmp", System.getProperty(SystemPropertiesConfig.STORAGE_PATH));
+    }
+
+    /**
+     * 물리적인 image upload path 제공
+     *
+     * @return upload path
+     */
+    public static String getImageUploadPath(ImageType type, Long id) {
+        return String.format("%s/%s/%d", System.getProperty(SystemPropertiesConfig.STORAGE_PATH), type.toString(), id);
+    }
+
+    /**
+     * 임시저장된 이미지를 다운받을 수 있는 url 제공
+     *
+     * @return temporarily image url
+     */
+    public static String getTempImageUrl(String fileName) {
+        return String.format("%s/tmp/%s", System.getProperty(SystemPropertiesConfig.STORAGE_URI), fileName);
+    }
+
+    /**
+     * 업로드된 이미지를 다운받을 수 있는 url 제공
+     *
+     * @return image url
+     */
+    public static String getImageUrl(ImageType type, Long id, String fileName) {
+        return String.format("%s/%s/%d/%s",
+                System.getProperty(SystemPropertiesConfig.STORAGE_URI), type.toString(), id, fileName);
+    }
 }

@@ -1,21 +1,27 @@
 package kr.co.mash_up.nine_tique.service;
 
+import kr.co.mash_up.nine_tique.domain.Image;
+import kr.co.mash_up.nine_tique.domain.ImageType;
 import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.ProductImage;
 import kr.co.mash_up.nine_tique.domain.Zzim;
 import kr.co.mash_up.nine_tique.domain.ZzimProduct;
+import kr.co.mash_up.nine_tique.dto.ImageDto;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.dto.ProductImageDto;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
 import kr.co.mash_up.nine_tique.repository.ZzimRepository;
+import kr.co.mash_up.nine_tique.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,7 +81,7 @@ public class ZzimService {
         Optional.ofNullable(product).orElseThrow(() -> new IdNotFoundException("zzim delete product -> product not found"));
 
         ZzimProduct oldZzimProduct = zzimRepository.getZzimProduct(zzim, product);
-        if(oldZzimProduct == null){
+        if (oldZzimProduct == null) {
             throw new IdNotFoundException("zzim delete product -> zzim not found");
         }
 
@@ -100,13 +106,13 @@ public class ZzimService {
                 .map(zzimProduct -> {
                     Product product = zzimProduct.getProduct();
 
-                    List<ProductImageDto> productImageDtos = product.getProductImages().stream()
-                            .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
-                            .map(productImage -> {
-                                return new ProductImageDto.Builder()
-                                        .withUrl(productImage.getImageUrl())
-                                        .build();
-                            }).collect(Collectors.toList());
+                    List<ImageDto> productImageDtos = product.getProductImages().stream()
+                            .map(ProductImage::getImage)
+                            .sorted(Comparator.comparingLong(Image::getId))
+                            .map(productImage ->
+                                    new ImageDto.Builder()
+                                            .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), productImage.getFileName()))
+                                            .build()).collect(Collectors.toList());
 
                     ShopDto shopDto = new ShopDto.Builder()
                             .name(product.getShop().getName())
@@ -125,7 +131,7 @@ public class ZzimService {
                             .withMainCategory(product.getCategory().getMain())
                             .withSubCategory(product.getCategory().getSub())
                             .withShop(shopDto)
-                            .withProductImages(productImageDtos)
+                            .withImages(productImageDtos)
                             .withZzimStatus(true)
                             .withCreatedAt(product.getCreatedTimestamp())
                             .withUpdatedAt(product.getUpdatedTimestamp())

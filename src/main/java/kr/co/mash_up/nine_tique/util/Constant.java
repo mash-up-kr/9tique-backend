@@ -26,7 +26,7 @@ public final class Constant {
         public static final String API_SHOP = "/api/shops";
         public static final String API_CATEGORY = "/api/categories";
         public static final String API_PRODUCT = "/api/products";
-        public static final String API_PRODUCT_IMAGE = "/api/product_images";
+        public static final String API_IMAGE = "/api/images";
         public static final String API_ZZIM = "/api/zzims";
         public static final String API_USER = "/api/users";
         public static final String API_SELLER = "/api/sellers";

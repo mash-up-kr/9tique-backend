@@ -9,6 +9,7 @@ import kr.co.mash_up.nine_tique.repository.*;
 import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
 import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
+import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
 import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
 import kr.co.mash_up.nine_tique.vo.SellerRequestVO;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,11 +66,12 @@ public class SellerService {
                 .map(sellerProduct -> {
                     Product product = sellerProduct.getProduct();
 
-                    List<ProductImageDto> productImageDtos = product.getProductImages().stream()
-                            .sorted((o1, o2) -> Long.compare(o1.getId(), o2.getId()))
+                    List<ImageDto> productImageDtos = product.getProductImages().stream()
+                            .map(ProductImage::getImage)
+                            .sorted(Comparator.comparingLong(Image::getId))
                             .map(productImage -> {
-                                return new ProductImageDto.Builder()
-                                        .withUrl(productImage.getImageUrl())
+                                return new ImageDto.Builder()
+                                        .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), productImage.getFileName()))
                                         .build();
                             }).collect(Collectors.toList());
 
@@ -89,7 +92,7 @@ public class SellerService {
                             .withMainCategory(product.getCategory().getMain())
                             .withSubCategory(product.getCategory().getSub())
                             .withShop(shopDto)
-                            .withProductImages(productImageDtos)
+                            .withImages(productImageDtos)
                             /*
                              현재 요구사항으로 판매자는 찜기능이 없다.
                              요구사항의 변경으로 필요할지도 모르니 주석처리

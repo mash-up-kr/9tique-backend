@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import kr.co.mash_up.nine_tique.domain.Image;
+import kr.co.mash_up.nine_tique.domain.ImageType;
 import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.domain.Promotion;
 import kr.co.mash_up.nine_tique.domain.PromotionImage;
@@ -28,6 +30,7 @@ import kr.co.mash_up.nine_tique.repository.PromotionImageRepository;
 import kr.co.mash_up.nine_tique.repository.PromotionRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.service.PromotionService;
+import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
 import kr.co.mash_up.nine_tique.vo.PromotionRequestVO;
@@ -81,7 +84,7 @@ public class PromotionServiceImpl implements PromotionService {
         // 현재 프로모션엔 대표 이미지 1개지만 확장성을 고려해 Collection으로 구현
         promotionVO.getImages()
                 .forEach(imageDto -> {
-                    Optional<PromotionImage> imageOptional = promotionImageRepository.findByFileName(PromotionImage.getFileNameFromUrl(imageDto.getUrl()));
+                    Optional<PromotionImage> imageOptional = promotionImageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
                     imageOptional.orElseThrow(() -> new IdNotFoundException("addPromotion -> image not found"));
 
                     PromotionImage promotionImage = imageOptional.get();
@@ -153,7 +156,7 @@ public class PromotionServiceImpl implements PromotionService {
                     List<ImageDto> images = new ArrayList<>();
                     if (!CollectionUtils.isEmpty(promotionImages)) {
                         ImageDto image = new ImageDto.Builder()
-                                .url(promotionImages.get(0).getImageUrl())
+                                .url(FileUtil.getImageUrl(ImageType.PROMOTION, promotion.getId(), promotionImages.get(0).getImage().getFileName()))
                                 .build();
                         images.add(image);
                     }
@@ -181,7 +184,7 @@ public class PromotionServiceImpl implements PromotionService {
         List<ImageDto> images = new ArrayList<>();
         for (PromotionImage promotionImage : promotion.getPromotionImages()) {
             ImageDto image = new ImageDto.Builder()
-                    .url(promotionImage.getImageUrl())
+                    .url(FileUtil.getImageUrl(ImageType.PROMOTION, promotion.getId(), promotionImage.getImage().getFileName()))
                     .build();
             images.add(image);
         }
