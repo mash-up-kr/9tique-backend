@@ -12,11 +12,11 @@ import kr.co.mash_up.nine_tique.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 매일 23시 59분에 임시폴더에 있는 상품 이미지를 삭제하는 스케쥴러
+ * 매일 23시 59분에 임시폴더에(/tmp) 있는 파일을 삭제하는 스케쥴러
  */
 @Component
 @Slf4j
-public class ProductImageRemoveTask {
+public class ImageRemoveTask {
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -32,6 +32,6 @@ public class ProductImageRemoveTask {
         boolean result = FileUtil.deleteFilesInDir(FileUtil.getImageUploadTempPath());
 
         stopWatch.stop();
-        log.info("end file remove /tmp !! result : {}" + result);
+        log.info("end file remove /tmp !! result : {}, {}", result, stopWatch.toString());
     }
 }

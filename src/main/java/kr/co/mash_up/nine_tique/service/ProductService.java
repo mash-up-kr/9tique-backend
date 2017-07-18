@@ -272,10 +272,10 @@ public class ProductService {
             String fileName = FileUtil.getFileName(productImageDto.getUrl());
 
             if (!existProductImageFromOldData(fileName, oldProductImages)) {
-                Image image = imageRepository.findByFileName(fileName);
-                if (image == null) {
-                    throw new IdNotFoundException("product update -> productImage not found");
-                }
+                Optional<Image> imageOptional = imageRepository.findByFileName(fileName);
+                imageOptional.orElseThrow(() -> new IdNotFoundException("product update -> productImage not found"));
+                Image image = imageOptional.get();
+
 //                image.setProduct(oldProduct);
 
                 // file move tmp dir to product/{id} dir
@@ -316,11 +316,11 @@ public class ProductService {
         seller.addSellerProduct(sellerProduct);
 
         requestVO.getProductImages().forEach(productImageDto -> {
-            Image image
-                    = imageRepository.findByFileName(FileUtil.getFileName(productImageDto.getUrl()));
-            if (image == null) {
-                throw new IdNotFoundException("product create -> productImage not found");
-            }
+            Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(productImageDto.getUrl()));
+            imageOptional.orElseThrow(() -> new IdNotFoundException("product create -> productImage not found"));
+
+            Image image = imageOptional.get();
+
 //            image.setProduct(product);
 
             // file move tmp dir to product id dir

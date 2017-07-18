@@ -1,21 +1,24 @@
 package kr.co.mash_up.nine_tique.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.service.CategorySservice;
+import kr.co.mash_up.nine_tique.service.CategoryService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.vo.CategoryRequestVO;
 import kr.co.mash_up.nine_tique.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.vo.DataResponseVO;
 import kr.co.mash_up.nine_tique.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_CATEGORY;
 
@@ -27,7 +30,7 @@ import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_CATEGORY;
 public class CategoryController {
 
     @Autowired
-    private CategorySservice categorySservice;
+    private CategoryService categoryService;
 
     /**
      * 카테고리 생성
@@ -40,7 +43,7 @@ public class CategoryController {
     public ResponseVO add(@RequestBody CategoryRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMain(), requestVO.getSub());
         log.debug(requestVO.getMain() + ", " + requestVO.getSub());
-        Category category = categorySservice.create(requestVO);
+        Category category = categoryService.create(requestVO);
 
         if (category != null) {  // 생성 성공
             return ResponseVO.ok();
@@ -61,7 +64,7 @@ public class CategoryController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseVO update(@PathVariable Long id, @RequestBody CategoryRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getMain(), requestVO.getSub());
-        Category category = categorySservice.update(id, requestVO.toCategoryEntity());
+        Category category = categoryService.update(id, requestVO.toCategoryEntity());
 
         if (category != null) {  // 수정 성공
             return ResponseVO.ok();
@@ -80,7 +83,7 @@ public class CategoryController {
     @ApiOperation(value = "카테고리 삭제")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseVO delete(@PathVariable Long id) {
-        categorySservice.delete(id);
+        categoryService.delete(id);
         return ResponseVO.ok();
     }
 
@@ -92,7 +95,7 @@ public class CategoryController {
     @ApiOperation(value = "카테고리 리스트 조회")
     @RequestMapping(method = RequestMethod.GET)
     public DataListResponseVO<Category> list() {
-        List<Category> categories = categorySservice.findCategories();
+        List<Category> categories = categoryService.findCategories();
         return new DataListResponseVO<Category>(categories);
     }
 
@@ -105,7 +108,7 @@ public class CategoryController {
     @ApiOperation(value = "카테고리 상세정보 조회")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public DataResponseVO<Category> detail(@PathVariable("id") Long categoryId) {
-        Category category = categorySservice.findById(categoryId);
+        Category category = categoryService.findById(categoryId);
         return new DataResponseVO<Category>(category);
     }
 }

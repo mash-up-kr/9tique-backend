@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,8 +26,8 @@ import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.dto.ImageDto;
 import kr.co.mash_up.nine_tique.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
+import kr.co.mash_up.nine_tique.repository.ImageRepository;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
-import kr.co.mash_up.nine_tique.repository.PromotionImageRepository;
 import kr.co.mash_up.nine_tique.repository.PromotionRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.service.PromotionService;
@@ -39,9 +40,12 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Created by ethankim on 2017. 7. 9..
  */
-@Service
+@Service(value = "promotionService")
 @Slf4j
 public class PromotionServiceImpl implements PromotionService {
+
+    // Todo: 2017.07.19 프로모션 상태 변경 로직 추가
+    // Todo: 2017.07.19 상태에 변경에 따른 히스토리 로직 추가
 
     @Autowired
     private PromotionRepository promotionRepository;
@@ -53,7 +57,7 @@ public class PromotionServiceImpl implements PromotionService {
     private ProductRepository productRepository;
 
     @Autowired
-    private PromotionImageRepository promotionImageRepository;
+    private ImageRepository imageRepository;
 
     @Transactional
     @Override
@@ -67,9 +71,9 @@ public class PromotionServiceImpl implements PromotionService {
         promotion.setStartAt(promotionVO.getStartAt().toLocalDateTime());
         promotion.setEndAt(promotionVO.getEndAt().toLocalDateTime());
         promotion.setRegister(register.getName());
+        promotion.setStatus(Promotion.Status.SAVED);
         promotion.setPromotionImages(new ArrayList<>());
         promotion.setPromotionProducts(new ArrayList<>());
-
         promotionRepository.save(promotion);
 
         promotionVO.getProducts()
@@ -78,22 +82,18 @@ public class PromotionServiceImpl implements PromotionService {
                     promotion.addProduct(new PromotionProduct(promotion, product));
                 });
 
-        // Todo: 이미지 entity refactoring 후 로직 수정
-        // Todo: 문제점, 이미지가 저장되고 FK가 null로 남아있는다
-        // 이미지 추가, 다른 request에서 저장된 파일을 FK로 연결시킨다
         // 현재 프로모션엔 대표 이미지 1개지만 확장성을 고려해 Collection으로 구현
         promotionVO.getImages()
                 .forEach(imageDto -> {
-                    Optional<PromotionImage> imageOptional = promotionImageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
+                    Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
                     imageOptional.orElseThrow(() -> new IdNotFoundException("addPromotion -> image not found"));
 
-                    PromotionImage promotionImage = imageOptional.get();
-                    promotionImage.setPromotion(promotion);
+                    Image image = imageOptional.get();
+                    promotion.addImage(new PromotionImage(promotion, image));
 
-                    // Todo: 이미지 request refactor 후 주석 제거
-                    // file move tmp dir to product id dir
-//                    FileUtil.moveFile(PromotionImage.getImageUploadTempPath() + "/" + promotionImage.getFileName(),
-//                            promotionImage.getImageUploadPath());
+                    // file move tmp dir to promotion id dir
+                    FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),
+                            FileUtil.getImageUploadPath(ImageType.PROMOTION, promotion.getId()));
                 });
     }
 
@@ -127,7 +127,37 @@ public class PromotionServiceImpl implements PromotionService {
             }
         });
 
-        // Todo: 이미지 수정, 이미지 테이블 refactoring 후 구현한다
+        List<PromotionImage> oldImages = promotion.getPromotionImages();
+        List<ImageDto> updateImages = promotionVO.getImages();
+
+        // 프로모션 이미지 삭제
+        Map<String, ImageDto> imageMapToUpdate = updateImages.stream()
+                .collect(Collectors.toMap(image -> FileUtil.getFileName(image.getUrl()), image -> image));
+
+        Iterator<PromotionImage> imageIterator = oldImages.iterator();
+        while (imageIterator.hasNext()) {
+            PromotionImage oldImage = imageIterator.next();
+
+            if (imageMapToUpdate.get(oldImage.getImage().getFileName()) == null) {
+                // Todo: 2017.07.19 바로 파일 삭제할지 선택
+                FileUtil.moveFile(FileUtil.getImageUploadPath(ImageType.PROMOTION, promotion.getId()) + "/" + oldImage.getImage().getFileName()
+                        , FileUtil.getImageUploadTempPath());
+                imageIterator.remove();
+            }
+        }
+
+        // 프로모션 이미지 추가
+        updateImages.forEach(imageDto -> {
+            Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
+            imageOptional.orElseThrow(() -> new IdNotFoundException("modifyPromotion -> image not found"));
+
+            Image image = imageOptional.get();
+            promotion.addImage(new PromotionImage(promotion, image));
+
+            // file move tmp dir to promotion id dir
+            FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),
+                    FileUtil.getImageUploadPath(ImageType.PROMOTION, promotion.getId()));
+        });
 
         promotionRepository.save(promotion);
     }
@@ -138,9 +168,9 @@ public class PromotionServiceImpl implements PromotionService {
         Optional<Promotion> promotionOptional = promotionRepository.findOneByPromotionId(promotionId);
         promotionOptional.orElseThrow(() -> new IdNotFoundException("removePromotion -> promotion not found"));
 
-        Promotion promotion = promotionOptional.get();
-        promotion.deactive();
-        promotionRepository.save(promotion);
+        // dir move tmp dir to promotion id dir
+        FileUtil.moveFile(FileUtil.getImageUploadPath(ImageType.PROMOTION, promotionId), FileUtil.getImageUploadTempPath());
+        promotionRepository.delete(promotionId);
     }
 
     @Transactional(readOnly = true)

@@ -1,11 +1,14 @@
 package kr.co.mash_up.nine_tique.domain;
 
 
-import org.hibernate.annotations.Type;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
 
-import javax.persistence.*;
-
-import kr.co.mash_up.nine_tique.config.SystemPropertiesConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,16 +29,12 @@ public class ProductImage extends AbstractEntity<ProductImage.Id> {
     private Id id = new Id();
 
     @ManyToOne  // ProductImage(Many) : Image(One)
-    @MapsId
+    @MapsId(value = "imageId")
     private Image image;
 
     @ManyToOne  // ProductImage(Many) : Product(One)
-    @MapsId
+    @MapsId(value = "productId")
     private Product product;
-
-    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
-    @Type(type = "yes_no")
-    private boolean active;
 
     @Embeddable
     @Data
@@ -49,15 +48,10 @@ public class ProductImage extends AbstractEntity<ProductImage.Id> {
         private Long imageId;
     }
 
-    public void deactive() {
-        if (active) {
-            this.active = false;
-        }
-    }
-
-    public void active() {
-        if (!active) {
-            this.active = true;
-        }
+    public ProductImage(Product product, Image image) {
+        this.id.productId = product.getId();
+        this.id.imageId = image.getId();
+        this.product = product;
+        this.image = image;
     }
 }

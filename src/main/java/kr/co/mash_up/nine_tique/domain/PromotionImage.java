@@ -1,10 +1,14 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import org.hibernate.annotations.Type;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
 
-import javax.persistence.*;
-
-import kr.co.mash_up.nine_tique.config.SystemPropertiesConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,17 +31,13 @@ public class PromotionImage extends AbstractEntity<PromotionImage.Id> {
     @EmbeddedId
     private Id id = new Id();
 
-    @ManyToOne  // PromotionImage(Many) : Image(One)
-    @MapsId
+    @ManyToOne(cascade = CascadeType.ALL)  // PromotionImage(Many) : Image(One)
+    @MapsId(value = "imageId")
     private Image image;
 
     @ManyToOne  // PromotionImage(Many) : Promotion(One)
-    @MapsId
+    @MapsId(value = "promotionId")
     private Promotion promotion;
-
-    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
-    @Type(type = "yes_no")
-    private boolean active;
 
     @Embeddable
     @Data
