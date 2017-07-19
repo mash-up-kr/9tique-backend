@@ -44,7 +44,7 @@ public class ProductRequestVO extends RequestVO {
     private String subCategory;  // ""인것도 있어서 checkParameterEmpty()로 안넘긴다.
 
     @JsonProperty("product_images")
-    private List<ImageDto> productImages;
+    private List<ImageDto> images;
 
     public Product toProductEntity() {
         Product product = new Product();

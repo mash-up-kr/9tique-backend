@@ -86,9 +86,8 @@ public class PromotionServiceImpl implements PromotionService {
         promotionVO.getImages()
                 .forEach(imageDto -> {
                     Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
-                    imageOptional.orElseThrow(() -> new IdNotFoundException("addPromotion -> image not found"));
+                    Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("addPromotion -> image not found"));
 
-                    Image image = imageOptional.get();
                     promotion.addImage(new PromotionImage(promotion, image));
 
                     // file move tmp dir to promotion id dir
@@ -140,7 +139,7 @@ public class PromotionServiceImpl implements PromotionService {
 
             if (imageMapToUpdate.get(oldImage.getImage().getFileName()) == null) {
                 // Todo: 2017.07.19 바로 파일 삭제할지 선택
-                FileUtil.moveFile(FileUtil.getImageUploadPath(ImageType.PROMOTION, promotion.getId()) + "/" + oldImage.getImage().getFileName()
+                FileUtil.moveFile(FileUtil.getImageUploadPath(ImageType.PROMOTION, promotionId) + "/" + oldImage.getImage().getFileName()
                         , FileUtil.getImageUploadTempPath());
                 imageIterator.remove();
             }
@@ -149,14 +148,13 @@ public class PromotionServiceImpl implements PromotionService {
         // 프로모션 이미지 추가
         updateImages.forEach(imageDto -> {
             Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
-            imageOptional.orElseThrow(() -> new IdNotFoundException("modifyPromotion -> image not found"));
+            Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("modifyPromotion -> image not found"));
 
-            Image image = imageOptional.get();
             promotion.addImage(new PromotionImage(promotion, image));
 
             // file move tmp dir to promotion id dir
             FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),
-                    FileUtil.getImageUploadPath(ImageType.PROMOTION, promotion.getId()));
+                    FileUtil.getImageUploadPath(ImageType.PROMOTION, promotionId));
         });
 
         promotionRepository.save(promotion);
@@ -207,9 +205,7 @@ public class PromotionServiceImpl implements PromotionService {
     @Override
     public PromotionDto readPromotion(Long promotionId) {
         Optional<Promotion> promotionOptional = promotionRepository.findOneByPromotionId(promotionId);
-        promotionOptional.orElseThrow(() -> new IdNotFoundException("readPromotion -> promotion not found"));
-
-        Promotion promotion = promotionOptional.get();
+        Promotion promotion = promotionOptional.orElseThrow(() -> new IdNotFoundException("readPromotion -> promotion not found"));
 
         List<ImageDto> images = new ArrayList<>();
         for (PromotionImage promotionImage : promotion.getPromotionImages()) {

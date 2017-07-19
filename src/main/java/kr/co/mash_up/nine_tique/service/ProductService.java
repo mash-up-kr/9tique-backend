@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -199,7 +201,7 @@ public class ProductService {
     @Transactional
     public Product update(Long userId, Long productId, ProductRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getProductImages());
+                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getImages());
 
         Product oldProduct = productRepository.findOne(productId);
 
@@ -223,68 +225,40 @@ public class ProductService {
             throw new IdNotFoundException("product update -> category not found");
         }
 
-        /*
-            경우의 수
-            1. 사진 추가(카메라) 1장
-            사진등록 + 참조 연결
-             등록한 사진 url이 더해져서 온다.
+        List<ProductImage> oldImages = oldProduct.getProductImages();
+        List<ImageDto> updateImages = requestVO.getImages();
 
-            2. 사진 추가(갤러리) 여러장 - 새로 등록하는 과정
-                1. 기존 사진 참조해제
-                2. 사진 등록 + 참조연결
+        // 상품 이미지 삭제
+        Map<String, ImageDto> imageMapToUpdate = updateImages.stream()
+                .collect(Collectors.toMap(image -> FileUtil.getFileName(image.getUrl()), image -> image));
 
-            3. 사진 제거 - 일정한 갯수의 사진이 사라졌으니 확인 해야함
-            제거된 사진 확인 + 참조 해제
+        Iterator<ProductImage> imageIterator = oldImages.iterator();
+        while (imageIterator.hasNext()) {
+            ProductImage oldImage = imageIterator.next();
 
-            4. 제거 + 추가
-            제거된 사진 확인 + 참조 해제
-
-            쨌든 제거되고 등록된다고 햇을 때
-
-	        수정에서 날리는건 url인데
-            클라에서
-
-            이미지에 1번 다녀오니까
-            url을 +, - 해서 최종 url list가 만들어지면 request
-            *4번 경우만 아니면 상당히 쉬워지는 문제
-            음... 카메라 기능을 없애자.
-
-            사진 제거면 url이 사라질테니 문제X
-            제거 + 추가면
-            어떤거는 multipart로 만들고 어떤거는 url을 보내야 한다.
-            */
-        // image url이 왔다는건 이미지 수정이 있다는 것
-        List<ImageDto> productImageDtos = requestVO.getProductImages();
-        // 새로운 Product Image가 기존 Product Image가 없으면 기존 Product Image 참조 해제
-        List<ProductImage> oldProductImages = oldProduct.getProductImages();
-        oldProductImages.forEach(productImage -> {
-            String fileName = productImage.getImage().getFileName();
-            if (!existProductImageFromNewData(fileName, productImageDtos)) {  // 포함되어 있지 않으므로 tmp로 옮기고 참조를 끊는다.
-
-                // file move product/{id} dir to tmp dir
-//                FileUtil.moveFile(productImage.getImageUploadPath() + "/" + fileName, productImage.getImageUploadTempPath());
-                productImage.setProduct(null);
+            if (imageMapToUpdate.get(oldImage.getImage().getFileName()) == null) {
+                // Todo: 2017.07.19 바로 파일 삭제할지 선택
+                FileUtil.moveFile(FileUtil.getImageUploadPath(ImageType.PRODUCT, productId) + "/" + oldImage.getImage().getFileName()
+                        , FileUtil.getImageUploadTempPath());
+                imageIterator.remove();
             }
+        }
+
+        // 상품 이미지 추가
+        updateImages.forEach(imageDto -> {
+            Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
+            Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("update -> image not found"));
+
+            oldProduct.addImage(new ProductImage(oldProduct, image));
+
+            // file move tmp dir to product id dir
+            FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),
+                    FileUtil.getImageUploadPath(ImageType.PRODUCT, productId));
         });
 
-        // 기존 Product Image에 새로운 Product Image가 없으면 참조 연결 -> tmp dir에 파일 존재
-        productImageDtos.forEach(productImageDto -> {
-            String fileName = FileUtil.getFileName(productImageDto.getUrl());
-
-            if (!existProductImageFromOldData(fileName, oldProductImages)) {
-                Optional<Image> imageOptional = imageRepository.findByFileName(fileName);
-                imageOptional.orElseThrow(() -> new IdNotFoundException("product update -> productImage not found"));
-                Image image = imageOptional.get();
-
-//                image.setProduct(oldProduct);
-
-                // file move tmp dir to product/{id} dir
-                FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),
-                        FileUtil.getImageUploadPath(ImageType.PRODUCT, oldProduct.getId()));
-            }
-        });
-
+        // Todo: 없으면 어떻게 되는지 파악하고 제거
         requestVO.setStatus(oldProduct.getStatus().name());  // 이전상태 유지
+
         oldProduct.update(requestVO.toProductEntity(), category);
         return productRepository.save(oldProduct);
     }
@@ -315,13 +289,11 @@ public class ProductService {
         SellerProduct sellerProduct = new SellerProduct(seller, savedProduct);
         seller.addSellerProduct(sellerProduct);
 
-        requestVO.getProductImages().forEach(productImageDto -> {
+        requestVO.getImages().forEach(productImageDto -> {
             Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(productImageDto.getUrl()));
-            imageOptional.orElseThrow(() -> new IdNotFoundException("product create -> productImage not found"));
+            Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("product create -> productImage not found"));
 
-            Image image = imageOptional.get();
-
-//            image.setProduct(product);
+            savedProduct.addImage(new ProductImage(savedProduct, image));
 
             // file move tmp dir to product id dir
             FileUtil.moveFile(FileUtil.getImageUploadTempPath() + "/" + image.getFileName(),

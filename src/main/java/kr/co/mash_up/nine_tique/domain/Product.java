@@ -143,4 +143,8 @@ public class Product extends AbstractEntity<Long> {
         }
         return false;
     }
+
+    public void addImage(ProductImage image) {
+        productImages.add(image);
+    }
 }
