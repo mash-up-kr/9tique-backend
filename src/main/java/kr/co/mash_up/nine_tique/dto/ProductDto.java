@@ -46,8 +46,8 @@ public class ProductDto {
     @JsonProperty(value = "shop")
     private ShopDto shopDto;
 
-    @JsonProperty(value = "product_images")
-    private List<ProductImageDto> productImageDtos;
+    @JsonProperty(value = "images")
+    private List<ImageDto> images;
 
     @JsonProperty(value = "zzim_status")
     private boolean zzimStatus;
@@ -73,7 +73,7 @@ public class ProductDto {
         private String mainCategory;
         private String subCategory;
         private ShopDto shop;
-        private List<ProductImageDto> productImages;
+        private List<ImageDto> images;
         private boolean zzimStatus;
         private long createdAt;
         private long updatedAt;
@@ -91,7 +91,7 @@ public class ProductDto {
             productDto.setMainCategory(mainCategory);
             productDto.setSubCategory(subCategory);
             productDto.setShopDto(shop);
-            productDto.setProductImageDtos(productImages);
+            productDto.setImages(images);
             productDto.setZzimStatus(zzimStatus);
             productDto.setCreatedAt(createdAt);
             productDto.setUpdatedAt(updatedAt);
@@ -149,8 +149,8 @@ public class ProductDto {
             return this;
         }
 
-        public Builder withProductImages(List<ProductImageDto> productImages) {
-            this.productImages = productImages;
+        public Builder withImages(List<ImageDto> images) {
+            this.images = images;
             return this;
         }
 

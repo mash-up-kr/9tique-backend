@@ -51,28 +51,6 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`category` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
--- -----------------------------------------------------
--- Table `nine_tique`.`product_image`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nine_tique`.`product_image` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 이름(서버에서 중복되지 않게 재생성)',
-  `original_file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 원본 이름',
-  `size` INT(11) NULL DEFAULT NULL COMMENT '파일 사이즈',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `product_id` INT(11) NOT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
-  PRIMARY KEY (`id`, `product_id`),
-  UNIQUE INDEX `UK_q3dl7t9fh6cx7bjk5pcxfg1oe` (`file_name` ASC),
-  INDEX `fk_product_image_product1_idx` (`product_id` ASC),
-  CONSTRAINT `fk_product_image_product1`
-    FOREIGN KEY (`product_id`)
-    REFERENCES `nine_tique`.`product` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
 -- Table `nine_tique`.`product`
@@ -357,67 +335,23 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`post_product` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
--- -----------------------------------------------------
--- Table `nine_tique`.`post_image`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nine_tique`.`post_image` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 이름(서버에서 중복되지 않게 재생성)',
-  `original_file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 원본 이름',
-  `size` INT(11) NULL DEFAULT NULL COMMENT '파일 사이즈',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `post_id` INT(11) NOT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
-  PRIMARY KEY (`id`, `post_id`),
-  UNIQUE INDEX `UK_q3dl7t9fh6cx7bjk5pcxfg1oe` (`file_name` ASC),
-  INDEX `fk_post_image_post1_idx` (`post_id` ASC),
-  CONSTRAINT `fk_post_image_post1`
-    FOREIGN KEY (`post_id`)
-    REFERENCES `nine_tique`.`post` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
 -- Table `nine_tique`.`promotion`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL COMMENT '프로모션 이름',
-  `description` TEXT NOT NULL COMMENT '프로모션 설명',
-  `priority` INT(11) NOT NULL DEFAULT '1000' COMMENT '프로모션 우선순위(높은 것 우선)',
-  `register` VARCHAR(50) NULL COMMENT '프로모션을 등록한 사람',
-  `start_at` TIMESTAMP NULL COMMENT '프로모션 시작 일시',
-  `end_at` TIMESTAMP NULL COMMENT '프로모션 종료 일시',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
+  `id`          INT(11)      NOT NULL AUTO_INCREMENT,
+  `name`        VARCHAR(255) NOT NULL COMMENT '프로모션 이름',
+  `description` TEXT         NOT NULL COMMENT '프로모션 설명',
+  `priority`    INT(11)      NOT NULL DEFAULT '1000' COMMENT '프로모션 우선순위(높은 것 우선)',
+  `register`    VARCHAR(50)  NULL COMMENT '프로모션을 등록한 사람',
+  `start_at`    TIMESTAMP    NULL COMMENT '프로모션 시작 일시',
+  `end_at`      TIMESTAMP    NULL COMMENT '프로모션 종료 일시',
+  `status`      VARCHAR(20)  NOT NULL DEFAULT 'SAVED'
+  COMMENT '프로모션 상태(SAVED, RUNNING, PAUSE, END)',
+  `created_at`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
+  `updated_at`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
--- -----------------------------------------------------
--- Table `nine_tique`.`promotion_image`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion_image` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 이름(서버에서 중복되지 않게 재생성)',
-  `original_file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 원본 이름',
-  `size` INT(11) NULL DEFAULT NULL COMMENT '파일 사이즈',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
-  `promotion_id` INT(11) NULL DEFAULT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `UK_q3dl7t9fh6cx7bjk5pcxfg1oe` (`file_name` ASC),
-  INDEX `fk_promotion_image_promotion1_idx` (`promotion_id` ASC),
-  CONSTRAINT `fk_promotion_image_promotion1`
-    FOREIGN KEY (`promotion_id`)
-    REFERENCES `nine_tique`.`promotion` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -445,6 +379,92 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion_product` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+-- -----------------------------------------------------
+-- Table `nine_tique`.`image`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `nine_tique`.`image` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 이름(서버에서 겹치지 않게 재생성)',
+  `original_file_name` VARCHAR(255) NOT NULL COMMENT '업로드한 이미지 파일 원본 이름',
+  `size` INT(11) NULL DEFAULT NULL COMMENT '이미지 파일 사이즈',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `UK_q3dl7t9fh6cx7bjk5pcxfg1oe` (`file_name` ASC))
+  ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `nine_tique`.`promotion_image`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `nine_tique`.`promotion_image` (
+  `promotion_id` INT(11) NOT NULL,
+  `image_id` INT(11) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
+  PRIMARY KEY (`promotion_id`, `image_id`),
+  INDEX `fk_promotion_image_to_promotion1_idx` (`promotion_id` ASC),
+  INDEX `fk_promotion_image_to_image1_idx` (`image_id` ASC),
+  CONSTRAINT `fk_promotion_image_to_promotion1`
+  FOREIGN KEY (`promotion_id`)
+  REFERENCES `nine_tique`.`promotion` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_promotion_image_to_image1`
+  FOREIGN KEY (`image_id`)
+  REFERENCES `nine_tique`.`image` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `nine_tique`.`product_image`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `nine_tique`.`product_image` (
+  `product_id` INT(11) NOT NULL,
+  `image_id` INT(11) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
+  PRIMARY KEY (`product_id`, `image_id`),
+  INDEX `fk_product_image_to_product1_idx` (`product_id` ASC),
+  INDEX `fk_product_image_to_image1_idx` (`image_id` ASC),
+  CONSTRAINT `fk_product_image_to_product1`
+  FOREIGN KEY (`product_id`)
+  REFERENCES `nine_tique`.`product` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_product_image_to_image1`
+  FOREIGN KEY (`image_id`)
+  REFERENCES `nine_tique`.`image` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `nine_tique`.`post_image`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `nine_tique`.`post_image` (
+  `post_id` INT(11) NOT NULL,
+  `image_id` INT(11) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
+  PRIMARY KEY (`post_id`, `image_id`),
+  INDEX `fk_post_image_to_post1_idx` (`post_id` ASC),
+  INDEX `fk_post_image_to_image1_idx` (`image_id` ASC),
+  CONSTRAINT `fk_post_image_to_post1`
+  FOREIGN KEY (`post_id`)
+  REFERENCES `nine_tique`.`post` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_post_image_to_image1`
+  FOREIGN KEY (`image_id`)
+  REFERENCES `nine_tique`.`image` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

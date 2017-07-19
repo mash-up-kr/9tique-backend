@@ -1,12 +1,5 @@
 package kr.co.mash_up.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.mash_up.builder.CategoryBuilder;
-import kr.co.mash_up.nine_tique.NineTiqueApplication;
-import kr.co.mash_up.nine_tique.controller.CategoryController;
-import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.service.CategorySservice;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -21,8 +14,15 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.mash_up.nine_tique.NineTiqueApplication;
+import kr.co.mash_up.nine_tique.controller.CategoryController;
+import kr.co.mash_up.nine_tique.service.CategoryService;
+
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_CATEGORY;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
@@ -53,7 +53,7 @@ public class CategoryControllerTest {
     private CategoryController categoryController;
 
     @Autowired
-    private CategorySservice categoryService;
+    private CategoryService categoryService;
 
     @Before
     public void setup() throws Exception {

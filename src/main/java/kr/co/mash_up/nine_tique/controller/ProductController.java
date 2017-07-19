@@ -34,7 +34,7 @@ public class ProductController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseVO add(@RequestBody ProductRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getProductImages());
+                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getImages());
 
         Long userId = SecurityUtil.getCurrentUser().getId();
         log.info(userId + " ");

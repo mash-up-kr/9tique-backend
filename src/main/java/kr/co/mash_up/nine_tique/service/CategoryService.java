@@ -1,11 +1,5 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
-import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
-import kr.co.mash_up.nine_tique.repository.CategoryRepository;
-import kr.co.mash_up.nine_tique.vo.CategoryRequestVO;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,12 +7,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import kr.co.mash_up.nine_tique.domain.Category;
+import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
+import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
+import kr.co.mash_up.nine_tique.repository.CategoryRepository;
+import kr.co.mash_up.nine_tique.vo.CategoryRequestVO;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Category와 관련된 비즈니스 로직 처리
  */
-@Service(value = "categorySservice")
+@Service(value = "categoryService")
 @Slf4j
-public class CategorySservice {
+public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;

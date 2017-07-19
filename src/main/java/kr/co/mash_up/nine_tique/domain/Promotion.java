@@ -1,16 +1,6 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import org.hibernate.annotations.Type;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -57,11 +47,11 @@ public class Promotion extends AbstractEntity<Long> {
     @Column(name = "end_at")
     private LocalDateTime endAt;  // 프로모션 종료 일시
 
-    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
-    @Type(type = "yes_no")
-    private boolean active;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20, nullable = false)
+    private Status status;  // 프로모션 상태
 
-    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PromotionImage> promotionImages;
 
     @OneToMany(mappedBy = "promotion", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -75,11 +65,13 @@ public class Promotion extends AbstractEntity<Long> {
         promotionImages.add(image);
     }
 
-    public void deactive() {
-        if (active) {
-            this.active = false;
-            this.promotionProducts.clear();
-            // Todo: 이미지 entity refactoring 후 로직 추가
-        }
+    /**
+     * 프로모션 상태
+     */
+    public enum Status {
+        SAVED,
+        RUNNING,  // 실행 중
+        PAUSE,  // 일시 중지
+        END;  // 종료
     }
 }

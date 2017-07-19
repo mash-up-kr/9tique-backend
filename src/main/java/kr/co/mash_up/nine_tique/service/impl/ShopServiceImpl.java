@@ -29,7 +29,7 @@ import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.vo.ShopRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Service(value = "shopService")
 @Slf4j
 public class ShopServiceImpl implements ShopService {
 

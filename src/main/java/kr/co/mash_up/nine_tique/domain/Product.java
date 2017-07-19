@@ -101,7 +101,6 @@ public class Product extends AbstractEntity<Long> {
     public void disable() {
         if (active) {
             this.active = false;
-            productImages.forEach(ProductImage::disable);
             sellerProducts.forEach(SellerProduct::disable);
             zzimProducts.forEach(ZzimProduct::disable);
         }
@@ -110,7 +109,6 @@ public class Product extends AbstractEntity<Long> {
     public void enable() {
         if (!active) {
             this.active = true;
-            productImages.forEach(ProductImage::enable);
             sellerProducts.forEach(SellerProduct::enable);
             zzimProducts.forEach(ZzimProduct::enable);
         }
@@ -144,5 +142,9 @@ public class Product extends AbstractEntity<Long> {
             }
         }
         return false;
+    }
+
+    public void addImage(ProductImage image) {
+        productImages.add(image);
     }
 }

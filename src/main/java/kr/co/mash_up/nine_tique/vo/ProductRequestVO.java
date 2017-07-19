@@ -1,14 +1,14 @@
 package kr.co.mash_up.nine_tique.vo;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.co.mash_up.nine_tique.domain.Product;
-import kr.co.mash_up.nine_tique.dto.ProductImageDto;
+import kr.co.mash_up.nine_tique.dto.ImageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -44,7 +44,7 @@ public class ProductRequestVO extends RequestVO {
     private String subCategory;  // ""인것도 있어서 checkParameterEmpty()로 안넘긴다.
 
     @JsonProperty("product_images")
-    private List<ProductImageDto> productImages;
+    private List<ImageDto> images;
 
     public Product toProductEntity() {
         Product product = new Product();

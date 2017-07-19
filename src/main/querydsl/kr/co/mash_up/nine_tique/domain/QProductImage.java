@@ -1,13 +1,14 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
-
-import com.mysema.query.types.path.*;
-
-import com.mysema.query.types.PathMetadata;
 import javax.annotation.Generated;
+
 import com.mysema.query.types.Path;
+import com.mysema.query.types.PathMetadata;
+import com.mysema.query.types.path.DateTimePath;
+import com.mysema.query.types.path.EntityPathBase;
 import com.mysema.query.types.path.PathInits;
+
+import static com.mysema.query.types.PathMetadataFactory.forVariable;
 
 
 /**
@@ -24,22 +25,14 @@ public class QProductImage extends EntityPathBase<ProductImage> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final BooleanPath active = createBoolean("active");
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath fileName = createString("fileName");
+    public final QProductImage_Id id;
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final StringPath originalFileName = createString("originalFileName");
+    public final QImage image;
 
     public final QProduct product;
-
-    public final NumberPath<Long> size = createNumber("size", Long.class);
-
-    public final StringPath tempImageUrl = createString("tempImageUrl");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -62,6 +55,8 @@ public class QProductImage extends EntityPathBase<ProductImage> {
 
     public QProductImage(Class<? extends ProductImage> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.id = inits.isInitialized("id") ? new QProductImage_Id(forProperty("id")) : null;
+        this.image = inits.isInitialized("image") ? new QImage(forProperty("image")) : null;
         this.product = inits.isInitialized("product") ? new QProduct(forProperty("product"), inits.get("product")) : null;
     }
 

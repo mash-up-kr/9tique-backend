@@ -1,10 +1,5 @@
 package kr.co.mash_up.service;
 
-import kr.co.mash_up.builder.CategoryBuilder;
-import kr.co.mash_up.nine_tique.NineTiqueApplication;
-import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.repository.CategoryRepository;
-import kr.co.mash_up.nine_tique.service.CategorySservice;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import kr.co.mash_up.builder.CategoryBuilder;
+import kr.co.mash_up.nine_tique.NineTiqueApplication;
+import kr.co.mash_up.nine_tique.domain.Category;
+import kr.co.mash_up.nine_tique.repository.CategoryRepository;
+import kr.co.mash_up.nine_tique.service.CategoryService;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -29,7 +30,7 @@ public class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private CategorySservice categorySservice;
+    private CategoryService categoryService;
 
     private Category testCategory;
 
@@ -50,7 +51,7 @@ public class CategoryServiceTest {
 
     @Test
     public void testCreate() {
-        int beforeSize = categorySservice.findCategories().size();
+        int beforeSize = categoryService.findCategories().size();
 
         Category category = new CategoryBuilder()
                 .withMain(TEST_MAIN)
@@ -59,7 +60,7 @@ public class CategoryServiceTest {
                 .build();
         categoryRepository.save(category);
 
-        int afterSize = categorySservice.findCategories().size();
+        int afterSize = categoryService.findCategories().size();
 
         assertThat(afterSize, is(beforeSize + 1));
     }

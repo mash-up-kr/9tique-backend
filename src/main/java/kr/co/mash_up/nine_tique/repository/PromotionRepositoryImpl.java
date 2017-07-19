@@ -27,8 +27,7 @@ public class PromotionRepositoryImpl implements PromotionRepositoryCustom {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(PROMOTION)
-                .where(PROMOTION.id.eq(promotionId)
-                        .and(PROMOTION.active.isTrue()));
+                .where(PROMOTION.id.eq(promotionId));
 
         return Optional.ofNullable(query.uniqueResult(PROMOTION));
     }
@@ -38,7 +37,6 @@ public class PromotionRepositoryImpl implements PromotionRepositoryCustom {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(PROMOTION)
-                .where(PROMOTION.active.isTrue())
                 .orderBy(PROMOTION.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
