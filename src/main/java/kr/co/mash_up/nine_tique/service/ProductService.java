@@ -45,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Product와 관련된 비즈니스 로직 처리
  */
-@Service(value = "productService")
+@Service
 @Slf4j
 public class ProductService {
 

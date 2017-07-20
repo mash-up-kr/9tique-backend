@@ -10,7 +10,7 @@ import kr.co.mash_up.nine_tique.domain.Brand;
 /**
  * Created by ethankim on 2017. 7. 3..
  */
-@Repository(value = "brandRepository")
+@Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     /**

@@ -40,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Created by ethankim on 2017. 7. 9..
  */
-@Service(value = "promotionService")
+@Service
 @Slf4j
 public class PromotionServiceImpl implements PromotionService {
 

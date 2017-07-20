@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * User와 관련된 비즈니스 로직 처리
  */
-@Service(value = "userService")
+@Service
 @Slf4j
 public class UserService {
 

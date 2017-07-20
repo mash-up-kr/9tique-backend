@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Seller와 관련된 비즈니스 로직 처리
  */
-@Service(value = "sellerService")
+@Service
 @Slf4j
 public class SellerService {
 
