@@ -1,6 +1,9 @@
 package kr.co.mash_up.nine_tique.dto;
 
 
+import java.util.Collections;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,12 +34,16 @@ public class ShopDto {
     @JsonProperty(value = "kakao_open_chat_url")
     private String kakaoOpenChatUrl;
 
+    @JsonProperty(value = "images")
+    private List<ImageDto> images;
+
     private ShopDto(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.description = builder.description;
         this.phoneNumber = builder.phoneNumber;
         this.kakaoOpenChatUrl = builder.kakaoOpenChatUrl;
+        this.images = builder.images;
     }
 
     public static class Builder {
@@ -50,6 +57,8 @@ public class ShopDto {
         private String phoneNumber = "";
 
         private String kakaoOpenChatUrl = "";
+
+        private List<ImageDto> images = Collections.emptyList();
 
         public Builder id(Long id) {
             this.id = id;
@@ -73,6 +82,11 @@ public class ShopDto {
 
         public Builder kakaoOpenChatUrl(String kakaoOpenChatUrl) {
             this.kakaoOpenChatUrl = kakaoOpenChatUrl;
+            return this;
+        }
+
+        public Builder images(List<ImageDto> images) {
+            this.images = images;
             return this;
         }
 

@@ -40,7 +40,6 @@ public class ShopTest {
                 .withDescription(TEST_DESCRIPTION)
                 .withPhoneNumber(TEST_PHONE)
                 .withCommentCount(0L)
-                .withActive(true)
                 .build();
         testShop = shopRepository.save(shop);
     }
