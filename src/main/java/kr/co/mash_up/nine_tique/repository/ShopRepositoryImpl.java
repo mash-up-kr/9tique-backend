@@ -22,45 +22,44 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private static final QShop SHOP = QShop.shop;
+
+    private static final QUser USER = QUser.user;
+
+    private static final QSeller SELLER = QSeller.seller;
+
     @Override
     public Optional<Shop> findOneByShopId(Long shopId) {
         JPAQuery query = new JPAQuery(entityManager);
-        QShop qShop = QShop.shop;
 
-        query.from(qShop)
-                .where(qShop.id.eq(shopId)
-                        .and(qShop.active.isTrue()));
+        query.from(SHOP)
+                .where(SHOP.id.eq(shopId));
 
-        return Optional.ofNullable(query.uniqueResult(qShop));
+        return Optional.ofNullable(query.uniqueResult(SHOP));
     }
 
     @Override
     public Shop findByUserId(Long userId) {
         JPAQuery query = new JPAQuery(entityManager);
-        QUser qUser = QUser.user;
-        QSeller qSeller = QSeller.seller;
-        QShop qShop = QShop.shop;
 
-        query.from(qSeller)
-                .join(qSeller.shop, qShop)
-                .join(qSeller.user, qUser)
-                .where(qUser.id.eq(userId))
+        query.from(SELLER)
+                .join(SELLER.shop, SHOP)
+                .join(SELLER.user, USER)
+                .where(USER.id.eq(userId))
                 .limit(1L);
 
-        return query.list(qShop).get(0);
+        return query.list(SHOP).get(0);
     }
 
     @Override
     public Page<Shop> findShops(Pageable pageable) {
         JPAQuery query = new JPAQuery(entityManager);
-        QShop qShop = QShop.shop;
 
-        query.from(qShop)
-                .where(qShop.active.isTrue())
-                .orderBy(qShop.id.desc())
+        query.from(SHOP)
+                .orderBy(SHOP.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
 
-        return new PageImpl<Shop>(query.list(qShop), pageable, query.count());
+        return new PageImpl<>(query.list(SHOP), pageable, query.count());
     }
 }

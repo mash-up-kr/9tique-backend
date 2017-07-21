@@ -1,7 +1,10 @@
 package kr.co.mash_up.nine_tique.vo;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.co.mash_up.nine_tique.domain.Shop;
+import kr.co.mash_up.nine_tique.dto.ImageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,13 +28,15 @@ public class ShopRequestVO extends RequestVO {
     @JsonProperty(value = "kakao_open_chat_url")
     private String kakaoOpenChatUrl;
 
+    @JsonProperty
+    private List<ImageDto> images;
+
     public Shop toShopEntitiy() {
         Shop shop = new Shop();
         shop.setName(this.name);
         shop.setDescription(this.description);
         shop.setPhoneNumber(this.phoneNumber);
         shop.setKakaoOpenChatUrl(this.kakaoOpenChatUrl);
-        shop.setActive(true);
         return shop;
     }
 }

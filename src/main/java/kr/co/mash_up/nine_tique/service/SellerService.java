@@ -233,9 +233,9 @@ public class SellerService {
     public Seller create(Long shopId) {
         Shop shop = shopRepository.findOne(shopId);
         Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("seller create -> shop not found"));
-        if (!shop.isActive()) {
-            throw new IdNotFoundException("seller create -> shop not found");
-        }
+//        if (!shop.isActive()) {
+//            throw new IdNotFoundException("seller create -> shop not found");
+//        }
 
         Seller seller = new Seller(shop, CodeGeneratorUtil.generateAuthentiCode());
         return sellerRepository.save(seller);

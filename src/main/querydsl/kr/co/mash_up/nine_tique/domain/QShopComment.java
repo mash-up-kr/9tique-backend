@@ -24,8 +24,6 @@ public class QShopComment extends EntityPathBase<ShopComment> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final BooleanPath active = createBoolean("active");
-
     public final StringPath contents = createString("contents");
 
     //inherited

@@ -24,6 +24,8 @@ public class CommentDto {
     @JsonProperty(value = "writer_name")
     private String writerName;
 
+    // Todo: writer profile image url 추가
+
     private CommentDto(Builder builder) {
         this.id = builder.id;
         this.contents = builder.contents;
