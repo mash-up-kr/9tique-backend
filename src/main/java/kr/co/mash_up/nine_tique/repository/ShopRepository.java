@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import kr.co.mash_up.nine_tique.domain.Shop;
 
-@Repository(value = "shopRepository")
+@Repository
 public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositoryCustom {
 
     /**

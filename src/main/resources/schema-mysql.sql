@@ -152,7 +152,6 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`shop_comment` (
   `contents` VARCHAR(255) NOT NULL COMMENT '댓글 내용',
   `shop_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`, `shop_id`, `user_id`),
@@ -182,7 +181,6 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`shop` (
   `phone_no` VARCHAR(20) NOT NULL COMMENT '매장 전화번호',
   `kakao_open_chat_url` VARCHAR(255) NULL DEFAULT NULL,
   `comment_count` INT(11) NOT NULL DEFAULT 0 COMMENT '매장의 댓글 갯수',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`),
@@ -459,6 +457,30 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`post_image` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_post_image_to_image1`
+  FOREIGN KEY (`image_id`)
+  REFERENCES `nine_tique`.`image` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+  ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8;
+
+-- -----------------------------------------------------
+-- Table `nine_tique`.`shop_image`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `nine_tique`.`shop_image` (
+  `shop_id` INT(11) NOT NULL,
+  `image_id` INT(11) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
+  PRIMARY KEY (`shop_id`, `image_id`),
+  INDEX `fk_shop_image_to_shop1_idx` (`shop_id` ASC),
+  INDEX `fk_shop_image_to_image1_idx` (`image_id` ASC),
+  CONSTRAINT `fk_shop_image_to_shop1`
+  FOREIGN KEY (`shop_id`)
+  REFERENCES `nine_tique`.`shop` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_shop_image_to_image1`
   FOREIGN KEY (`image_id`)
   REFERENCES `nine_tique`.`image` (`id`)
     ON DELETE NO ACTION

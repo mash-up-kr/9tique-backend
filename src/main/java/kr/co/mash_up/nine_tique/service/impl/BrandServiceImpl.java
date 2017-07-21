@@ -18,7 +18,7 @@ import kr.co.mash_up.nine_tique.vo.BrandVO;
 /**
  * Created by ethankim on 2017. 7. 3..
  */
-@Service(value = "brandService")
+@Service
 public class BrandServiceImpl implements BrandService {
 
     @Autowired

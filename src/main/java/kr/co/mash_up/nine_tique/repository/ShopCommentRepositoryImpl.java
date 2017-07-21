@@ -34,8 +34,7 @@ public class ShopCommentRepositoryImpl implements ShopCommentRepositoryCustom {
         query.from(SHOP_COMMENT)
                 .join(SHOP_COMMENT.shop, SHOP)
                 .where(SHOP_COMMENT.id.eq(commentId)
-                        .and(SHOP.id.eq(shopId))
-                        .and(SHOP_COMMENT.active.isTrue()));
+                        .and(SHOP.id.eq(shopId)));
 
         return Optional.ofNullable(query.uniqueResult(SHOP_COMMENT));
     }
@@ -45,8 +44,7 @@ public class ShopCommentRepositoryImpl implements ShopCommentRepositoryCustom {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(SHOP_COMMENT)
-                .where(SHOP_COMMENT.shop.id.eq(shopId)
-                        .and(SHOP_COMMENT.active.isTrue()))
+                .where(SHOP_COMMENT.shop.id.eq(shopId))
                 .orderBy(SHOP_COMMENT.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());

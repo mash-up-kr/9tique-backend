@@ -1,7 +1,6 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import org.hibernate.annotations.Type;
-
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -52,10 +51,6 @@ public class Shop extends AbstractEntity<Long> {
 
     // Todo: 매장위치 추가
 
-    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
-    @Type(type = "yes_no")
-    private boolean active;
-
     // mappedBy - 연관관계 주인 설정. 주인O(읽기, 쓰기), 주인X(읽기)
     // mappedBy가 있으면 주인X.
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
@@ -64,31 +59,48 @@ public class Shop extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
     private List<Seller> sellers;
 
-    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShopComment> shopComments;
 
-    public void deactive() {
-        if (active) {
-            this.active = false;
-            products.forEach(Product::disable);
-            sellers.forEach(Seller::disable);
-            shopComments.forEach(ShopComment::deactive);
-        }
-    }
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShopImage> shopImages;
 
-    public void active() {
-        if (!active) {
-            this.active = true;
-            products.forEach(Product::enable);
-            sellers.forEach(Seller::enable);
-            shopComments.forEach(ShopComment::active);
-        }
-    }
+
+//    public void deactive() {
+//        if (active) {
+//            this.active = false;
+//            products.forEach(Product::disable);
+//            sellers.forEach(Seller::disable);
+//            shopComments.forEach(ShopComment::deactive);
+//        }
+//    }
+
+//    public void active() {
+//        if (!active) {
+//            this.active = true;
+//            products.forEach(Product::enable);
+//            sellers.forEach(Seller::enable);
+//            shopComments.forEach(ShopComment::active);
+//        }
+//    }
 
     public void update(Shop newShop) {
         this.name = newShop.name;
         this.description = newShop.description;
         this.phoneNumber = newShop.phoneNumber;
         this.kakaoOpenChatUrl = newShop.kakaoOpenChatUrl;
+    }
+
+    public void addImage(ShopImage image){
+        shopImages.add(image);
+    }
+
+    public void addComment(ShopComment comment) {
+        shopComments.add(comment);
+        commentCount += 1;
+    }
+
+    public void removeComment() {
+        commentCount -= 1;
     }
 }

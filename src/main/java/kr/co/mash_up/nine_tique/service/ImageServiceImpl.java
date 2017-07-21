@@ -15,7 +15,7 @@ import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
 import kr.co.mash_up.nine_tique.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
-@Service(value = "imageService")
+@Service
 @Slf4j
 public class ImageServiceImpl implements ImageService {
 

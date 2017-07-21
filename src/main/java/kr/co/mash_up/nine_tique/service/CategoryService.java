@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Category와 관련된 비즈니스 로직 처리
  */
-@Service(value = "categoryService")
+@Service
 @Slf4j
 public class CategoryService {
 

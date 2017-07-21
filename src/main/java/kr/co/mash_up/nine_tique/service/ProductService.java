@@ -45,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Product와 관련된 비즈니스 로직 처리
  */
-@Service(value = "productService")
+@Service
 @Slf4j
 public class ProductService {
 
@@ -270,9 +270,9 @@ public class ProductService {
         //Todo: 상품이 이미 존재할 경우 예외처리. 상품을 뭐로 find할지 생각이 안난다..
         Shop shop = shopRepository.findByUserId(userId);
         Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("product create -> seller Infomation not found"));
-        if (!shop.isActive()) {
-            throw new IdNotFoundException("product create -> seller Infomation not found");
-        }
+//        if (!shop.isActive()) {
+//            throw new IdNotFoundException("product create -> seller Infomation not found");
+//        }
         product.setShop(shop);
 
         Category category = categoryRepository.findByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());

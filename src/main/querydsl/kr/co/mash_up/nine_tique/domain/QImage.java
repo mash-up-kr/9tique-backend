@@ -1,15 +1,12 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import javax.annotation.Generated;
+import static com.mysema.query.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.Path;
+import com.mysema.query.types.path.*;
+
 import com.mysema.query.types.PathMetadata;
-import com.mysema.query.types.path.DateTimePath;
-import com.mysema.query.types.path.EntityPathBase;
-import com.mysema.query.types.path.NumberPath;
-import com.mysema.query.types.path.StringPath;
-
-import static com.mysema.query.types.PathMetadataFactory.forVariable;
+import javax.annotation.Generated;
+import com.mysema.query.types.Path;
 
 
 /**

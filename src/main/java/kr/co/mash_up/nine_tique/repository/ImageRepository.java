@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import kr.co.mash_up.nine_tique.domain.Image;
 
-@Repository(value = "imageRepository")
+@Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
     /**

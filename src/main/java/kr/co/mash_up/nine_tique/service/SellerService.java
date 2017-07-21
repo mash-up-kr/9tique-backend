@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Seller와 관련된 비즈니스 로직 처리
  */
-@Service(value = "sellerService")
+@Service
 @Slf4j
 public class SellerService {
 
@@ -233,9 +233,9 @@ public class SellerService {
     public Seller create(Long shopId) {
         Shop shop = shopRepository.findOne(shopId);
         Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("seller create -> shop not found"));
-        if (!shop.isActive()) {
-            throw new IdNotFoundException("seller create -> shop not found");
-        }
+//        if (!shop.isActive()) {
+//            throw new IdNotFoundException("seller create -> shop not found");
+//        }
 
         Seller seller = new Seller(shop, CodeGeneratorUtil.generateAuthentiCode());
         return sellerRepository.save(seller);
