@@ -145,14 +145,23 @@ public class ShopServiceImpl implements ShopService {
         Page<Shop> shopPage = shopRepository.findShops(pageable);
 
         List<ShopDto> shopDtos = shopPage.getContent().stream()
-                .map(shop ->
-                        new ShopDto.Builder()
-                                .name(shop.getName())
-                                .description(shop.getDescription())
-                                .phoneNumber(shop.getPhoneNumber())
-                                .kakaoOpenChatUrl(shop.getKakaoOpenChatUrl())
-                                .build()
-                ).collect(Collectors.toList());
+                .map(shop -> {
+                    List<ImageDto> images = shop.getShopImages().stream()
+                            .map(ShopImage::getImage)
+                            .map(image ->
+                                    new ImageDto.Builder()
+                                            .url(FileUtil.getImageUrl(ImageType.SHOP, shop.getId(), image.getFileName()))
+                                            .build())
+                            .collect(Collectors.toList());
+
+                    return new ShopDto.Builder()
+                            .name(shop.getName())
+                            .description(shop.getDescription())
+                            .phoneNumber(shop.getPhoneNumber())
+                            .kakaoOpenChatUrl(shop.getKakaoOpenChatUrl())
+                            .images(images)
+                            .build();
+                }).collect(Collectors.toList());
 
         Pageable resultPageable = new PageRequest(shopPage.getNumber(), shopPage.getSize());
         return new PageImpl<>(shopDtos, resultPageable, shopPage.getTotalElements());
@@ -164,11 +173,20 @@ public class ShopServiceImpl implements ShopService {
         Optional<Shop> shopOptional = shopRepository.findOneByShopId(shopId);
         Shop shop = shopOptional.orElseThrow(() -> new IdNotFoundException("readShop -> shop not found"));
 
+        List<ImageDto> images = shop.getShopImages().stream()
+                .map(ShopImage::getImage)
+                .map(image ->
+                        new ImageDto.Builder()
+                                .url(FileUtil.getImageUrl(ImageType.SHOP, shopId, image.getFileName()))
+                                .build())
+                .collect(Collectors.toList());
+
         return new ShopDto.Builder()
                 .name(shop.getName())
                 .description(shop.getDescription())
                 .phoneNumber(shop.getPhoneNumber())
                 .kakaoOpenChatUrl(shop.getKakaoOpenChatUrl())
+                .images(images)
                 .build();
     }
 

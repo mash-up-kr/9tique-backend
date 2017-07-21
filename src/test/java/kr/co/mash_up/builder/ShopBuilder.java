@@ -19,8 +19,6 @@ public class ShopBuilder {
 
     private Long commentCount;
 
-    private boolean active;
-
     public ShopBuilder withId(Long id){
         this.id = id;
         return this;
@@ -51,11 +49,6 @@ public class ShopBuilder {
         return this;
     }
 
-    public ShopBuilder withActive(boolean active){
-        this.active = active;
-        return this;
-    }
-
     public Shop build(){
         Shop shop = new Shop();
         shop.setId(id);
@@ -64,7 +57,6 @@ public class ShopBuilder {
         shop.setPhoneNumber(phoneNumber);
         shop.setKakaoOpenChatUrl(kakaoOpenChatUrl);
         shop.setCommentCount(commentCount);
-        shop.setActive(active);
         return shop;
     }
 }

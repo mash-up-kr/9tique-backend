@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -180,14 +179,13 @@ public class PromotionServiceImpl implements PromotionService {
 
         List<PromotionDto> promotions = promotionPage.getContent().stream()
                 .map(promotion -> {
-                    List<PromotionImage> promotionImages = promotion.getPromotionImages();
-                    List<ImageDto> images = new ArrayList<>();
-                    if (!CollectionUtils.isEmpty(promotionImages)) {
-                        ImageDto image = new ImageDto.Builder()
-                                .url(FileUtil.getImageUrl(ImageType.PROMOTION, promotion.getId(), promotionImages.get(0).getImage().getFileName()))
-                                .build();
-                        images.add(image);
-                    }
+                    List<ImageDto> images = promotion.getPromotionImages().stream()
+                            .map(PromotionImage::getImage)
+                            .map(image ->
+                                    new ImageDto.Builder()
+                                            .url(FileUtil.getImageUrl(ImageType.PROMOTION, promotion.getId(), image.getFileName()))
+                                            .build())
+                            .collect(Collectors.toList());
 
                     return new PromotionDto.Builder()
                             .id(promotion.getId())
@@ -207,13 +205,13 @@ public class PromotionServiceImpl implements PromotionService {
         Optional<Promotion> promotionOptional = promotionRepository.findOneByPromotionId(promotionId);
         Promotion promotion = promotionOptional.orElseThrow(() -> new IdNotFoundException("readPromotion -> promotion not found"));
 
-        List<ImageDto> images = new ArrayList<>();
-        for (PromotionImage promotionImage : promotion.getPromotionImages()) {
-            ImageDto image = new ImageDto.Builder()
-                    .url(FileUtil.getImageUrl(ImageType.PROMOTION, promotion.getId(), promotionImage.getImage().getFileName()))
-                    .build();
-            images.add(image);
-        }
+        List<ImageDto> images = promotion.getPromotionImages().stream()
+                .map(PromotionImage::getImage)
+                .map(image ->
+                        new ImageDto.Builder()
+                                .url(FileUtil.getImageUrl(ImageType.PROMOTION, promotionId, image.getFileName()))
+                                .build())
+                .collect(Collectors.toList());
 
         return new PromotionDto.Builder()
                 .id(promotion.getId())
