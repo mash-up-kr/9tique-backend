@@ -2,7 +2,11 @@ package kr.co.mash_up.nine_tique.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,6 +52,7 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private ImageRepository imageRepository;
 
+    @Transactional
     @Override
     public void addPost(Long userId, PostRequestVO requestVO) {
         // Todo: 작성자에 대한 검증이 필요한가..?
@@ -79,6 +84,7 @@ public class PostServiceImpl implements PostService {
                 });
     }
 
+    @Transactional
     @Override
     public void modifyPost(Long userId, Long postId, PostRequestVO requestVO) {
         // Todo: 작성자에 대한 검증이 필요한가..?
@@ -141,6 +147,7 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
+    @Transactional
     @Override
     public void removePost(Long userId, Long postId) {
         // Todo: 작성자에 대한 검증이 필요한가..?
@@ -152,16 +159,56 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(postId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<PostDto> readPosts(DataListRequestVO requestVO) {
-        // 이미지 1개, 제목
-        return null;
+        Pageable pageable = requestVO.getPageable();
+
+        Page<Post> postPage = postRepository.findPosts(pageable);
+
+        List<PostDto> posts = postPage.getContent().stream()
+                .map(post -> {
+                    List<ImageDto> images = post.getPostImages().stream()
+                            .map(PostImage::getImage)
+                            .map(image ->
+                                    new ImageDto.Builder()
+                                            .url(FileUtil.getImageUrl(ImageType.POST, post.getId(), image.getFileName()))
+                                            .build())
+                            .collect(Collectors.toList());
+
+                    return new PostDto.Builder()
+                            .id(post.getId())
+                            .name(post.getName())
+                            .contents(post.getContents())
+                            .images(images)
+                            .build();
+                }).collect(Collectors.toList());
+
+        Pageable resultPageable = new PageRequest(postPage.getNumber(), postPage.getSize());
+
+        return new PageImpl<PostDto>(posts, resultPageable, postPage.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public PostDto readPost(Long postId) {
-        // 이미지 전부, 내용, 제목
-        return null;
+        Optional<Post> postOptional = postRepository.findOneByPostId(postId);
+        Post post = postOptional.orElseThrow(() -> new IdNotFoundException("readPost -> post not found"));
+
+        Image image = post.getPostImages().get(0).getImage();
+        ImageDto imageDto = new ImageDto.Builder()
+                .url(FileUtil.getImageUrl(ImageType.POST, postId, image.getFileName()))
+                .build();
+
+        List<ImageDto> images = new ArrayList<>();
+        images.add(imageDto);
+
+        return new PostDto.Builder()
+                .id(postId)
+                .name(post.getName())
+                .contents(post.getContents())
+                .images(images)
+                .build();
     }
 
     @Override
