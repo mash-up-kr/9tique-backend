@@ -17,9 +17,9 @@ import lombok.ToString;
 @ToString
 public class PostRequestVO {
 
-    private String name;
+    private String name;  // HTML 형식
 
-    private String contents;
+    private String contents;  //  HTML 형식
 
     private List<ProductRequestVO> products;
 
