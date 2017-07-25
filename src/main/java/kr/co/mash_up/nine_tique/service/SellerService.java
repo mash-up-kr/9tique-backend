@@ -1,11 +1,41 @@
 package kr.co.mash_up.nine_tique.service;
 
-import kr.co.mash_up.nine_tique.domain.*;
-import kr.co.mash_up.nine_tique.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import kr.co.mash_up.nine_tique.domain.Authority;
+import kr.co.mash_up.nine_tique.domain.Image;
+import kr.co.mash_up.nine_tique.domain.ImageType;
+import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.ProductImage;
+import kr.co.mash_up.nine_tique.domain.Seller;
+import kr.co.mash_up.nine_tique.domain.SellerProduct;
+import kr.co.mash_up.nine_tique.domain.Shop;
+import kr.co.mash_up.nine_tique.domain.User;
+import kr.co.mash_up.nine_tique.dto.ImageDto;
+import kr.co.mash_up.nine_tique.dto.ProductDto;
+import kr.co.mash_up.nine_tique.dto.SellerDto;
+import kr.co.mash_up.nine_tique.dto.ShopDto;
+import kr.co.mash_up.nine_tique.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
-import kr.co.mash_up.nine_tique.repository.*;
+import kr.co.mash_up.nine_tique.repository.AuthorityRepository;
+import kr.co.mash_up.nine_tique.repository.ProductRepository;
+import kr.co.mash_up.nine_tique.repository.SellerRepository;
+import kr.co.mash_up.nine_tique.repository.ShopRepository;
+import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
 import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
@@ -14,15 +44,6 @@ import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
 import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
 import kr.co.mash_up.nine_tique.vo.SellerRequestVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Seller와 관련된 비즈니스 로직 처리
@@ -173,7 +194,7 @@ public class SellerService {
 
         User user = seller.getUser();
         UserDto userDto = new UserDto.Builder()
-                .withName(user.getName())
+                .name(user.getName())
                 .build();
 
         Shop shop = seller.getShop();
@@ -218,8 +239,8 @@ public class SellerService {
         userRepository.save(user);
 
         return new UserDto.Builder()
-                .withAccessToken(jwtTokenUtil.generateToken(user))
-                .withAuthorityLevel(user.findAuthority())
+                .accessToken(jwtTokenUtil.generateToken(user))
+                .authorityLevel(user.findAuthority())
                 .build();
     }
 
@@ -269,7 +290,7 @@ public class SellerService {
                 .map(seller -> {
                     User user = seller.getUser();
                     UserDto userDto = new UserDto.Builder()
-                            .withName(user.getName())
+                            .name(user.getName())
                             .build();
 
                     Shop shop = seller.getShop();

@@ -179,7 +179,7 @@ public class ShopController {
     })
     @GetMapping("/{shop_id}/comments")
     public DataListResponseVO<CommentDto> readShopComments(@PathVariable(value = "shop_id") Long shopId,
-                                                           @RequestBody DataListRequestVO requestVO) {
+                                                           DataListRequestVO requestVO) {
         log.info("addShopComment - shopId : {}, page : {}", shopId, requestVO);
 
         Page<CommentDto> page = shopService.readShopComments(shopId, requestVO);

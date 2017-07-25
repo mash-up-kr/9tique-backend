@@ -1,5 +1,11 @@
 package kr.co.mash_up.nine_tique.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
 import kr.co.mash_up.nine_tique.domain.Authority;
 import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.domain.Zzim;
@@ -12,11 +18,6 @@ import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
 import kr.co.mash_up.nine_tique.vo.UserRequestVO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * User와 관련된 비즈니스 로직 처리
@@ -62,8 +63,8 @@ public class UserService {
         });
 
         return new UserDto.Builder()
-                .withAccessToken(jwtTokenUtil.generateToken(oldUser))
-                .withAuthorityLevel(oldUser.findAuthority())
+                .accessToken(jwtTokenUtil.generateToken(oldUser))
+                .authorityLevel(oldUser.findAuthority())
                 .build();
     }
 
@@ -83,8 +84,8 @@ public class UserService {
         userRepository.save(user);
 
         return new UserDto.Builder()
-                .withAccessToken(jwtTokenUtil.generateToken(user))
-                .withAuthorityLevel(user.findAuthority())
+                .accessToken(jwtTokenUtil.generateToken(user))
+                .authorityLevel(user.findAuthority())
                 .build();
     }
 
@@ -94,7 +95,7 @@ public class UserService {
         String accessToken = authHeader.substring(HEADER_PREFIX.length());
         String newAccessToken = jwtTokenUtil.refreshToken(accessToken);
         return new UserDto.Builder()
-                .withAccessToken(newAccessToken)
+                .accessToken(newAccessToken)
                 .build();
     }
 }

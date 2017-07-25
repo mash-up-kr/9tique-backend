@@ -217,6 +217,7 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`user` (
   `email` VARCHAR(30) NULL DEFAULT NULL COMMENT '이메일',
   `oauth_token` VARCHAR(256) NULL DEFAULT NULL COMMENT '유저의 oauth token',
   `oauth_type` VARCHAR(20) NULL DEFAULT NULL COMMENT 'oauth의 type. FB, KAKAO',
+  `profile_image_url` VARCHAR(256) NULL DEFAULT NULL COMMENT '유저의 profile image url',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`))

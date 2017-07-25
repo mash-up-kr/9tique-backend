@@ -23,6 +23,7 @@ import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.dto.CommentDto;
 import kr.co.mash_up.nine_tique.dto.ImageDto;
 import kr.co.mash_up.nine_tique.dto.ShopDto;
+import kr.co.mash_up.nine_tique.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
@@ -246,12 +247,21 @@ public class ShopServiceImpl implements ShopService {
         Page<ShopComment> shopCommentPage = shopCommentRepository.findShopComments(shopId, pageable);
 
         List<CommentDto> shopComments = shopCommentPage.getContent().stream()
-                .map(shopComment ->
-                        new CommentDto.Builder()
-                                .id(shopComment.getId())
-                                .contents(shopComment.getContents())
-                                .writerName(shopComment.getWriter().getName())
-                                .build())
+                .map(shopComment -> {
+                    User writer = shopComment.getWriter();
+
+                    UserDto userDto = new UserDto.Builder()
+                            .name(writer.getName())
+                            .profileImageUrl(writer.getProfileImageUrl())
+                            .build();
+
+                    return new CommentDto.Builder()
+                            .id(shopComment.getId())
+                            .contents(shopComment.getContents())
+                            .writer(userDto)
+                            .updatedAt(shopComment.getUpdatedTimestamp())
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         Pageable resultPageable = new PageRequest(shopCommentPage.getNumber(), shopCommentPage.getSize());

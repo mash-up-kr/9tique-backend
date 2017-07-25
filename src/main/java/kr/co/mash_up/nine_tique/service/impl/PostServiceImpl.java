@@ -26,6 +26,7 @@ import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.dto.CommentDto;
 import kr.co.mash_up.nine_tique.dto.ImageDto;
 import kr.co.mash_up.nine_tique.dto.PostDto;
+import kr.co.mash_up.nine_tique.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
@@ -278,12 +279,21 @@ public class PostServiceImpl implements PostService {
         Page<PostComment> postCommentPage = postCommentRepository.findPostComments(postId, pageable);
 
         List<CommentDto> postComments = postCommentPage.getContent().stream()
-                .map(postComment ->
-                        new CommentDto.Builder()
-                                .id(postComment.getId())
-                                .contents(postComment.getContents())
-                                .writerName(postComment.getWriter().getName())
-                                .build())
+                .map(postComment -> {
+                    User writer = postComment.getWriter();
+
+                    UserDto userDto = new UserDto.Builder()
+                            .name(writer.getName())
+                            .profileImageUrl(writer.getProfileImageUrl())
+                            .build();
+
+                    return new CommentDto.Builder()
+                            .id(postComment.getId())
+                            .contents(postComment.getContents())
+                            .writer(userDto)
+                            .updatedAt(postComment.getUpdatedTimestamp())
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         Pageable resultPageable = new PageRequest(postCommentPage.getNumber(), postCommentPage.getSize());
