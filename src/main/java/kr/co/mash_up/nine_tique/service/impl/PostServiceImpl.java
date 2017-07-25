@@ -18,16 +18,21 @@ import java.util.stream.Collectors;
 import kr.co.mash_up.nine_tique.domain.Image;
 import kr.co.mash_up.nine_tique.domain.ImageType;
 import kr.co.mash_up.nine_tique.domain.Post;
+import kr.co.mash_up.nine_tique.domain.PostComment;
 import kr.co.mash_up.nine_tique.domain.PostImage;
 import kr.co.mash_up.nine_tique.domain.PostProduct;
 import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.dto.CommentDto;
 import kr.co.mash_up.nine_tique.dto.ImageDto;
 import kr.co.mash_up.nine_tique.dto.PostDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
+import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
+import kr.co.mash_up.nine_tique.repository.PostCommentRepository;
 import kr.co.mash_up.nine_tique.repository.PostRepository;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
+import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.service.PostService;
 import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.vo.CommentRequestVO;
@@ -51,6 +56,12 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PostCommentRepository postCommentRepository;
 
     @Transactional
     @Override
@@ -182,7 +193,8 @@ public class PostServiceImpl implements PostService {
                             .contents(post.getContents())
                             .images(images)
                             .build();
-                }).collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
 
         Pageable resultPageable = new PageRequest(postPage.getNumber(), postPage.getSize());
 
@@ -211,23 +223,70 @@ public class PostServiceImpl implements PostService {
                 .build();
     }
 
+    @Transactional
     @Override
     public void addPostComment(Long postId, Long userId, CommentRequestVO requestVO) {
+        Optional<Post> postOptional = postRepository.findOneByPostId(postId);
+        Post post = postOptional.orElseThrow(() -> new IdNotFoundException("addPostComment -> post not found"));
 
+        User writer = userRepository.findOne(userId);
+
+        PostComment comment = new PostComment(post, writer, requestVO.getContents());
+        post.addComment(comment);
+
+        postRepository.save(post);
     }
 
+    @Transactional
     @Override
     public void modifyPostComment(Long postId, Long commentId, Long userId, CommentRequestVO requestVO) {
+        Optional<PostComment> commentOptional = postCommentRepository.findOneByPostIdAndCommentId(postId, commentId);
+        PostComment comment = commentOptional.orElseThrow(() -> new IdNotFoundException("modifyPostComment -> comment not found"));
 
+        User user = userRepository.findOne(userId);
+        if (!comment.matchWriter(user)) {
+            throw new UserIdNotMatchedException("modifyPostComment -> forbbiden access");
+        }
+
+        comment.update(requestVO.getContents());
+        postCommentRepository.save(comment);
     }
 
+    @Transactional
     @Override
     public void removePostComment(Long postId, Long commentId, Long userId) {
+        Optional<PostComment> commentOptional = postCommentRepository.findOneByPostIdAndCommentId(postId, commentId);
+        PostComment comment = commentOptional.orElseThrow(() -> new IdNotFoundException("removePostComment -> comment not found"));
 
+        User user = userRepository.findOne(userId);
+        if (!comment.matchWriter(user)) {
+            throw new UserIdNotMatchedException("removePostComment -> forbbiden access");
+        }
+
+        Post post = comment.getPost();
+        post.removeComment();
+
+        postCommentRepository.delete(comment);
+        postRepository.save(post);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<CommentDto> readPostComments(Long postId, DataListRequestVO requestVO) {
-        return null;
+        Pageable pageable = requestVO.getPageable();
+
+        Page<PostComment> postCommentPage = postCommentRepository.findPostComments(postId, pageable);
+
+        List<CommentDto> postComments = postCommentPage.getContent().stream()
+                .map(postComment ->
+                        new CommentDto.Builder()
+                                .id(postComment.getId())
+                                .contents(postComment.getContents())
+                                .writerName(postComment.getWriter().getName())
+                                .build())
+                .collect(Collectors.toList());
+
+        Pageable resultPageable = new PageRequest(postCommentPage.getNumber(), postCommentPage.getSize());
+        return new PageImpl<>(postComments, resultPageable, postCommentPage.getTotalElements());
     }
 }

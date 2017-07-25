@@ -61,4 +61,13 @@ public class Post extends AbstractEntity<Long> {
     public void addImage(PostImage image) {
         postImages.add(image);
     }
+
+    public void addComment(PostComment comment) {
+        postComments.add(comment);
+        commentCount += 1;
+    }
+
+    public void removeComment() {
+        commentCount -= 1;
+    }
 }

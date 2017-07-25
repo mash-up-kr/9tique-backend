@@ -161,7 +161,8 @@ public class ShopServiceImpl implements ShopService {
                             .kakaoOpenChatUrl(shop.getKakaoOpenChatUrl())
                             .images(images)
                             .build();
-                }).collect(Collectors.toList());
+                })
+                .collect(Collectors.toList());
 
         Pageable resultPageable = new PageRequest(shopPage.getNumber(), shopPage.getSize());
         return new PageImpl<>(shopDtos, resultPageable, shopPage.getTotalElements());
@@ -250,8 +251,8 @@ public class ShopServiceImpl implements ShopService {
                                 .id(shopComment.getId())
                                 .contents(shopComment.getContents())
                                 .writerName(shopComment.getWriter().getName())
-                                .build()
-                ).collect(Collectors.toList());
+                                .build())
+                .collect(Collectors.toList());
 
         Pageable resultPageable = new PageRequest(shopCommentPage.getNumber(), shopCommentPage.getSize());
         return new PageImpl<>(shopComments, resultPageable, shopCommentPage.getTotalElements());

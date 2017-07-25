@@ -44,5 +44,19 @@ public class PostComment extends AbstractEntity<Long> {
 
     @ManyToOne  // PostComment(Many) : User(One)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_comment_to_user_id"))
-    private User user;
+    private User writer;
+
+    public boolean matchWriter(User user) {
+        return this.writer.equals(user);
+    }
+
+    public void update(String contents) {
+        this.contents = contents;
+    }
+
+    public PostComment(Post post, User writer, String contents) {
+        this.post = post;
+        this.writer = writer;
+        this.contents = contents;
+    }
 }
