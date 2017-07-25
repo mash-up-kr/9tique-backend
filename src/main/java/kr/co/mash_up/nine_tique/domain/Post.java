@@ -1,5 +1,6 @@
 package kr.co.mash_up.nine_tique.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,12 +45,29 @@ public class Post extends AbstractEntity<Long> {
     @Column(name = "comment_count", nullable = false, columnDefinition = "INT(11) default 0")
     private Long commentCount;  // 게시물의 댓글 갯수
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostComment> postComments;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostProduct> postProducts;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages;
+
+    public void addProduct(PostProduct product) {
+        postProducts.add(product);
+    }
+
+    public void addImage(PostImage image) {
+        postImages.add(image);
+    }
+
+    public void addComment(PostComment comment) {
+        postComments.add(comment);
+        commentCount += 1;
+    }
+
+    public void removeComment() {
+        commentCount -= 1;
+    }
 }
