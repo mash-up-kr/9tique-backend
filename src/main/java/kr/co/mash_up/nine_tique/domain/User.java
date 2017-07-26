@@ -44,6 +44,9 @@ public class User extends AbstractEntity<Long> {
     @Column(name = "oauth_type", length = 20)
     private OauthType oauthType;
 
+    @Column(name = "profile_image_url", length = 256)
+    private String profileImageUrl;
+
     // Todo: 푸시 구현시 주석 해제
 //    @Column(name = "cloud_msg_reg_id", length = 256)
 //    private String cloudMsgRegId;

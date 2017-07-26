@@ -21,15 +21,17 @@ public class CommentDto {
     @JsonProperty
     private String contents;
 
-    @JsonProperty(value = "writer_name")
-    private String writerName;
+    @JsonProperty(value = "writer")
+    private UserDto writer;
 
-    // Todo: writer profile image url 추가
+    @JsonProperty(value = "updated_at")
+    private long updatedAt;
 
     private CommentDto(Builder builder) {
         this.id = builder.id;
         this.contents = builder.contents;
-        this.writerName = builder.writerName;
+        this.writer = builder.writer;
+        this.updatedAt = builder.updatedAt;
     }
 
     public static class Builder {
@@ -38,7 +40,9 @@ public class CommentDto {
 
         private String contents = "";
 
-        private String writerName = "";
+        private UserDto writer = null;
+
+        private long updatedAt = 0L;
 
         public Builder id(Long id) {
             this.id = id;
@@ -50,8 +54,13 @@ public class CommentDto {
             return this;
         }
 
-        public Builder writerName(String writerName) {
-            this.writerName = writerName;
+        public Builder writer(UserDto writer) {
+            this.writer = writer;
+            return this;
+        }
+
+        public Builder updatedAt(long updatedAt) {
+            this.updatedAt = updatedAt;
             return this;
         }
 

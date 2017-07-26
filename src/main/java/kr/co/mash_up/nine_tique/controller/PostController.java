@@ -51,12 +51,12 @@ public class PostController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    public ResponseVO addPost(@RequestBody PostRequestVO postVO) {
+    public ResponseVO addPost(@RequestBody PostRequestVO requestVO) {
         log.info("addPost - post : {}", "");
 
+        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getContents());
         Long userId = SecurityUtil.getCurrentUser().getId();
-        // Todo: parameter validation
-        postService.addPost(userId, postVO);
+        postService.addPost(userId, requestVO);
         return ResponseVO.created();
     }
 
@@ -69,12 +69,12 @@ public class PostController {
     })
     @PutMapping(value = "/{post_id}")
     public ResponseVO modifyPost(@PathVariable(value = "post_id") Long postId,
-                                 @RequestBody PostRequestVO postVO) {
-        log.info("modifyPost - postId : {}, post : {}", postId, postVO);
+                                 @RequestBody PostRequestVO requestVO) {
+        log.info("modifyPost - postId : {}, post : {}", postId, requestVO);
 
+        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getContents());
         Long userId = SecurityUtil.getCurrentUser().getId();
-        // Todo: parameter validation
-        postService.modifyPost(userId, postId, postVO);
+        postService.modifyPost(userId, postId, requestVO);
         return ResponseVO.ok();
     }
 
@@ -181,7 +181,7 @@ public class PostController {
     })
     @GetMapping("/{post_id}/comments")
     public DataListResponseVO<CommentDto> readPostComments(@PathVariable(value = "post_id") Long postId,
-                                                           @RequestBody DataListRequestVO requestVO) {
+                                                           DataListRequestVO requestVO) {
         log.info("readPostComments - postId : {}, page : {}", postId, requestVO);
 
         Page<CommentDto> page = postService.readPostComments(postId, requestVO);
