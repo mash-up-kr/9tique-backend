@@ -3,7 +3,7 @@ package kr.co.mash_up.nine_tique.service;
 import java.util.List;
 
 import kr.co.mash_up.nine_tique.domain.Category;
-import kr.co.mash_up.nine_tique.vo.CategoryRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.CategoryRequestVO;
 
 /**
  * Category와 관련된 비즈니스 로직 처리를 담당한다

@@ -22,8 +22,8 @@ import kr.co.mash_up.nine_tique.domain.Promotion;
 import kr.co.mash_up.nine_tique.domain.PromotionImage;
 import kr.co.mash_up.nine_tique.domain.PromotionProduct;
 import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
-import kr.co.mash_up.nine_tique.dto.PromotionDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
@@ -31,9 +31,9 @@ import kr.co.mash_up.nine_tique.repository.PromotionRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.service.PromotionService;
 import kr.co.mash_up.nine_tique.util.FileUtil;
-import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
-import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
-import kr.co.mash_up.nine_tique.vo.PromotionRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.PromotionRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**

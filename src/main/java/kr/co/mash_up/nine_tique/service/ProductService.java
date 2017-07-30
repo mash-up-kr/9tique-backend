@@ -3,9 +3,9 @@ package kr.co.mash_up.nine_tique.service;
 import org.springframework.data.domain.Page;
 
 import kr.co.mash_up.nine_tique.domain.Product;
-import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.vo.ProductListRequestVO;
-import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
 
 /**
  * Product와 관련된 비즈니스 로직 처리
@@ -20,7 +20,7 @@ public interface ProductService {
      * @param userId    Seller ID
      * @param requestVO 추가할 상품 정보
      */
-    public abstract void addProduct(Long userId /* seller id */, ProductRequestVO requestVO);
+    public abstract void addProduct(Long userId, ProductRequestVO requestVO);
 
     /**
      * 상품 수정

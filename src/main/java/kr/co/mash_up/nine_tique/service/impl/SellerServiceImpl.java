@@ -23,12 +23,11 @@ import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
 import kr.co.mash_up.nine_tique.domain.Shop;
 import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.dto.CategoryDto;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
-import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.dto.SellerDto;
-import kr.co.mash_up.nine_tique.dto.ShopDto;
-import kr.co.mash_up.nine_tique.dto.UserDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.dto.SellerDto;
+import kr.co.mash_up.nine_tique.web.dto.ShopDto;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
@@ -42,9 +41,9 @@ import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
 import kr.co.mash_up.nine_tique.service.SellerService;
 import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
 import kr.co.mash_up.nine_tique.util.FileUtil;
-import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
-import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
-import kr.co.mash_up.nine_tique.vo.SellerRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductDeleteRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.SellerRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -72,7 +71,7 @@ public class SellerServiceImpl implements SellerService {
     // Todo: 상품 리스트 조회 기능 공통되면 분리하기
     @Transactional(readOnly = true)
     @Override
-    public Page<ProductDto> readProducts(Long userId, Pageable pageable) {
+    public Page<ProductDto> readSellerProducts(Long userId, Pageable pageable) {
         Page<SellerProduct> sellerProductPage = sellerRepository.findSellerProducts(userId, pageable);
 
         List<ProductDto> productDtos = sellerProductPage.getContent().stream()
@@ -163,7 +162,7 @@ public class SellerServiceImpl implements SellerService {
 
     @Transactional(readOnly = true)
     @Override
-    public SellerDto findSellerInfo(Long userId) {
+    public SellerDto readSellerInfo(Long userId) {
         Optional<Seller> sellerOp = sellerRepository.findOneByUserId(userId);
         Seller seller = sellerOp.orElseThrow(() -> new IdNotFoundException("find seller by user id -> seller not found"));
 

@@ -3,11 +3,11 @@ package kr.co.mash_up.nine_tique.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.dto.SellerDto;
-import kr.co.mash_up.nine_tique.dto.UserDto;
-import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
-import kr.co.mash_up.nine_tique.vo.SellerRequestVO;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.dto.SellerDto;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
+import kr.co.mash_up.nine_tique.web.vo.ProductDeleteRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.SellerRequestVO;
 
 /**
  * Seller와 관련된 비즈니스 로직 처리를 담당한다
@@ -23,7 +23,7 @@ public interface SellerService {
      * @param pageable page 정보
      * @return 판매자가 등록한 상품 리스트
      */
-    public abstract Page<ProductDto> readProducts(Long userId, Pageable pageable);
+    public abstract Page<ProductDto> readSellerProducts(Long userId, Pageable pageable);
 
     /**
      * 판매자가 등록한 상품 전체삭제
@@ -47,7 +47,7 @@ public interface SellerService {
      * @param userId 조회할 유저 ID
      * @return 조회한 정보
      */
-    public abstract SellerDto findSellerInfo(Long userId);
+    public abstract SellerDto readSellerInfo(Long userId);
 
     /**
      * 유저를 판매자로 등록한다

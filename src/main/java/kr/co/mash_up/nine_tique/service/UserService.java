@@ -9,14 +9,14 @@ import java.util.Optional;
 import kr.co.mash_up.nine_tique.domain.Authority;
 import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.domain.Zzim;
-import kr.co.mash_up.nine_tique.dto.UserDto;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.AuthorityRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.repository.ZzimRepository;
 import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
-import kr.co.mash_up.nine_tique.vo.UserRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.UserRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**

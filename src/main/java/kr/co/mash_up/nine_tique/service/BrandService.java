@@ -2,7 +2,7 @@ package kr.co.mash_up.nine_tique.service;
 
 import java.util.List;
 
-import kr.co.mash_up.nine_tique.vo.BrandVO;
+import kr.co.mash_up.nine_tique.web.vo.BrandVO;
 
 /**
  * Brand와 관련된 비즈니스 로직 처리

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.co.mash_up.nine_tique.domain.Image;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
 import kr.co.mash_up.nine_tique.service.ImageService;
 import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;

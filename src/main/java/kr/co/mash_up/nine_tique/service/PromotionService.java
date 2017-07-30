@@ -2,9 +2,9 @@ package kr.co.mash_up.nine_tique.service;
 
 import org.springframework.data.domain.Page;
 
-import kr.co.mash_up.nine_tique.dto.PromotionDto;
-import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
-import kr.co.mash_up.nine_tique.vo.PromotionRequestVO;
+import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
+import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.PromotionRequestVO;
 
 /**
  * Promotion과 관련된 비즈니스 로직 처리

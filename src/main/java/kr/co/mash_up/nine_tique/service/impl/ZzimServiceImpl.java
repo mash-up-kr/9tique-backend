@@ -20,10 +20,8 @@ import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.domain.ProductImage;
 import kr.co.mash_up.nine_tique.domain.Zzim;
 import kr.co.mash_up.nine_tique.domain.ZzimProduct;
-import kr.co.mash_up.nine_tique.dto.CategoryDto;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
-import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.dto.ShopDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
 import kr.co.mash_up.nine_tique.repository.ZzimRepository;
@@ -62,7 +60,7 @@ public class ZzimServiceImpl implements ZzimService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductDto> findZzimProducts(Long userId, Pageable pageable) {
+    public Page<ProductDto> readZzimProducts(Long userId, Pageable pageable) {
         Page<ZzimProduct> zzimProductPage = zzimRepository.getZzimProducts(userId, pageable);
 
         // DTO로 변환

@@ -24,10 +24,10 @@ import kr.co.mash_up.nine_tique.domain.ProductImage;
 import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
 import kr.co.mash_up.nine_tique.domain.ZzimProduct;
-import kr.co.mash_up.nine_tique.dto.CategoryDto;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
-import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.dto.ShopDto;
+import kr.co.mash_up.nine_tique.web.dto.CategoryDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
@@ -40,8 +40,8 @@ import kr.co.mash_up.nine_tique.repository.ZzimRepository;
 import kr.co.mash_up.nine_tique.service.ProductService;
 import kr.co.mash_up.nine_tique.util.FileUtil;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
-import kr.co.mash_up.nine_tique.vo.ProductListRequestVO;
-import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

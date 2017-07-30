@@ -12,7 +12,7 @@ import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.CategoryRepository;
 import kr.co.mash_up.nine_tique.service.CategoryService;
-import kr.co.mash_up.nine_tique.vo.CategoryRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.CategoryRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
