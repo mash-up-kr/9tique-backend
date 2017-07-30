@@ -1,19 +1,32 @@
 package kr.co.mash_up.nine_tique.controller;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.dto.ProductDto;
 import kr.co.mash_up.nine_tique.dto.SellerDto;
 import kr.co.mash_up.nine_tique.dto.UserDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.SellerService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
-import kr.co.mash_up.nine_tique.vo.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
+import kr.co.mash_up.nine_tique.vo.AuthentiCodeRequestVO;
+import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
+import kr.co.mash_up.nine_tique.vo.DataListResponseVO;
+import kr.co.mash_up.nine_tique.vo.DataResponseVO;
+import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
+import kr.co.mash_up.nine_tique.vo.ResponseVO;
+import kr.co.mash_up.nine_tique.vo.SellerRequestVO;
 
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_SELLER;
 
@@ -32,12 +45,11 @@ public class SellerController {
      * @return 판매자가 등록한 상품 리스트
      */
     @ApiOperation(value = "판매자가 등록한 상품 리스트 조회")
-    @RequestMapping(value = "/products", method = RequestMethod.GET)
+    @GetMapping(value = "/products")
     public DataListResponseVO<ProductDto> productList(DataListRequestVO requestVO) {
         Long userId = SecurityUtil.getCurrentUser().getId();
-
-        Page<ProductDto> page = sellerService.findProducts(userId, requestVO.getPageable());
-        return new DataListResponseVO<ProductDto>(page);
+        Page<ProductDto> page = sellerService.readProducts(userId, requestVO.getPageable());
+        return new DataListResponseVO<>(page);
     }
 
     /**
@@ -45,13 +57,13 @@ public class SellerController {
      *
      * @return 삭제 결과
      */
-//    @Deprecated
-//    @RequestMapping(value = "/products", method = RequestMethod.DELETE)
-//    public ResponseVO deleteProductsAll() {
-//        Long userId = SecurityUtil.getCurrentUser().getId();
-//        sellerService.deleteProductsAll(userId);
-//        return ResponseVO.ok();
-//    }
+    @Deprecated
+    @DeleteMapping(value = "/products")
+    public ResponseVO deleteProductsAll() {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        sellerService.removeProductsAll(userId);
+        return ResponseVO.ok();
+    }
 
     /**
      * 판매자가 등록한 상품 선택 삭제
@@ -60,10 +72,10 @@ public class SellerController {
      * @return 삭제 결과
      */
     @ApiOperation(value = "판매자가 등록한 상품 선택 삭제")
-    @RequestMapping(value = "/products", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/products")
     public ResponseVO deleteProducts(@RequestBody ProductDeleteRequestVO requestVO) {
         Long userId = SecurityUtil.getCurrentUser().getId();
-        sellerService.deleteProducts(userId, requestVO);
+        sellerService.removeProducts(userId, requestVO);
         return ResponseVO.ok();
     }
 
@@ -77,8 +89,8 @@ public class SellerController {
     @GetMapping(value = "/info")
     public DataResponseVO<SellerDto> getSellerByUserId() {
         Long userId = SecurityUtil.getCurrentUser().getId();
-        SellerDto sellerDto = sellerService.findSellerByUserId(userId);
-        return new DataResponseVO<SellerDto>(sellerDto);
+        SellerDto sellerDto = sellerService.findSellerInfo(userId);
+        return new DataResponseVO<>(sellerDto);
     }
 
     /**
@@ -93,8 +105,8 @@ public class SellerController {
         ParameterUtil.checkParameterEmpty(requestVO.getAuthentiCode());
         Long userId = SecurityUtil.getCurrentUser().getId();
 
-        UserDto userDto = sellerService.sellerAuthenticateAndAddAuthority(userId, requestVO.getAuthentiCode());
-        return new DataResponseVO<UserDto>(userDto);
+        UserDto userDto = sellerService.registerSeller(userId, requestVO.getAuthentiCode());
+        return new DataResponseVO<>(userDto);
     }
 
     /**
@@ -104,16 +116,11 @@ public class SellerController {
      * @return 생성 결과
      */
     @ApiOperation(value = "판매자 정보 생성")
-    @PostMapping(value = "")
+    @PostMapping
+    // Todo: 여기로 request가 오는지 확인
     public ResponseVO create(@RequestParam("shop_id") Long shopId) {
         ParameterUtil.checkParameterEmpty(shopId);
-
-        Seller seller = sellerService.create(shopId);
-
-        //Todo: 예외 상황 처리할 것
-        if (seller == null) {
-            return ResponseVO.ok();
-        }
+        sellerService.addSeller(shopId);
         return ResponseVO.ok();
     }
 
@@ -124,18 +131,12 @@ public class SellerController {
      * @return 수정 결과
      */
     @ApiOperation(value = "판매자 정보 수정")
-    @PutMapping(value = "")
+    @PutMapping
     public ResponseVO update(@RequestBody SellerRequestVO requestVO) {
         ParameterUtil.checkParameterEmpty(requestVO.getSellerName(), requestVO.getShopName(), requestVO.getShopInfo(),
                 requestVO.getShopPhone());
         Long userId = SecurityUtil.getCurrentUser().getId();
-
-        Seller seller = sellerService.update(userId, requestVO);
-
-        //Todo: 예외 상황 처리할 것
-        if (seller == null) {
-            return ResponseVO.ok();
-        }
+        sellerService.modifySeller(userId, requestVO);
         return ResponseVO.ok();
     }
 
@@ -146,9 +147,9 @@ public class SellerController {
      * @return 판매자 리스트 정보
      */
     @ApiOperation(value = "판매자 리스트 조회")
-    @GetMapping(value = "")
+    @GetMapping
     public DataListResponseVO<SellerDto> list(DataListRequestVO requestVO) {
-        Page<SellerDto> page = sellerService.findSellers(requestVO.getPageable());
-        return new DataListResponseVO<SellerDto>(page);
+        Page<SellerDto> page = sellerService.readSellers(requestVO.getPageable());
+        return new DataListResponseVO<>(page);
     }
 }

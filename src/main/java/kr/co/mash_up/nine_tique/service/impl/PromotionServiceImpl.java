@@ -77,7 +77,8 @@ public class PromotionServiceImpl implements PromotionService {
 
         promotionVO.getProducts()
                 .forEach(productVO -> {
-                    Product product = productRepository.findOneByProductId(productVO.getId());
+                    Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                    Product product = productOp.orElseThrow(() -> new IdNotFoundException("addPromotion -> product not found"));
                     promotion.addProduct(new PromotionProduct(promotion, product));
                 });
 
@@ -120,7 +121,8 @@ public class PromotionServiceImpl implements PromotionService {
                 .collect(Collectors.toMap(PromotionProduct::getProductId, promotionProduct -> promotionProduct));
         updateProducts.forEach(productVO -> {
             if (productMapToOld.get(productVO.getId()) == null) {
-                Product product = productRepository.findOneByProductId(productVO.getId());
+                Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                Product product = productOp.orElseThrow(() -> new IdNotFoundException("modifyPromotion -> product not found"));
                 promotion.addProduct(new PromotionProduct(promotion, product));
             }
         });

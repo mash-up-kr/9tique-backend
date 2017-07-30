@@ -124,4 +124,8 @@ public class User extends AbstractEntity<Long> {
         }
         return result;
     }
+
+    public boolean alreadySeller(){
+        return this.seller != null;
+    }
 }

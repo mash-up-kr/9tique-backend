@@ -1,14 +1,14 @@
 package kr.co.mash_up.nine_tique.dto;
 
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.co.mash_up.nine_tique.domain.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -37,11 +37,8 @@ public class ProductDto {
     @JsonProperty
     private Product.Status status;
 
-    @JsonProperty(value = "main_category")
-    private String mainCategory;
-
-    @JsonProperty(value = "sub_category")
-    private String subCategory;
+    @JsonProperty(value = "category")
+    private CategoryDto categoryDto;
 
     @JsonProperty(value = "shop")
     private ShopDto shopDto;
@@ -64,19 +61,31 @@ public class ProductDto {
     public static class Builder {
 
         private Long id;
+
         private String name;
+
         private String brandName;
+
         private String size;
+
         private int price;
+
         private String description;
+
         private Product.Status status;
-        private String mainCategory;
-        private String subCategory;
+
+        private CategoryDto category;
+
         private ShopDto shop;
+
         private List<ImageDto> images;
+
         private boolean zzimStatus;
+
         private long createdAt;
+
         private long updatedAt;
+
         private boolean seller;
 
         public ProductDto build() {
@@ -88,8 +97,7 @@ public class ProductDto {
             productDto.setPrice(price);
             productDto.setDescription(description);
             productDto.setStatus(status);
-            productDto.setMainCategory(mainCategory);
-            productDto.setSubCategory(subCategory);
+            productDto.setCategoryDto(category);
             productDto.setShopDto(shop);
             productDto.setImages(images);
             productDto.setZzimStatus(zzimStatus);
@@ -134,13 +142,8 @@ public class ProductDto {
             return this;
         }
 
-        public Builder withMainCategory(String mainCategory) {
-            this.mainCategory = mainCategory;
-            return this;
-        }
-
-        public Builder withSubCategory(String subCategory) {
-            this.subCategory = subCategory;
+        public Builder withCategory(CategoryDto category) {
+            this.category = category;
             return this;
         }
 

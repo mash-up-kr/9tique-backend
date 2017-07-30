@@ -54,7 +54,6 @@ public class ProductRequestVO extends RequestVO {
         product.setPrice(price);
         product.setDescription(description);
         product.setStatus(getStatus());
-        product.setActive(true);
 
         return product;
     }

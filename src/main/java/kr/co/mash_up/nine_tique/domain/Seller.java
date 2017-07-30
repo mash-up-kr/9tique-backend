@@ -1,15 +1,13 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import org.hibernate.annotations.Type;
+import javax.persistence.*;
+import java.util.List;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "seller")
@@ -28,10 +26,6 @@ public class Seller extends AbstractEntity<Long> {
     @Column(name = "authenti_code", length = 20, unique = true, updatable = false)
     private String authentiCode;  // 인증 코드
 
-    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
-    @Type(type = "yes_no")
-    private boolean active;
-
     @ManyToOne  // Seller(Many) : Shop(One)
     @JoinColumn(name = "shop_id", columnDefinition = "INT(11)", foreignKey = @ForeignKey(name = "fk_seller_to_shop_id"))
     private Shop shop;
@@ -46,36 +40,19 @@ public class Seller extends AbstractEntity<Long> {
     public Seller(Shop shop, User user) {
         this.shop = shop;
         this.user = user;
-        this.active = true;
     }
 
-    public Seller(Shop shop, String authentiCode){
+    public Seller(Shop shop, String authentiCode) {
         this.shop = shop;
         this.authentiCode = authentiCode;
-        this.active = false;
     }
 
-    public void registerSeller(User user){
+    public void registerSeller(User user) {
         this.user = user;
-        this.active = true;
     }
 
     public void addSellerProduct(SellerProduct sellerProduct) {
         this.sellerProducts.add(sellerProduct);
-    }
-
-    public void disable() {
-        if (active) {
-            this.active = false;
-            sellerProducts.forEach(SellerProduct::disable);
-        }
-    }
-
-    public void enable() {
-        if (!active) {
-            this.active = true;
-            sellerProducts.forEach(SellerProduct::enable);
-        }
     }
 
     public boolean matchShop(Shop shop) {
@@ -83,5 +60,22 @@ public class Seller extends AbstractEntity<Long> {
             return false;
         }
         return this.shop.equals(shop);
+    }
+
+    public void updateShop(Shop newShop) {
+        this.shop.update(newShop);
+    }
+
+    public void updateName(String name) {
+        this.user.updateName(name);
+    }
+
+    /**
+     * 인증코드로 다른 유저가 판매자로 등록되었는지 확인
+     *
+     * @return
+     */
+    public boolean alreadyRegistration() {
+        return this.user != null;
     }
 }

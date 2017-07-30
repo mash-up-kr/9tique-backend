@@ -79,7 +79,8 @@ public class PostServiceImpl implements PostService {
 
         requestVO.getProducts()
                 .forEach(productVO -> {
-                    Product product = productRepository.findOneByProductId(productVO.getId());
+                    Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                    Product product = productOp.orElseThrow(() -> new IdNotFoundException("addPost -> product not found"));
                     post.addProduct(new PostProduct(post, product));
                 });
 
@@ -120,7 +121,8 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toMap(PostProduct::getProductId, postProduct -> postProduct));
         updateProducts.forEach(productVO -> {
             if (productMapToOld.get(productVO.getId()) == null) {
-                Product product = productRepository.findOneByProductId(productVO.getId());
+                Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                Product product = productOp.orElseThrow(() -> new IdNotFoundException("modifyPost -> product not found"));
                 post.addProduct(new PostProduct(post, product));
             }
         });
@@ -199,7 +201,7 @@ public class PostServiceImpl implements PostService {
 
         Pageable resultPageable = new PageRequest(postPage.getNumber(), postPage.getSize());
 
-        return new PageImpl<PostDto>(posts, resultPageable, postPage.getTotalElements());
+        return new PageImpl<>(posts, resultPageable, postPage.getTotalElements());
     }
 
     @Transactional(readOnly = true)

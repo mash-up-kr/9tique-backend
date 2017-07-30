@@ -16,38 +16,42 @@ public class SellerDto {
     private String authentiCode;
 
     @JsonProperty(value = "shop")
-    private ShopDto shopDto;
+    private ShopDto shop;
 
     @JsonProperty(value = "user")
-    private UserDto userDto;
+    private UserDto user;
+
+    private SellerDto(Builder builder) {
+        this.authentiCode = builder.authentiCode;
+        this.shop = builder.shop;
+        this.user = builder.user;
+    }
 
     public static class Builder {
 
-        private ShopDto shopDto;
-        private UserDto userDto;
+        private ShopDto shop;
+
+        private UserDto user;
+
         private String authentiCode = "";
 
-        public SellerDto build() {
-            SellerDto sellerDto = new SellerDto();
-            sellerDto.setAuthentiCode(authentiCode);
-            sellerDto.setShopDto(shopDto);
-            sellerDto.setUserDto(userDto);
-            return sellerDto;
-        }
-
-        public SellerDto.Builder withAuthentiCode(String authentiCode) {
+        public Builder authentiCode(String authentiCode) {
             this.authentiCode = authentiCode;
             return this;
         }
 
-        public SellerDto.Builder withShopDto(ShopDto shopDto) {
-            this.shopDto = shopDto;
+        public Builder shop(ShopDto shop) {
+            this.shop = shop;
             return this;
         }
 
-        public SellerDto.Builder withUserDto(UserDto userDto) {
-            this.userDto = userDto;
+        public Builder user(UserDto user) {
+            this.user = user;
             return this;
+        }
+
+        public SellerDto build() {
+            return new SellerDto(this);
         }
     }
 }
