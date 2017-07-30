@@ -70,6 +70,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void addProduct(Long userId, ProductRequestVO requestVO) {
         Product product = requestVO.toProductEntity();
+        product.setStatus(Product.Status.SELL);
         //Todo: 상품이 이미 존재할 경우 여기서 예외처리. 상품을 뭐로 find할지 생각이 안난다..
 
         Optional<Seller> sellerOp = sellerRepository.findOneByUserId(userId);
@@ -89,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
 
         requestVO.getImages().forEach(productImageDto -> {
             Optional<Image> imageOp = imageRepository.findByFileName(FileUtil.getFileName(productImageDto.getUrl()));
-            Image image = imageOp.orElseThrow(() -> new IdNotFoundException("product create -> productImage not found"));
+            Image image = imageOp.orElseThrow(() -> new IdNotFoundException("addProduct -> productImage not found"));
 
             product.addImage(new ProductImage(product, image));
 
@@ -102,10 +103,6 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     @Override
     public void modifyProduct(Long userId, Long productId, ProductRequestVO requestVO) {
-        // Todo: 파라미터 검증은 controller에서
-        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getImages());
-
         Optional<Product> productOp = productRepository.findOneByProductId(productId);
         Product product = productOp.orElseThrow(() -> new IdNotFoundException("modifyProduct -> product not found"));
 
@@ -141,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
         // 상품 이미지 추가
         updateImages.forEach(imageDto -> {
             Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
-            Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("update -> image not found"));
+            Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("modifyProduct -> image not found"));
 
             product.addImage(new ProductImage(product, image));
 
@@ -150,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
                     FileUtil.getImageUploadPath(ImageType.PRODUCT, productId));
         });
 
-        // Todo: 없으면 어떻게 되는지 파악하고 제거
+        // Todo: 없어도 이전 상태가 유지되는지? 어떻게 되는지 파악하고 제거
         requestVO.setStatus(product.getStatus().name());  // 이전상태 유지
 
         // Todo: 브랜드 검증 후 수정
@@ -287,9 +284,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional(readOnly = true)
     @Override
-    public ProductDto readProduct(Long userId, Long productid) {
-        Optional<Product> productOptional = productRepository.findOneByProductId(productid);
-        Product product = productOptional.orElseThrow(() -> new IdNotFoundException("product find by id -> product not found"));
+    public ProductDto readProduct(Long userId, Long productId) {
+        Optional<Product> productOptional = productRepository.findOneByProductId(productId);
+        Product product = productOptional.orElseThrow(() -> new IdNotFoundException("readProduct -> product not found"));
 
         List<ImageDto> productImageDtos = product.getProductImages().stream()
                 .map(ProductImage::getImage)
