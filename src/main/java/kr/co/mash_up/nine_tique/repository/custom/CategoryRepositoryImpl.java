@@ -39,14 +39,4 @@ public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
 
         return Optional.ofNullable(query.uniqueResult(CATEGORY));
     }
-
-    @Override
-    public List<Category> findAll() {
-        JPAQuery query = new JPAQuery(entityManager);
-
-        query.from(CATEGORY)
-                .orderBy(CATEGORY.id.desc());
-
-        return query.list(CATEGORY);
-    }
 }

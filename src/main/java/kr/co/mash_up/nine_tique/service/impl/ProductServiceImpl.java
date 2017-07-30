@@ -231,7 +231,7 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
+        List<ZzimProduct> zzimProducts = zzimRepository.findZzimProducts(userId);
         List<SellerProduct> sellerProducts = sellerRepository.findSellerProducts(userId);
 
         List<ProductDto> productDtos = productPage.getContent().stream()
@@ -308,7 +308,7 @@ public class ProductServiceImpl implements ProductService {
                 .build();
 
         // Todo: 들고와서 체크할 필요가 있을까?
-        List<ZzimProduct> zzimProducts = zzimRepository.getZzimProducts(userId);
+        List<ZzimProduct> zzimProducts = zzimRepository.findZzimProducts(userId);
         List<SellerProduct> sellerProducts = sellerRepository.findSellerProducts(userId);
 
         boolean isZzim = product.checkProductZzim(zzimProducts);

@@ -20,7 +20,7 @@ public interface ZzimRepositoryCustom {
      * @param productId 상품 ID
      * @return
      */
-    public abstract Optional<ZzimProduct> getZzimProduct(Long userId, Long productId);
+    public abstract Optional<ZzimProduct> findZzimProduct(Long userId, Long productId);
 
     /**
      * 유저 ID로 유저가 찜한 상품 리스트를 조회한다
@@ -29,7 +29,7 @@ public interface ZzimRepositoryCustom {
      * @param pageable
      * @return
      */
-    public abstract Page<ZzimProduct> getZzimProducts(Long userId, Pageable pageable);
+    public abstract Page<ZzimProduct> findZzimProducts(Long userId, Pageable pageable);
 
     /**
      * 유저 ID로 유저가 찜한 상품 리스트를 조회한다
@@ -37,5 +37,5 @@ public interface ZzimRepositoryCustom {
      * @param userId 유저 ID
      * @return
      */
-    public abstract List<ZzimProduct> getZzimProducts(Long userId);
+    public abstract List<ZzimProduct> findZzimProducts(Long userId);
 }

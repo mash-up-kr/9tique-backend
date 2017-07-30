@@ -30,7 +30,7 @@ public class ZzimRepositoryImpl implements ZzimRepositoryCustom {
     private static final QZzimProduct ZZIM_PRODUCT = QZzimProduct.zzimProduct;
 
     @Override
-    public Optional<ZzimProduct> getZzimProduct(Long userId, Long productId) {
+    public Optional<ZzimProduct> findZzimProduct(Long userId, Long productId) {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(ZZIM_PRODUCT)
@@ -42,7 +42,7 @@ public class ZzimRepositoryImpl implements ZzimRepositoryCustom {
     }
 
     @Override
-    public Page<ZzimProduct> getZzimProducts(Long userId, Pageable pageable) {
+    public Page<ZzimProduct> findZzimProducts(Long userId, Pageable pageable) {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(ZZIM_PRODUCT)
@@ -56,7 +56,7 @@ public class ZzimRepositoryImpl implements ZzimRepositoryCustom {
     }
 
     @Override
-    public List<ZzimProduct> getZzimProducts(Long userId) {
+    public List<ZzimProduct> findZzimProducts(Long userId) {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(ZZIM_PRODUCT)

@@ -54,14 +54,14 @@ public class ZzimServiceImpl implements ZzimService {
     @Override
     public void removeZzimProduct(Long userId, Long productId) {
         Zzim zzim = zzimRepository.findOne(userId);
-        Optional<ZzimProduct> zzimProductOptional = zzimRepository.getZzimProduct(userId, productId);
+        Optional<ZzimProduct> zzimProductOptional = zzimRepository.findZzimProduct(userId, productId);
         ZzimProduct zzimProduct = zzimProductOptional.orElseThrow(() -> new IdNotFoundException("removeZzimProduct -> product not found"));
         zzim.removeZzimProduct(zzimProduct);
     }
 
     @Transactional(readOnly = true)
     public Page<ProductDto> readZzimProducts(Long userId, Pageable pageable) {
-        Page<ZzimProduct> zzimProductPage = zzimRepository.getZzimProducts(userId, pageable);
+        Page<ZzimProduct> zzimProductPage = zzimRepository.findZzimProducts(userId, pageable);
 
         // DTO로 변환
         List<ProductDto> productDtos = zzimProductPage.getContent().stream()
