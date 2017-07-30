@@ -21,14 +21,6 @@ public interface ShopRepositoryCustom {
     public abstract Optional<Shop> findOneByShopId(Long shopId);
 
     /**
-     * 판매자인 User ID로 shop 단건 조회
-     *
-     * @param userId 판매자인 User의 ID
-     * @return
-     */
-    public abstract Optional<Shop> findOneByUserId(Long userId);
-
-    /**
      * 매장 리스트 조회
      *
      * @param pageable

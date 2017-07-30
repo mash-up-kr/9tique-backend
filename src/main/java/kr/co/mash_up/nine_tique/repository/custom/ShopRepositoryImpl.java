@@ -39,17 +39,6 @@ public class ShopRepositoryImpl implements ShopRepositoryCustom {
     }
 
     @Override
-    public Optional<Shop> findOneByUserId(Long userId) {
-        JPAQuery query = new JPAQuery(entityManager);
-
-        query.from(SHOP)
-                .join(SELLER.shop, SHOP).on(SELLER.shop.id.eq(SHOP.id))
-                .where(SELLER.user.id.eq(userId));
-
-        return Optional.ofNullable(query.uniqueResult(SHOP));
-    }
-
-    @Override
     public Page<Shop> findShops(Pageable pageable) {
         JPAQuery query = new JPAQuery(entityManager);
 

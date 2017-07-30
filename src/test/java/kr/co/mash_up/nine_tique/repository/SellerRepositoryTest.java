@@ -122,10 +122,10 @@ public class SellerRepositoryTest {
 
         Pageable pageable = new PageRequest(pageNo, pageSize);
 
-        // when : 판매자의 상품 리스트 0 페이지를 조회하면
+        // when : 판매자의 상품 리스트를 페이징으로 조회하면
         Page<SellerProduct> sellerProductsPage = sellerRepository.findSellerProducts(userId, pageable);
 
-        // then : 상품 리스트 0 페이지가 페이지 사이즈만큼 조회된다
+        // then : 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
         assertThat(sellerProductsPage.getContent())
                 .isNotEmpty()
                 .hasSize(pageSize);
