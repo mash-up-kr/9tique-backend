@@ -24,8 +24,6 @@ public class QSeller extends EntityPathBase<Seller> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final BooleanPath active = createBoolean("active");
-
     public final StringPath authentiCode = createString("authentiCode");
 
     //inherited

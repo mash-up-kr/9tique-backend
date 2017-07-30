@@ -29,8 +29,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(PRODUCT)
-                .where(PRODUCT.id.eq(productId)
-                        .and(PRODUCT.active.isTrue()));
+                .where(PRODUCT.id.eq(productId));
 
         return Optional.ofNullable(query.uniqueResult(PRODUCT));
     }
@@ -41,10 +40,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         query.from(PRODUCT)
                 .join(PRODUCT.category, CATEGORY)
-                .where(CATEGORY.id.eq(category.getId()).and(PRODUCT.active.isTrue()))
-                .orderBy(PRODUCT.status.asc(), PRODUCT.createdAt.desc())
+                .where(CATEGORY.id.eq(category.getId()))
+                .orderBy(PRODUCT.status.asc(), PRODUCT.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
+
         return new PageImpl<>(query.list(PRODUCT), pageable, query.count());
     }
 
@@ -53,11 +53,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(PRODUCT)
-                .where(PRODUCT.active.isTrue())
-                .orderBy(PRODUCT.status.asc(), PRODUCT.createdAt.desc())
+                .orderBy(PRODUCT.status.asc(), PRODUCT.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
-        
+
         return new PageImpl<>(query.list(PRODUCT), pageable, query.count());
     }
 
@@ -67,8 +66,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
         query.from(PRODUCT)
                 .join(PRODUCT.category, CATEGORY)
-                .where(CATEGORY.main.eq(mainCategory).and(CATEGORY.active.isTrue()).and(PRODUCT.active.isTrue()))
-                .orderBy(PRODUCT.status.asc(), PRODUCT.createdAt.desc())
+                .where(CATEGORY.main.eq(mainCategory))
+                .orderBy(PRODUCT.status.asc(), PRODUCT.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset());
 
