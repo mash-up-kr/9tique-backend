@@ -34,7 +34,7 @@ public class Seller extends AbstractEntity<Long> {
     @JoinColumn(name = "user_id", columnDefinition = "INT(11)", foreignKey = @ForeignKey(name = "fk_seller_to_user_id"))
     private User user;
 
-    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<SellerProduct> sellerProducts;
 
     public Seller(Shop shop, User user) {
