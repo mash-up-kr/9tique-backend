@@ -62,8 +62,7 @@ public class BrandController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PutMapping(value = "/{brand_id}")
-    public ResponseVO modifyBrand(@PathVariable(value = "brand_id") Long brandId,
-                                   @RequestBody BrandVO brandVO) {
+    public ResponseVO modifyBrand(@PathVariable(value = "brand_id") Long brandId, @RequestBody BrandVO brandVO) {
         log.info("modifyBrand id : {}, brand : {}", brandId, brandVO);
 
         ParameterUtil.checkParameterEmpty(brandVO.getNameKo(), brandVO.getNameEng());
@@ -95,6 +94,6 @@ public class BrandController {
         log.info("readBrands");
 
         List<BrandVO> brands = brandService.readBrands();
-        return new DataListResponseVO<BrandVO>(brands);
+        return new DataListResponseVO<>(brands);
     }
 }

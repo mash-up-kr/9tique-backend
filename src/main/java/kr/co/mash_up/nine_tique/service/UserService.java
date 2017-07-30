@@ -91,6 +91,7 @@ public class UserService {
 
     public static final String HEADER_PREFIX = "Bearer ";
 
+    // Todo: 2017.07.30 prefix는 web filter에서 거르고, 토큰만 넘겨줘야하지 않을까?
     public UserDto tokenRefresh(String authHeader) {
         String accessToken = authHeader.substring(HEADER_PREFIX.length());
         String newAccessToken = jwtTokenUtil.refreshToken(accessToken);

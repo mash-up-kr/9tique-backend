@@ -14,10 +14,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.ZzimService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
@@ -40,10 +40,10 @@ public class ZzimController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    public ResponseVO createZzimProduct(@RequestParam(name = "product_id") Long productId) {
-        log.info("createZzimProduct - productId : {}", productId);
-
+    public ResponseVO addZzimProduct(@RequestParam(name = "product_id") Long productId) {
         Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("addZzimProduct - userId : {}, productId : {}", userId, productId);
+
         zzimService.addZzimProduct(userId, productId);
         return ResponseVO.ok();
     }
@@ -54,11 +54,11 @@ public class ZzimController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @DeleteMapping(value = "/product/{product_id}")
-    public ResponseVO deleteZzimProduct(@PathVariable("product_id") Long productId) {
-        log.info("deleteZzimProduct - productId : {}", productId);
+    public ResponseVO removeZzimProduct(@PathVariable("product_id") Long productId) {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("removeZzimProduct - userId : {}, productId : {}", userId, productId);
 
         ParameterUtil.checkParameterEmpty(productId);
-        Long userId = SecurityUtil.getCurrentUser().getId();
         zzimService.removeZzimProduct(userId, productId);
         return ResponseVO.ok();
     }
@@ -69,10 +69,10 @@ public class ZzimController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public DataListResponseVO<ProductDto> getZzimProducts(DataListRequestVO requestVO) {
-        log.info("getZzimProducts {}", requestVO);
-
+    public DataListResponseVO<ProductDto> readZzimProducts(DataListRequestVO requestVO) {
         Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("readZzimProducts - userId : {}, page : {}", userId, requestVO);
+
         Page<ProductDto> page = zzimService.readZzimProducts(userId, requestVO.getPageable());
         return new DataListResponseVO<>(page);
     }

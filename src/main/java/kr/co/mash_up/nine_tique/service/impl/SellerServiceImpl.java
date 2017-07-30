@@ -23,11 +23,6 @@ import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
 import kr.co.mash_up.nine_tique.domain.Shop;
 import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.web.dto.ImageDto;
-import kr.co.mash_up.nine_tique.web.dto.ProductDto;
-import kr.co.mash_up.nine_tique.web.dto.SellerDto;
-import kr.co.mash_up.nine_tique.web.dto.ShopDto;
-import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
@@ -41,6 +36,11 @@ import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
 import kr.co.mash_up.nine_tique.service.SellerService;
 import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
 import kr.co.mash_up.nine_tique.util.FileUtil;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.dto.SellerDto;
+import kr.co.mash_up.nine_tique.web.dto.ShopDto;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.web.vo.ProductDeleteRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.SellerRequestVO;
@@ -81,9 +81,9 @@ public class SellerServiceImpl implements SellerService {
                             .map(ProductImage::getImage)
                             .sorted(Comparator.comparingLong(Image::getId))
                             .map(productImage ->
-                                 new ImageDto.Builder()
-                                        .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), productImage.getFileName()))
-                                        .build()).collect(Collectors.toList());
+                                    new ImageDto.Builder()
+                                            .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), productImage.getFileName()))
+                                            .build()).collect(Collectors.toList());
 
                     // Todo: 필요 없는 정보 주석 처리
 //                    ShopDto shopDto = new ShopDto.Builder()
@@ -126,9 +126,10 @@ public class SellerServiceImpl implements SellerService {
     @Transactional
     @Override
     public void removeProductsAll(Long userId) {
-        List<SellerProduct> sellerProducts = sellerRepository.findSellerProducts(userId);
+        Optional<Seller> sellerOp = sellerRepository.findOneByUserId(userId);
+        Seller seller = sellerOp.orElseThrow(() -> new IdNotFoundException("removeProductsAll -> seller not found"));
 
-        sellerProducts.stream()
+        seller.getSellerProducts().stream()
                 .map(sellerProduct -> sellerProduct.getId().getProductId())
                 .forEach(productId -> {
                     // dir move tmp dir to product id dir

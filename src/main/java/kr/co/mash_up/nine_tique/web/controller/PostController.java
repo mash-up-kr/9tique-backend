@@ -15,11 +15,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import kr.co.mash_up.nine_tique.web.dto.CommentDto;
-import kr.co.mash_up.nine_tique.web.dto.PostDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.PostService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.CommentDto;
+import kr.co.mash_up.nine_tique.web.dto.PostDto;
 import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
@@ -52,10 +52,10 @@ public class PostController {
     })
     @PostMapping
     public ResponseVO addPost(@RequestBody PostRequestVO requestVO) {
-        log.info("addPost - post : {}", "");
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("addPost - userId : {}, post : {}", userId, requestVO);
 
         ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getContents());
-        Long userId = SecurityUtil.getCurrentUser().getId();
         postService.addPost(userId, requestVO);
         return ResponseVO.created();
     }
@@ -70,10 +70,10 @@ public class PostController {
     @PutMapping(value = "/{post_id}")
     public ResponseVO modifyPost(@PathVariable(value = "post_id") Long postId,
                                  @RequestBody PostRequestVO requestVO) {
-        log.info("modifyPost - postId : {}, post : {}", postId, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("modifyPost - userId : {}, postId : {}, post : {}", userId, postId, requestVO);
 
         ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getContents());
-        Long userId = SecurityUtil.getCurrentUser().getId();
         postService.modifyPost(userId, postId, requestVO);
         return ResponseVO.ok();
     }
@@ -86,9 +86,9 @@ public class PostController {
     })
     @DeleteMapping(value = "/{post_id}")
     public ResponseVO removePost(@PathVariable(value = "post_id") Long postId) {
-        log.info("removePost - post_id : {}", postId);
-
         Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("removePost - userId : {}, post_id : {}", userId, postId);
+
         postService.removePost(userId, postId);
         return ResponseVO.ok();
     }
@@ -130,10 +130,10 @@ public class PostController {
     @PostMapping("/{post_id}/comments")
     public ResponseVO addPostComment(@PathVariable(value = "post_id") Long postId,
                                      @RequestBody CommentRequestVO requestVO) {
-        log.info("addPostComment - postId : {}, comment : {}", postId, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("addPostComment - userId : {}, postId : {}, comment : {}", userId, postId, requestVO);
 
         ParameterUtil.checkParameterEmpty(requestVO.getContents());
-        Long userId = SecurityUtil.getCurrentUser().getId();
         postService.addPostComment(postId, userId, requestVO);
         return ResponseVO.created();
     }
@@ -149,10 +149,10 @@ public class PostController {
     public ResponseVO modifyPostComment(@PathVariable(value = "post_id") Long postId,
                                         @PathVariable(value = "comment_id") Long commentId,
                                         @RequestBody CommentRequestVO requestVO) {
-        log.info("modifyPostComment - postId : {}, commentId : {}, comment: {}", postId, commentId, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("modifyPostComment - userId : {}, postId : {}, commentId : {}, comment: {}", userId, postId, commentId, requestVO);
 
         ParameterUtil.checkParameterEmpty(requestVO.getContents());
-        Long userId = SecurityUtil.getCurrentUser().getId();
         postService.modifyPostComment(postId, commentId, userId, requestVO);
         return ResponseVO.ok();
     }
@@ -167,9 +167,9 @@ public class PostController {
     @DeleteMapping("/{post_id}/comments/{comment_id}")
     public ResponseVO removePostComment(@PathVariable(value = "post_id") Long postId,
                                         @PathVariable(value = "comment_id") Long commentId) {
-        log.info("removePostComment - postId : {}, commentId : {}", postId, commentId);
-
         Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("removePostComment - userId : {}, postId : {}, commentId : {}", userId, postId, commentId);
+
         postService.removePostComment(postId, commentId, userId);
         return ResponseVO.ok();
     }

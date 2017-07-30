@@ -13,14 +13,19 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import kr.co.mash_up.nine_tique.web.dto.ImageDto;
 import kr.co.mash_up.nine_tique.service.ImageService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import lombok.extern.slf4j.Slf4j;
 
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_IMAGE;
 
+/**
+ * 이미지와 관련된 request를 처리한다
+ * <p>
+ * Created by ethankim on 2016. 10. 22..
+ */
 @RestController
 @RequestMapping(value = API_IMAGE)
 @Slf4j
@@ -36,7 +41,7 @@ public class ImageController {
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    @PostMapping(value = "")
+    @PostMapping
     public DataListResponseVO<ImageDto> addImages(@RequestParam(name = "files") List<MultipartFile> files) {
         log.info("addImages - files : {}", files);
 

@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.domain.Product;
-import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.ProductService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.DataResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
@@ -27,6 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_PRODUCT;
 
+/**
+ * 상품과 관련된 request를 처리한다
+ * <p>
+ * Created by ethankim on 2016. 10. 22..
+ */
 @RestController
 @RequestMapping(value = API_PRODUCT)
 @Slf4j
@@ -42,11 +49,15 @@ public class ProductController {
      * @param requestVO 생성할 상품 정보
      * @return 생성 결과
      */
-    @ApiOperation(value = "상품 생성")
+    @ApiOperation(value = "상품 추가", notes = "상품 정보를 추가한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "찜 추가 성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
     @PostMapping
-    public ResponseVO createProduct(@RequestBody ProductRequestVO requestVO) {
+    public ResponseVO addProduct(@RequestBody ProductRequestVO requestVO) {
         Long userId = SecurityUtil.getCurrentUser().getId();
-        log.info(userId + " ");
+        log.info("addProduct - userId : {}, product : {}", userId, requestVO);
 
         ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
                 requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getImages());
@@ -68,7 +79,7 @@ public class ProductController {
     @ApiOperation(value = "상품 정보 수정")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseVO updateProduct(@PathVariable("id") Long productId,
-                             @RequestBody ProductRequestVO requestVO) {
+                                    @RequestBody ProductRequestVO requestVO) {
         //Todo: status만 올때랑 name, brandName 등등이 올때를 구분해야 한다.. 좀더 개선 해보자
 //        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
 //                requestVO.getPrice(), requestVO.getDescription(), requestVO.getStatus(), requestVO.getMainCategory(),

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * 인증코드 Wrapper 클래스
+ */
 @NoArgsConstructor
 @Getter
 @Setter

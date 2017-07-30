@@ -15,11 +15,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import kr.co.mash_up.nine_tique.web.dto.CommentDto;
-import kr.co.mash_up.nine_tique.web.dto.ShopDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.impl.ShopServiceImpl;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.CommentDto;
+import kr.co.mash_up.nine_tique.web.dto.ShopDto;
 import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_SHOP;
 
 /**
- * 매장애 관련된 request를 처리한다
+ * 매장에 관련된 request를 처리한다
  * <p>
  * Created by ethankim on 2016. 10. 8..
  */
@@ -96,7 +96,7 @@ public class ShopController {
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    @GetMapping(value = "")
+    @GetMapping
     public DataListResponseVO<ShopDto> readShops(DataListRequestVO requestVO) {
         log.info("readShops - page : {}", requestVO);
 
@@ -126,12 +126,11 @@ public class ShopController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/{shop_id}/comments")
-    public ResponseVO addShopComment(@PathVariable(value = "shop_id") Long shopId,
-                                     @RequestBody CommentRequestVO requestVO) {
-        log.info("addShopComment - shopId : {}, comment : {}", shopId, requestVO);
+    public ResponseVO addShopComment(@PathVariable(value = "shop_id") Long shopId, @RequestBody CommentRequestVO requestVO) {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("addShopComment - userId : {}, shopId : {}, comment : {}", userId, shopId, requestVO);
 
         ParameterUtil.checkParameterEmpty(requestVO.getContents());
-        Long userId = SecurityUtil.getCurrentUser().getId();
         shopService.addShopComment(shopId, userId, requestVO);
         return ResponseVO.created();
     }
@@ -144,13 +143,12 @@ public class ShopController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PutMapping("/{shop_id}/comments/{comment_id}")
-    public ResponseVO modifyShopComment(@PathVariable(value = "shop_id") Long shopId,
-                                        @PathVariable(value = "comment_id") Long commentId,
+    public ResponseVO modifyShopComment(@PathVariable(value = "shop_id") Long shopId, @PathVariable(value = "comment_id") Long commentId,
                                         @RequestBody CommentRequestVO requestVO) {
-        log.info("modifyShopComment - shopId : {}, commentId : {}, comment: {}", shopId, commentId, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("modifyShopComment - userId : {}, shopId : {}, commentId : {}, comment: {}", userId, shopId, commentId, requestVO);
 
         ParameterUtil.checkParameterEmpty(requestVO.getContents());
-        Long userId = SecurityUtil.getCurrentUser().getId();
         shopService.modifyShopComment(shopId, commentId, userId, requestVO);
         return ResponseVO.ok();
     }
@@ -165,9 +163,9 @@ public class ShopController {
     @DeleteMapping("/{shop_id}/comments/{comment_id}")
     public ResponseVO removeShopComment(@PathVariable(value = "shop_id") Long shopId,
                                         @PathVariable(value = "comment_id") Long commentId) {
-        log.info("removeShopComment - shopId : {}, commentId : {}", shopId, commentId);
-
         Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("removeShopComment - userId : {}, shopId : {}, commentId : {}", userId, shopId, commentId);
+
         shopService.removeShopComment(shopId, commentId, userId);
         return ResponseVO.ok();
     }

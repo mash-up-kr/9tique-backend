@@ -15,10 +15,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.PromotionService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.DataResponseVO;
@@ -46,13 +46,14 @@ public class PromotionController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "추가 성공"),
             @ApiResponse(code = 400, message = "잘못된 요청(필수 파라미터 누락)"),
+            @ApiResponse(code = 404, message = "존재하지 않는 등록자"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
     public ResponseVO addPromotion(@RequestBody PromotionRequestVO promotionVO) {
-        log.info("addPromotion - promotion : {}", promotionVO);
-
         Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("addPromotion - userId : {}, promotion : {}", userId, promotionVO);
+
         ParameterUtil.checkParameterEmpty(promotionVO.getName(), promotionVO.getDescription());
         promotionService.addPromotion(userId, promotionVO);
         return ResponseVO.created();
