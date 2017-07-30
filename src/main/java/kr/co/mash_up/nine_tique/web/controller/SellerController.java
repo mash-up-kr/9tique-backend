@@ -68,7 +68,7 @@ public class SellerController {
             @ApiResponse(code = 404, message = "존재하지 않는 판매자"),
             @ApiResponse(code = 500, message = "서버 오류")
     })
-    @DeleteMapping(value = "/products")
+    @DeleteMapping(value = "/products/all")
     public ResponseVO removeProductsAll() {
         Long userId = SecurityUtil.getCurrentUser().getId();
         log.info("removeProductsAll - userId : {}", userId);
