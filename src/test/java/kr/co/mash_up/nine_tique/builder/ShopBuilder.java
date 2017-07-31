@@ -7,7 +7,7 @@ import kr.co.mash_up.nine_tique.domain.Shop;
  */
 public class ShopBuilder {
 
-    private Long id;
+    private long id;
 
     private String name;
 
@@ -17,34 +17,34 @@ public class ShopBuilder {
 
     private String kakaoOpenChatUrl;
 
-    private Long commentCount;
+    private long commentCount;
 
-    public ShopBuilder withId(Long id){
+    public ShopBuilder id(long id){
         this.id = id;
         return this;
     }
 
-    public ShopBuilder withName(String name){
+    public ShopBuilder name(String name){
         this.name = name;
         return this;
     }
 
-    public ShopBuilder withDescription(String description){
+    public ShopBuilder description(String description){
         this.description = description;
         return this;
     }
 
-    public ShopBuilder withPhoneNumber(String phoneNumber){
+    public ShopBuilder phoneNumber(String phoneNumber){
         this.phoneNumber = phoneNumber;
         return this;
     }
 
-    public ShopBuilder withKakaoOpenChatUrl(String kakaoOpenChatUrl){
+    public ShopBuilder kakaoOpenChatUrl(String kakaoOpenChatUrl){
         this.kakaoOpenChatUrl = kakaoOpenChatUrl;
         return this;
     }
 
-    public ShopBuilder withCommentCount(Long commentCount){
+    public ShopBuilder commentCount(long commentCount){
         this.commentCount = commentCount;
         return this;
     }

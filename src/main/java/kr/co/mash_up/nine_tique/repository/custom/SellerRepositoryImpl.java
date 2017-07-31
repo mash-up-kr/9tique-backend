@@ -38,7 +38,7 @@ public class SellerRepositoryImpl implements SellerRepositoryCustom {
         JPAQuery query = new JPAQuery(entityManager);
 
         query.from(SELLER)
-                .join(SELLER.user, USER).on(SELLER.user.id.eq(USER.id))
+                .join(SELLER.user, USER)
                 .where(USER.id.eq(userId));
 
         return Optional.ofNullable(query.uniqueResult(SELLER));

@@ -18,6 +18,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
      * @param name
      * @return
      */
+    @Deprecated
     public abstract Shop findByName(String name);
 
     /**
@@ -26,6 +27,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
      * @param phoneNumber
      * @return
      */
+    @Deprecated
     public abstract Shop findByPhoneNumber(String phoneNumber);
 
     /**

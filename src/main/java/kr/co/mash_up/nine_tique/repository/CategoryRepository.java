@@ -17,5 +17,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
      * @param main
      * @return
      */
+    @Deprecated
     public abstract List<Category> findByMain(String main);
 }

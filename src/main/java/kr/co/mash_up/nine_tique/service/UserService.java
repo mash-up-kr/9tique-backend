@@ -9,13 +9,13 @@ import java.util.Optional;
 import kr.co.mash_up.nine_tique.domain.Authority;
 import kr.co.mash_up.nine_tique.domain.User;
 import kr.co.mash_up.nine_tique.domain.Zzim;
-import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.AuthorityRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.repository.ZzimRepository;
 import kr.co.mash_up.nine_tique.security.Authorities;
 import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.web.vo.UserRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,9 +45,8 @@ public class UserService {
     @Transactional
     public UserDto login(UserRequestVO requestVO) {
 //        User oldUser = userRepository.findByOauthTokenAndOauthType(requestVO.getOauthToken(), requestVO.getType());
-        User oldUser = userRepository.findByEmail(requestVO.getEmail());
-
-        oldUser = Optional.ofNullable(oldUser).orElseGet(() -> {  // User가 없으면 정보 저장
+        Optional<User> userOp = userRepository.findByEmail(requestVO.getEmail());
+        User user = userOp.orElseGet(() -> {  // User가 없으면 정보 저장
             User newUser = requestVO.toUserEntity();
 
             // USER 권한 저장
@@ -63,8 +62,8 @@ public class UserService {
         });
 
         return new UserDto.Builder()
-                .accessToken(jwtTokenUtil.generateToken(oldUser))
-                .authorityLevel(oldUser.findAuthority())
+                .accessToken(jwtTokenUtil.generateToken(user))
+                .authorityLevel(user.findAuthority())
                 .build();
     }
 
