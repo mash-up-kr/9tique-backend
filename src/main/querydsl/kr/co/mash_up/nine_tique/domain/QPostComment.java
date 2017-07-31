@@ -36,7 +36,7 @@ public class QPostComment extends EntityPathBase<PostComment> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final QUser user;
+    public final QUser writer;
 
     public QPostComment(String variable) {
         this(PostComment.class, forVariable(variable), INITS);
@@ -57,7 +57,7 @@ public class QPostComment extends EntityPathBase<PostComment> {
     public QPostComment(Class<? extends PostComment> type, PathMetadata<?> metadata, PathInits inits) {
         super(type, metadata, inits);
         this.post = inits.isInitialized("post") ? new QPost(forProperty("post")) : null;
-        this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
+        this.writer = inits.isInitialized("writer") ? new QUser(forProperty("writer"), inits.get("writer")) : null;
     }
 
 }

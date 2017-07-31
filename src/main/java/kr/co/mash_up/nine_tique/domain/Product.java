@@ -1,7 +1,5 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -44,10 +42,6 @@ public class Product extends AbstractEntity<Long> {
 
     @Column(name = "zzim_count", columnDefinition = "INT(11) default 0")
     private Long zzimCount;  // 찜 갯수
-
-    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
-    @Type(type = "yes_no")
-    private boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", foreignKey = @ForeignKey(name = "fk_product_to_brand_id"))
@@ -98,20 +92,18 @@ public class Product extends AbstractEntity<Long> {
         this.category = category;
     }
 
-    public void disable() {
-        if (active) {
-            this.active = false;
-            sellerProducts.forEach(SellerProduct::disable);
-            zzimProducts.forEach(ZzimProduct::disable);
+    /**
+     * 현재 상태랑 다를 경우만 상태 수정
+     *
+     * @param newStatus 수정할 상태
+     * @return 수정 여부
+     */
+    public boolean updateStatus(Status newStatus) {
+        if (this.status == newStatus) {
+            return false;
         }
-    }
-
-    public void enable() {
-        if (!active) {
-            this.active = true;
-            sellerProducts.forEach(SellerProduct::enable);
-            zzimProducts.forEach(ZzimProduct::enable);
-        }
+        this.status = newStatus;
+        return true;
     }
 
     /**

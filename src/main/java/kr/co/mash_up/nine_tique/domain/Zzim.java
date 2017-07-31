@@ -2,7 +2,6 @@ package kr.co.mash_up.nine_tique.domain;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -60,13 +59,7 @@ public class Zzim extends AbstractEntity<Long> {
      * @param zzimProduct
      */
     public void addZzimProduct(ZzimProduct zzimProduct) {
-        int position = searchProductZzimIndex(zzimProduct);
-        if (position > -1) {
-            zzimProduct = zzimProducts.get(position);
-            zzimProduct.enable();
-        } else {
-            zzimProducts.add(zzimProduct);
-        }
+        zzimProducts.add(zzimProduct);
     }
 
     /**
@@ -75,24 +68,24 @@ public class Zzim extends AbstractEntity<Long> {
      * @param zzimProduct
      */
     public void removeZzimProduct(ZzimProduct zzimProduct) {
-        int deleteItemPosition = searchProductZzimIndex(zzimProduct);
-        zzimProducts.get(deleteItemPosition).disable();
+//        int deleteItemPosition = searchProductZzimIndex(zzimProduct);  Todo: object로 삭제 안돼면 position 사용
+        zzimProducts.remove(zzimProduct);
     }
 
-    /**
-     * 찜된 목록에서 삭제할 상품 위치 찾기
-     *
-     * @param zzimProduct 찾을 상품
-     * @return 리스트의 상품 위치
-     */
-    private int searchProductZzimIndex(ZzimProduct zzimProduct) {
-        for (int idx = 0; idx < zzimProducts.size(); idx++) {
-            ZzimProduct.Id currentZzimProductId = zzimProducts.get(idx).getId();
-            if (Objects.equals(zzimProduct.getId().getProductId(), currentZzimProductId.getProductId())
-                    && Objects.equals(zzimProduct.getId().getZzimId(), currentZzimProductId.getZzimId())) {
-                return idx;
-            }
-        }
-        return -1;
-    }
+//    /**
+//     * 찜된 목록에서 삭제할 상품 위치 찾기
+//     *
+//     * @param zzimProduct 찾을 상품
+//     * @return 리스트의 상품 위치
+//     */
+//    private int searchProductZzimIndex(ZzimProduct zzimProduct) {
+//        for (int idx = 0; idx < zzimProducts.size(); idx++) {
+//            ZzimProduct.Id currentZzimProductId = zzimProducts.get(idx).getId();
+//            if (Objects.equals(zzimProduct.getId().getProductId(), currentZzimProductId.getProductId())
+//                    && Objects.equals(zzimProduct.getId().getZzimId(), currentZzimProductId.getZzimId())) {
+//                return idx;
+//            }
+//        }
+//        return -1;
+//    }
 }

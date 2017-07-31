@@ -1,7 +1,5 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -37,10 +35,6 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
     @MapsId(value = "productId")
     private Product product;
 
-    @Type(type = "yes_no")
-    @Column(name = "active", length = 1, columnDefinition = "VARCHAR(1)")
-    private boolean active;
-
     @Embeddable
     @Data
     @EqualsAndHashCode(callSuper = false, of = {"zzimId", "productId"})
@@ -58,7 +52,6 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
         this.id.productId = product.getId();
         this.zzim = zzim;
         this.product = product;
-        this.active = true;
     }
 
     public boolean matchProduct(Product newProduct) {
@@ -66,17 +59,5 @@ public class ZzimProduct extends AbstractEntity<ZzimProduct.Id> {
             return false;
         }
         return this.product.equals(newProduct);
-    }
-
-    public void disable() {
-        if (active) {
-            this.active = false;
-        }
-    }
-
-    public void enable() {
-        if (!active) {
-            this.active = true;
-        }
     }
 }

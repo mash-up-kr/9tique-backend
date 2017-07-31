@@ -2,11 +2,11 @@ package kr.co.mash_up.nine_tique.service;
 
 import org.springframework.data.domain.Page;
 
-import kr.co.mash_up.nine_tique.dto.CommentDto;
-import kr.co.mash_up.nine_tique.dto.PostDto;
-import kr.co.mash_up.nine_tique.vo.CommentRequestVO;
-import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
-import kr.co.mash_up.nine_tique.vo.PostRequestVO;
+import kr.co.mash_up.nine_tique.web.dto.CommentDto;
+import kr.co.mash_up.nine_tique.web.dto.PostDto;
+import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.PostRequestVO;
 
 /**
  * Post와 관련된 비즈니스 로직 처리

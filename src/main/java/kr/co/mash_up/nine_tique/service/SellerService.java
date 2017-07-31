@@ -1,317 +1,83 @@
 package kr.co.mash_up.nine_tique.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import kr.co.mash_up.nine_tique.domain.Authority;
-import kr.co.mash_up.nine_tique.domain.Image;
-import kr.co.mash_up.nine_tique.domain.ImageType;
-import kr.co.mash_up.nine_tique.domain.Product;
-import kr.co.mash_up.nine_tique.domain.ProductImage;
-import kr.co.mash_up.nine_tique.domain.Seller;
-import kr.co.mash_up.nine_tique.domain.SellerProduct;
-import kr.co.mash_up.nine_tique.domain.Shop;
-import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
-import kr.co.mash_up.nine_tique.dto.ProductDto;
-import kr.co.mash_up.nine_tique.dto.SellerDto;
-import kr.co.mash_up.nine_tique.dto.ShopDto;
-import kr.co.mash_up.nine_tique.dto.UserDto;
-import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
-import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
-import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
-import kr.co.mash_up.nine_tique.repository.AuthorityRepository;
-import kr.co.mash_up.nine_tique.repository.ProductRepository;
-import kr.co.mash_up.nine_tique.repository.SellerRepository;
-import kr.co.mash_up.nine_tique.repository.ShopRepository;
-import kr.co.mash_up.nine_tique.repository.UserRepository;
-import kr.co.mash_up.nine_tique.security.Authorities;
-import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
-import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
-import kr.co.mash_up.nine_tique.util.FileUtil;
-import kr.co.mash_up.nine_tique.vo.ProductDeleteRequestVO;
-import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
-import kr.co.mash_up.nine_tique.vo.SellerRequestVO;
-import lombok.extern.slf4j.Slf4j;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.dto.SellerDto;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
+import kr.co.mash_up.nine_tique.web.vo.ProductDeleteRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.SellerRequestVO;
 
 /**
- * Seller와 관련된 비즈니스 로직 처리
+ * Seller와 관련된 비즈니스 로직 처리를 담당한다
+ * <p>
+ * Created by ethankim on 2017. 7. 29..
  */
-@Service
-@Slf4j
-public class SellerService {
-
-    @Autowired
-    private SellerRepository sellerRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private AuthorityRepository authorityRepository;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ShopRepository shopRepository;
+public interface SellerService {
 
     /**
      * 판매자가 등록한 상품 리스트 조회
      *
-     * @param userId   seller id
+     * @param userId   Seller ID
      * @param pageable page 정보
      * @return 판매자가 등록한 상품 리스트
      */
-    @Transactional(readOnly = true)
-    public Page<ProductDto> findProducts(Long userId, Pageable pageable) {
-        Page<SellerProduct> sellerProductPage = sellerRepository.getSellerProducts(userId, pageable);
-
-        Optional.ofNullable(sellerProductPage).orElseThrow(() -> new IdNotFoundException("selle products not found"));
-
-        List<ProductDto> productDtos = sellerProductPage.getContent().stream()
-                .map(sellerProduct -> {
-                    Product product = sellerProduct.getProduct();
-
-                    List<ImageDto> productImageDtos = product.getProductImages().stream()
-                            .map(ProductImage::getImage)
-                            .sorted(Comparator.comparingLong(Image::getId))
-                            .map(productImage -> {
-                                return new ImageDto.Builder()
-                                        .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), productImage.getFileName()))
-                                        .build();
-                            }).collect(Collectors.toList());
-
-                    ShopDto shopDto = new ShopDto.Builder()
-                            .name(product.getShop().getName())
-                            .description(product.getShop().getDescription())
-                            .phoneNumber(product.getShop().getPhoneNumber())
-                            .build();
-
-                    return new ProductDto.Builder()
-                            .withId(product.getId())
-                            .withName(product.getName())
-                            .withBrandName(product.getBrand().getNameKo())
-                            .withSize(product.getSize())
-                            .withPrice(product.getPrice())
-                            .withDescription(product.getDescription())
-                            .withStatus(product.getStatus())
-                            .withMainCategory(product.getCategory().getMain())
-                            .withSubCategory(product.getCategory().getSub())
-                            .withShop(shopDto)
-                            .withImages(productImageDtos)
-                            /*
-                             현재 요구사항으로 판매자는 찜기능이 없다.
-                             요구사항의 변경으로 필요할지도 모르니 주석처리
-                                .withZzimStatus(isZzim)
-                              */
-                            .withCreatedAt(product.getCreatedTimestamp())
-                            .withUpdatedAt(product.getUpdatedTimestamp())
-                            .withSeller(true)  // 판매자가 등록한 상품 목록이므로 true
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        Pageable resultPageable = new PageRequest(sellerProductPage.getNumber(), sellerProductPage.getSize(),
-                new Sort(Sort.Direction.DESC, "createdAt"));
-
-        return new PageImpl<ProductDto>(productDtos, resultPageable, sellerProductPage.getTotalElements());
-    }
+    public abstract Page<ProductDto> readSellerProducts(Long userId, Pageable pageable);
 
     /**
      * 판매자가 등록한 상품 전체삭제
      *
-     * @param userId Seller id
+     * @param userId Seller ID
      */
-    @Transactional
-    public void deleteProductsAll(Long userId) {
-        List<SellerProduct> sellerProducts = sellerRepository.getSellerProducts(userId);
-
-        Optional.ofNullable(sellerProducts).orElseThrow(() -> new IdNotFoundException("sell product delete all -> product not found"));
-
-        sellerProducts.forEach(sellerProduct -> {
-            Product oldProduct = sellerProduct.getProduct();
-            oldProduct.disable();
-
-            // 이미지 디렉토리 삭제
-//            FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
-
-            productRepository.save(oldProduct);
-        });
-    }
+    public abstract void removeProductsAll(Long userId);
 
     /**
      * 판매자가 등록한 상품 삭제
      *
-     * @param userId    Seller id
-     * @param requestVO Product id
+     * @param userId    Seller ID
+     * @param requestVO 삭제할 Product ID들
      */
-    @Transactional
-    public void deleteProducts(Long userId, ProductDeleteRequestVO requestVO) {
-        requestVO.getProducts().stream()
-                .map(ProductRequestVO::getId)
-                .forEach(productId -> {
-                    Product oldProduct = productRepository.findOne(productId);
-                    productRepository.findOneByProductId(productId);
-                    Optional.ofNullable(oldProduct).orElseThrow(() -> new IdNotFoundException("product delete -> product not found"));
-
-                    Seller seller = sellerRepository.findByUserId(userId);
-                    if (!oldProduct.matchShop(seller)) {
-                        throw new UserIdNotMatchedException("product delete -> user id not matched");
-                    }
-
-                    // 이미지 디렉토리 삭제
-//                    FileUtil.deleteDir(oldProduct.getProductImages().get(0).getImageUploadPath());
-                    oldProduct.disable();
-                    productRepository.save(oldProduct);
-                });
-    }
+    public abstract void removeProducts(Long userId, ProductDeleteRequestVO requestVO);
 
     /**
-     * seller의 shop & name 조회
+     * Seller의 정보 조회
+     * shop, name 등
      *
-     * @param userId 조회할 유저 id
+     * @param userId 조회할 유저 ID
      * @return 조회한 정보
      */
-    @Transactional(readOnly = true)
-    public SellerDto findSellerByUserId(Long userId) {
-        Seller seller = sellerRepository.findByUserId(userId);
-        Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("find seller by user id -> seller not found"));
-
-        User user = seller.getUser();
-        UserDto userDto = new UserDto.Builder()
-                .name(user.getName())
-                .build();
-
-        Shop shop = seller.getShop();
-        ShopDto shopDto = new ShopDto.Builder()
-                .name(shop.getName())
-                .description(shop.getDescription())
-                .phoneNumber(shop.getPhoneNumber())
-                .build();
-
-        return new SellerDto.Builder()
-                .withUserDto(userDto)
-                .withShopDto(shopDto)
-                .build();
-    }
+    public abstract SellerDto readSellerInfo(Long userId);
 
     /**
-     * 판매자 인증 및 권한 추가
-     * 인증코드로 seller를 찾아 유저와 연결
+     * 유저를 판매자로 등록한다
      *
-     * @param userId       유저 id
+     * @param userId       유저 ID
      * @param authentiCode 인증코드
      * @return 생성된 access token
      */
-    @Transactional
-    public UserDto sellerAuthenticateAndAddAuthority(Long userId, String authentiCode) {
-        Seller seller = sellerRepository.findByAuthentiCode(authentiCode);
-        Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("register seller -> seller not found, invalid authenti code"));
-        if (seller.isActive()) {
-            throw new AlreadyExistException("register seller -> already register seller");
-        }
-
-        User user = userRepository.findOne(userId);
-        Optional.ofNullable(user).orElseThrow(() -> new IdNotFoundException("register seller -> user not found"));
-
-        // Seller - User 연결
-        seller.registerSeller(user);
-        sellerRepository.save(seller);
-
-        // Seller 권한 저장
-        Authority authority = authorityRepository.findByAuthority(Authorities.SELLER);
-        user.addAuthority(authority);
-        userRepository.save(user);
-
-        return new UserDto.Builder()
-                .accessToken(jwtTokenUtil.generateToken(user))
-                .authorityLevel(user.findAuthority())
-                .build();
-    }
+    public abstract UserDto registerSeller(Long userId, String authentiCode);
 
     /**
-     * 판매자 생성 -> 매장 연결, 인증코드 발급
+     * 매장에 판매자 추가 -> 인증코드 발급
      *
-     * @param shopId 연결할 매장 id
-     * @return 생성된 판매자
+     * @param shopId Shop ID
      */
-    @Transactional
-    public Seller create(Long shopId) {
-        Shop shop = shopRepository.findOne(shopId);
-        Optional.ofNullable(shop).orElseThrow(() -> new IdNotFoundException("seller create -> shop not found"));
-//        if (!shop.isActive()) {
-//            throw new IdNotFoundException("seller create -> shop not found");
-//        }
-
-        Seller seller = new Seller(shop, CodeGeneratorUtil.generateAuthentiCode());
-        return sellerRepository.save(seller);
-    }
+    public abstract void addSeller(Long shopId);
 
     /**
      * 판매자 정보 수정
      *
-     * @param userId    seller를 얻어올 유저 id
-     * @param requestVO 수정할 판매자 정보(shop, user name)
-     * @return 수정된 판매자
+     * @param userId    Seller ID
+     * @param requestVO 수정할 판매자 정보(shop, user name 등)
      */
-    @Transactional
-    public Seller update(Long userId, SellerRequestVO requestVO) {
-        Seller seller = sellerRepository.findByUserId(userId);
-        Optional.ofNullable(seller).orElseThrow(() -> new IdNotFoundException("seller update -> seller not found"));
-        if (!seller.isActive()) {
-            throw new IdNotFoundException("seller update -> seller not found");
-        }
+    public abstract void modifySeller(Long userId, SellerRequestVO requestVO);
 
-        seller.getShop().update(requestVO.toShopEntity());
-        seller.getUser().updateName(requestVO.getSellerName());
-
-        return sellerRepository.save(seller);
-    }
-
-    public Page<SellerDto> findSellers(Pageable pageable) {
-        Page<Seller> sellerPage = sellerRepository.findAll(pageable);
-
-        List<SellerDto> sellerDtos = sellerPage.getContent().stream()
-                .map(seller -> {
-                    User user = seller.getUser();
-                    UserDto userDto = new UserDto.Builder()
-                            .name(user.getName())
-                            .build();
-
-                    Shop shop = seller.getShop();
-                    ShopDto shopDto = new ShopDto.Builder()
-                            .id(shop.getId())
-                            .name(shop.getName())
-                            .description(shop.getDescription())
-                            .phoneNumber(shop.getPhoneNumber())
-                            .build();
-
-                    return new SellerDto.Builder()
-                            .withAuthentiCode(seller.getAuthentiCode())
-                            .withUserDto(userDto)
-                            .withShopDto(shopDto)
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        Pageable resultPageable = new PageRequest(sellerPage.getNumber(), sellerPage.getSize(),
-                new Sort(Sort.Direction.DESC, "createdAt"));
-
-        return new PageImpl<SellerDto>(sellerDtos, resultPageable, sellerPage.getTotalElements());
-    }
+    /**
+     * 판매자 리스트 조회
+     *
+     * @param pageable
+     * @return
+     */
+    public abstract Page<SellerDto> readSellers(Pageable pageable);
 }

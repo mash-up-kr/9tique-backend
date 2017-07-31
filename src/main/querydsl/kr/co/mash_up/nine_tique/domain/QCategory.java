@@ -22,8 +22,6 @@ public class QCategory extends EntityPathBase<Category> {
 
     public final QAbstractEntity _super = new QAbstractEntity(this);
 
-    public final BooleanPath active = createBoolean("active");
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`category` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `main` VARCHAR(255) NOT NULL COMMENT '상위 카테고리 이름',
   `sub` VARCHAR(255) NULL DEFAULT NULL COMMENT '하위 카테고리 이름',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`id`))
@@ -63,7 +62,6 @@ CREATE TABLE IF NOT EXISTS `nine_tique`.`product` (
   `description` TEXT NOT NULL COMMENT '상품 설명',
   `status` VARCHAR(20) NOT NULL COMMENT '상품 상태(SELL, SOLD_OUT)',
   `zzim_count` INT(11) NOT NULL DEFAULT '0' COMMENT '상품을 얼마나 많은 유저가 찜했는지 카운트 ',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `brand_id` INT(11) NOT NULL,
   `shop_id` INT(11) NOT NULL,
   `category_id` INT(11) NOT NULL,
@@ -97,7 +95,6 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `nine_tique`.`seller_product` (
   `seller_id` INT(11) NOT NULL,
   `product_id` INT(11) NOT NULL,
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`product_id`, `seller_id`),
@@ -121,7 +118,6 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `nine_tique`.`seller` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `authenti_code` VARCHAR(20) NULL DEFAULT NULL COMMENT '판매자 인증 코드',
-  `active` VARCHAR(1) NOT NULL DEFAULT 'Y',
   `shop_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL COMMENT '인증번호를 입력하면 users 테이블과 연관관계가 생성',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
@@ -231,7 +227,6 @@ COMMENT = '유저';
 CREATE TABLE IF NOT EXISTS `nine_tique`.`zzim_product` (
   `product_id` INT(11) NOT NULL,
   `zzim_id` INT(11) NOT NULL,
-  `active` VARCHAR(1) NULL DEFAULT 'Y',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '최초 생성 날짜',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '최종 수정 날짜',
   PRIMARY KEY (`product_id`, `zzim_id`),

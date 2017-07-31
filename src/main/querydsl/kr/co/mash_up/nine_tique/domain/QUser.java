@@ -39,6 +39,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final EnumPath<User.OauthType> oauthType = createEnum("oauthType", User.OauthType.class);
 
+    public final StringPath profileImageUrl = createString("profileImageUrl");
+
     public final QSeller seller;
 
     //inherited

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 import kr.co.mash_up.nine_tique.domain.Shop;
+import kr.co.mash_up.nine_tique.repository.custom.ShopRepositoryCustom;
 
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositoryCustom {
@@ -17,6 +18,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
      * @param name
      * @return
      */
+    @Deprecated
     public abstract Shop findByName(String name);
 
     /**
@@ -25,6 +27,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long>, ShopRepositor
      * @param phoneNumber
      * @return
      */
+    @Deprecated
     public abstract Shop findByPhoneNumber(String phoneNumber);
 
     /**

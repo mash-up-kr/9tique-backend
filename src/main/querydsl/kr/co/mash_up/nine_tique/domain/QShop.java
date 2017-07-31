@@ -43,6 +43,8 @@ public class QShop extends EntityPathBase<Shop> {
 
     public final ListPath<ShopComment, QShopComment> shopComments = this.<ShopComment, QShopComment>createList("shopComments", ShopComment.class, QShopComment.class, PathInits.DIRECT2);
 
+    public final ListPath<ShopImage, QShopImage> shopImages = this.<ShopImage, QShopImage>createList("shopImages", ShopImage.class, QShopImage.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 

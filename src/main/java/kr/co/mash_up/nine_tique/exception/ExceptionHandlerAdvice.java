@@ -1,6 +1,6 @@
 package kr.co.mash_up.nine_tique.exception;
 
-import kr.co.mash_up.nine_tique.vo.ResponseVO;
+import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

@@ -23,10 +23,10 @@ import kr.co.mash_up.nine_tique.domain.PostImage;
 import kr.co.mash_up.nine_tique.domain.PostProduct;
 import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.dto.CommentDto;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
-import kr.co.mash_up.nine_tique.dto.PostDto;
-import kr.co.mash_up.nine_tique.dto.UserDto;
+import kr.co.mash_up.nine_tique.web.dto.CommentDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.PostDto;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
@@ -36,10 +36,10 @@ import kr.co.mash_up.nine_tique.repository.ProductRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.service.PostService;
 import kr.co.mash_up.nine_tique.util.FileUtil;
-import kr.co.mash_up.nine_tique.vo.CommentRequestVO;
-import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
-import kr.co.mash_up.nine_tique.vo.PostRequestVO;
-import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.PostRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -79,7 +79,8 @@ public class PostServiceImpl implements PostService {
 
         requestVO.getProducts()
                 .forEach(productVO -> {
-                    Product product = productRepository.findOneByProductId(productVO.getId());
+                    Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                    Product product = productOp.orElseThrow(() -> new IdNotFoundException("addPost -> product not found"));
                     post.addProduct(new PostProduct(post, product));
                 });
 
@@ -120,7 +121,8 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toMap(PostProduct::getProductId, postProduct -> postProduct));
         updateProducts.forEach(productVO -> {
             if (productMapToOld.get(productVO.getId()) == null) {
-                Product product = productRepository.findOneByProductId(productVO.getId());
+                Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                Product product = productOp.orElseThrow(() -> new IdNotFoundException("modifyPost -> product not found"));
                 post.addProduct(new PostProduct(post, product));
             }
         });
@@ -199,7 +201,7 @@ public class PostServiceImpl implements PostService {
 
         Pageable resultPageable = new PageRequest(postPage.getNumber(), postPage.getSize());
 
-        return new PageImpl<PostDto>(posts, resultPageable, postPage.getTotalElements());
+        return new PageImpl<>(posts, resultPageable, postPage.getTotalElements());
     }
 
     @Transactional(readOnly = true)

@@ -22,8 +22,8 @@ import kr.co.mash_up.nine_tique.domain.Promotion;
 import kr.co.mash_up.nine_tique.domain.PromotionImage;
 import kr.co.mash_up.nine_tique.domain.PromotionProduct;
 import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.dto.ImageDto;
-import kr.co.mash_up.nine_tique.dto.PromotionDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
@@ -31,9 +31,9 @@ import kr.co.mash_up.nine_tique.repository.PromotionRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.service.PromotionService;
 import kr.co.mash_up.nine_tique.util.FileUtil;
-import kr.co.mash_up.nine_tique.vo.DataListRequestVO;
-import kr.co.mash_up.nine_tique.vo.ProductRequestVO;
-import kr.co.mash_up.nine_tique.vo.PromotionRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.PromotionRequestVO;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -61,7 +61,8 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     @Override
     public void addPromotion(Long registerUserId, PromotionRequestVO promotionVO) {
-        User register = userRepository.findOne(registerUserId);
+        Optional<User> userOp = userRepository.findOneById(registerUserId);
+        User register = userOp.orElseThrow(() -> new IdNotFoundException("addPromotion -> user not found"));
 
         Promotion promotion = new Promotion();
         promotion.setName(promotionVO.getName());
@@ -77,7 +78,8 @@ public class PromotionServiceImpl implements PromotionService {
 
         promotionVO.getProducts()
                 .forEach(productVO -> {
-                    Product product = productRepository.findOneByProductId(productVO.getId());
+                    Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                    Product product = productOp.orElseThrow(() -> new IdNotFoundException("addPromotion -> product not found"));
                     promotion.addProduct(new PromotionProduct(promotion, product));
                 });
 
@@ -98,8 +100,8 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     @Override
     public void modifyPromotion(Long promotionId, PromotionRequestVO promotionVO) {
-        Promotion promotion = promotionRepository.findOne(promotionId);
-        Optional.ofNullable(promotion).orElseThrow(() -> new IdNotFoundException("modifyPromotion -> promotion not found"));
+        Optional<Promotion> promotionOp = promotionRepository.findOneByPromotionId(promotionId);
+        Promotion promotion = promotionOp.orElseThrow(() -> new IdNotFoundException("modifyPromotion -> promotion not found"));
 
         promotion.setName(promotionVO.getName());
         promotion.setDescription(promotionVO.getDescription());
@@ -120,7 +122,8 @@ public class PromotionServiceImpl implements PromotionService {
                 .collect(Collectors.toMap(PromotionProduct::getProductId, promotionProduct -> promotionProduct));
         updateProducts.forEach(productVO -> {
             if (productMapToOld.get(productVO.getId()) == null) {
-                Product product = productRepository.findOneByProductId(productVO.getId());
+                Optional<Product> productOp = productRepository.findOneByProductId(productVO.getId());
+                Product product = productOp.orElseThrow(() -> new IdNotFoundException("modifyPromotion -> product not found"));
                 promotion.addProduct(new PromotionProduct(promotion, product));
             }
         });
@@ -162,8 +165,8 @@ public class PromotionServiceImpl implements PromotionService {
     @Transactional
     @Override
     public void removePromotion(Long promotionId) {
-        Optional<Promotion> promotionOptional = promotionRepository.findOneByPromotionId(promotionId);
-        promotionOptional.orElseThrow(() -> new IdNotFoundException("removePromotion -> promotion not found"));
+        Optional<Promotion> promotionOp = promotionRepository.findOneByPromotionId(promotionId);
+        promotionOp.orElseThrow(() -> new IdNotFoundException("removePromotion -> promotion not found"));
 
         // dir move tmp dir to promotion id dir
         FileUtil.moveFile(FileUtil.getImageUploadPath(ImageType.PROMOTION, promotionId), FileUtil.getImageUploadTempPath());

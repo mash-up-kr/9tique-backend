@@ -13,7 +13,7 @@ import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.BrandRepository;
 import kr.co.mash_up.nine_tique.service.BrandService;
-import kr.co.mash_up.nine_tique.vo.BrandVO;
+import kr.co.mash_up.nine_tique.web.vo.BrandVO;
 
 /**
  * Created by ethankim on 2017. 7. 3..

@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import kr.co.mash_up.nine_tique.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
 
 /**
  * Image와 관련된 비즈니스 로직 처리
