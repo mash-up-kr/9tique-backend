@@ -22,8 +22,8 @@ public class ProductDto {
     @JsonProperty
     private String name;
 
-    @JsonProperty(value = "brand_name")
-    private String brandName;
+    @JsonProperty(value = "brand")
+    private BrandDto brand;
 
     @JsonProperty
     private String size;
@@ -64,7 +64,7 @@ public class ProductDto {
 
         private String name;
 
-        private String brandName;
+        private BrandDto brand;
 
         private String size;
 
@@ -92,7 +92,7 @@ public class ProductDto {
             ProductDto productDto = new ProductDto();
             productDto.setId(id);
             productDto.setName(name);
-            productDto.setBrandName(brandName);
+            productDto.setBrand(brand);
             productDto.setSize(size);
             productDto.setPrice(price);
             productDto.setDescription(description);
@@ -117,8 +117,8 @@ public class ProductDto {
             return this;
         }
 
-        public Builder withBrandName(String brandName) {
-            this.brandName = brandName;
+        public Builder withBrand(BrandDto brand) {
+            this.brand = brand;
             return this;
         }
 

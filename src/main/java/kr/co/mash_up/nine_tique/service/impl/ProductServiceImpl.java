@@ -24,6 +24,7 @@ import kr.co.mash_up.nine_tique.domain.ProductImage;
 import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
 import kr.co.mash_up.nine_tique.domain.ZzimProduct;
+import kr.co.mash_up.nine_tique.web.dto.BrandDto;
 import kr.co.mash_up.nine_tique.web.dto.CategoryDto;
 import kr.co.mash_up.nine_tique.web.dto.ImageDto;
 import kr.co.mash_up.nine_tique.web.dto.ProductDto;
@@ -257,9 +258,7 @@ public class ProductServiceImpl implements ProductService {
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
-
-                            // Todo: 브랜드쪽 수정
-                            .withBrandName(product.getBrand().getNameKo())
+                            .withBrand(BrandDto.fromBrand(product.getBrand()))
                             .withSize(product.getSize())
                             .withPrice(product.getPrice())
 //                            .withDescription(product.getDescription())
@@ -314,7 +313,7 @@ public class ProductServiceImpl implements ProductService {
         return new ProductDto.Builder()
                 .withId(product.getId())
                 .withName(product.getName())
-                .withBrandName(product.getBrand().getNameKo())
+                .withBrand(BrandDto.fromBrand(product.getBrand()))
                 .withSize(product.getSize())
                 .withPrice(product.getPrice())
                 .withDescription(product.getDescription())

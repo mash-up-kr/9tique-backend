@@ -18,7 +18,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.service.BrandService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
-import kr.co.mash_up.nine_tique.web.vo.BrandVO;
+import kr.co.mash_up.nine_tique.web.dto.BrandDto;
+import kr.co.mash_up.nine_tique.web.vo.BrandRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ public class BrandController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping
-    public ResponseVO addBrand(@RequestBody BrandVO brandVO) {
+    public ResponseVO addBrand(@RequestBody BrandRequestVO brandVO) {
         log.info("addBrand brand : {}", brandVO);
 
         ParameterUtil.checkParameterEmpty(brandVO.getNameKo(), brandVO.getNameEng());
@@ -62,7 +63,7 @@ public class BrandController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PutMapping(value = "/{brand_id}")
-    public ResponseVO modifyBrand(@PathVariable(value = "brand_id") Long brandId, @RequestBody BrandVO brandVO) {
+    public ResponseVO modifyBrand(@PathVariable(value = "brand_id") Long brandId, @RequestBody BrandRequestVO brandVO) {
         log.info("modifyBrand id : {}, brand : {}", brandId, brandVO);
 
         ParameterUtil.checkParameterEmpty(brandVO.getNameKo(), brandVO.getNameEng());
@@ -90,10 +91,10 @@ public class BrandController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @GetMapping
-    public DataListResponseVO<BrandVO> readBrands() {
+    public DataListResponseVO<BrandDto> readBrands() {
         log.info("readBrands");
 
-        List<BrandVO> brands = brandService.readBrands();
+        List<BrandDto> brands = brandService.readBrands();
         return new DataListResponseVO<>(brands);
     }
 }

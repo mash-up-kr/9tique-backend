@@ -2,7 +2,8 @@ package kr.co.mash_up.nine_tique.service;
 
 import java.util.List;
 
-import kr.co.mash_up.nine_tique.web.vo.BrandVO;
+import kr.co.mash_up.nine_tique.web.dto.BrandDto;
+import kr.co.mash_up.nine_tique.web.vo.BrandRequestVO;
 
 /**
  * Brand와 관련된 비즈니스 로직 처리
@@ -16,7 +17,7 @@ public interface BrandService {
      *
      * @param brandVO 추가할 브랜드 정보
      */
-    public abstract void addBrand(BrandVO brandVO);
+    public abstract void addBrand(BrandRequestVO brandVO);
 
     /**
      * 브랜드 정보 수정
@@ -24,7 +25,7 @@ public interface BrandService {
      * @param brandId Brand ID
      * @param brandVO 수정할 브랜드 정보
      */
-    public abstract void modifyBrand(Long brandId, BrandVO brandVO);
+    public abstract void modifyBrand(Long brandId, BrandRequestVO brandVO);
 
     /**
      * 브래드 정보 삭제
@@ -38,5 +39,5 @@ public interface BrandService {
      *
      * @return 브랜드 리스트
      */
-    public abstract List<BrandVO> readBrands();
+    public abstract List<BrandDto> readBrands();
 }

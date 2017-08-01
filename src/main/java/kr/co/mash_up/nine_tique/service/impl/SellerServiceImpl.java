@@ -36,6 +36,7 @@ import kr.co.mash_up.nine_tique.security.JwtTokenUtil;
 import kr.co.mash_up.nine_tique.service.SellerService;
 import kr.co.mash_up.nine_tique.util.CodeGeneratorUtil;
 import kr.co.mash_up.nine_tique.util.FileUtil;
+import kr.co.mash_up.nine_tique.web.dto.BrandDto;
 import kr.co.mash_up.nine_tique.web.dto.ImageDto;
 import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.dto.SellerDto;
@@ -95,9 +96,7 @@ public class SellerServiceImpl implements SellerService {
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
-
-                            // Todo: 브랜드쪽 수정, 한글만 내려갈지, 한글+영어로 내려갈지
-                            .withBrandName(product.getBrand().getNameKo())
+                            .withBrand(BrandDto.fromBrand(product.getBrand()))
                             .withSize(product.getSize())
                             .withPrice(product.getPrice())
 //                            .withDescription(product.getDescription())
