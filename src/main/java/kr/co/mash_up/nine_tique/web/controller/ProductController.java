@@ -126,6 +126,13 @@ public class ProductController {
         return new DataResponseVO<>(productDto);
     }
 
+    /*
+    Todo: 정렬 기능 추가
+    최신순 -> -id
+    인기순 -> -zzimCount
+    낮은 가격순 -> price
+    높은 가격순 -> -price
+     */
     @ApiOperation(value = "카테고리별 상품 리스트 조회", notes = "카테고리별 상품 리스트를 조회한다")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "상품 삭제 성공"),
