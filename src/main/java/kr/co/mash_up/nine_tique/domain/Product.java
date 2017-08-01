@@ -82,14 +82,15 @@ public class Product extends AbstractEntity<Long> {
         return this.shop.equals(seller.getShop());
     }
 
-    public void update(Product newProduct, Category category) {
+    public void update(Product newProduct, Category newCategory, Brand newBrand) {
         this.name = newProduct.name;
         this.brand = newProduct.brand;
         this.size = newProduct.size;
         this.price = newProduct.price;
         this.description = newProduct.description;
         this.status = newProduct.status;
-        this.category = category;
+        this.category = newCategory;
+        this.brand = newBrand;
     }
 
     /**

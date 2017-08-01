@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import kr.co.mash_up.nine_tique.domain.Brand;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.Image;
 import kr.co.mash_up.nine_tique.domain.ImageType;
@@ -24,6 +25,7 @@ import kr.co.mash_up.nine_tique.domain.ProductImage;
 import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
 import kr.co.mash_up.nine_tique.domain.ZzimProduct;
+import kr.co.mash_up.nine_tique.repository.BrandRepository;
 import kr.co.mash_up.nine_tique.web.dto.BrandDto;
 import kr.co.mash_up.nine_tique.web.dto.CategoryDto;
 import kr.co.mash_up.nine_tique.web.dto.ImageDto;
@@ -67,11 +69,13 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private SellerRepository sellerRepository;
 
+    @Autowired
+    private BrandRepository brandRepository;
+
     @Transactional
     @Override
     public void addProduct(Long userId, ProductRequestVO requestVO) {
         Product product = requestVO.toProductEntity();
-        product.setStatus(Product.Status.SELL);
         //Todo: 상품이 이미 존재할 경우 여기서 예외처리. 상품을 뭐로 find할지 생각이 안난다..
 
         Optional<Seller> sellerOp = sellerRepository.findOneByUserId(userId);
@@ -80,9 +84,12 @@ public class ProductServiceImpl implements ProductService {
         Optional<Category> categoryOp = categoryRepository.findOneByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
         Category category = categoryOp.orElseThrow(() -> new IdNotFoundException("addProduct -> category not found"));
 
+        Optional<Brand> brandOp = brandRepository.findByNameEng(requestVO.getBrandNameEng());
+        Brand brand = brandOp.orElseThrow(() -> new IdNotFoundException("addProduct -> brand not found"));
+
         product.setShop(seller.getShop());
         product.setCategory(category);
-        // Todo: 브랜드 검증 후 등록
+        product.setBrand(brand);
         productRepository.save(product);
 
         // SellerProduct 저장
@@ -101,6 +108,7 @@ public class ProductServiceImpl implements ProductService {
         });
     }
 
+    // Todo: 수정된 항목만 update해야 하는지...?
     @Transactional
     @Override
     public void modifyProduct(Long userId, Long productId, ProductRequestVO requestVO) {
@@ -116,6 +124,9 @@ public class ProductServiceImpl implements ProductService {
 
         Optional<Category> categoryOp = categoryRepository.findOneByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
         Category category = categoryOp.orElseThrow(() -> new IdNotFoundException("modifyProduct -> category not found"));
+
+        Optional<Brand> brandOp = brandRepository.findByNameEng(requestVO.getBrandNameEng());
+        Brand brand = brandOp.orElseThrow(() -> new IdNotFoundException("addProduct -> brand not found"));
 
         List<ProductImage> oldImages = product.getProductImages();
         List<ImageDto> updateImages = requestVO.getImages();
@@ -149,11 +160,9 @@ public class ProductServiceImpl implements ProductService {
         });
 
         // Todo: 없어도 이전 상태가 유지되는지? 어떻게 되는지 파악하고 제거
-        requestVO.setStatus(product.getStatus().name());  // 이전상태 유지
+        requestVO.setStatus(product.getStatus());  // 이전상태 유지
 
-        // Todo: 브랜드 검증 후 수정
-
-        product.update(requestVO.toProductEntity(), category);
+        product.update(requestVO.toProductEntity(), category, brand);
         productRepository.save(product);
     }
 

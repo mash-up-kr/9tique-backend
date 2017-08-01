@@ -22,8 +22,8 @@ public class ProductRequestVO extends RequestVO {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("brand_name")
-    private String brandName;
+    @JsonProperty("brand_name_eng")
+    private String brandNameEng;
 
     @JsonProperty("size")
     private String size;
@@ -35,7 +35,7 @@ public class ProductRequestVO extends RequestVO {
     private String description;
 
     @JsonProperty("status")
-    private String status;
+    private Product.Status status;
 
     @JsonProperty("main_category")
     private String mainCategory;
@@ -49,21 +49,11 @@ public class ProductRequestVO extends RequestVO {
     public Product toProductEntity() {
         Product product = new Product();
         product.setName(name);
-//        product.getBrand(brandName);  Todo: 수정
         product.setSize(size);
         product.setPrice(price);
         product.setDescription(description);
-        product.setStatus(getStatus());
-
+        product.setStatus(Product.Status.SELL);
+        product.setZzimCount(0L);
         return product;
-    }
-
-    public Product.Status getStatus() {
-        if (status != null && status.equalsIgnoreCase("SELL")) {
-            return Product.Status.SELL;
-        } else if (status != null && status.equalsIgnoreCase("SOLD_OUT")) {
-            return Product.Status.SOLD_OUT;
-        }
-        return null;
     }
 }

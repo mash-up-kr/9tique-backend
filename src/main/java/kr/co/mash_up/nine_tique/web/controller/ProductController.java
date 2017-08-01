@@ -54,7 +54,7 @@ public class ProductController {
         Long userId = SecurityUtil.getCurrentUser().getId();
         log.info("addProduct - userId : {}, product : {}", userId, requestVO);
 
-        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
+        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandNameEng(), requestVO.getSize(),
                 requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getImages());
         productService.addProduct(userId, requestVO);
         return ResponseVO.created();
@@ -72,7 +72,7 @@ public class ProductController {
         Long userId = SecurityUtil.getCurrentUser().getId();
         log.info("modifyProduct - userId : {}, productId : {}, product : {}", userId, productId, requestVO);
 
-        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
+        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandNameEng(), requestVO.getSize(),
                 requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getImages());
         productService.modifyProduct(userId, productId, requestVO);
         return ResponseVO.ok();

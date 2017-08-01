@@ -16,8 +16,16 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
     /**
      * 브랜드 이름(한글)로 브랜드를 조회한다
      *
-     * @param name 브랜드 이름(한글)
+     * @param nameKo 브랜드 이름(한글)
      * @return
      */
-    public abstract Optional<Brand> findByNameKo(String name);
+    public abstract Optional<Brand> findByNameKo(String nameKo);
+
+    /**
+     * 브랜드 이름(영어)로 브랜드를 조회한다
+     *
+     * @param nameEng 브랜드 이름(영어)
+     * @return
+     */
+    public abstract Optional<Brand> findByNameEng(String nameEng);
 }
