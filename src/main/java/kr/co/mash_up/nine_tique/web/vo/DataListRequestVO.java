@@ -3,11 +3,8 @@ package kr.co.mash_up.nine_tique.web.vo;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import kr.co.mash_up.nine_tique.domain.Product;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -21,8 +18,7 @@ import lombok.ToString;
     size - 한페이지 개수
     sort - 정렬방식
     ex. 1번째 페이지, 한페이지에 10개, 생성일자 내림차순, 이름 오름차순 정렬
-    /product?pageNo=0&size=10&sort=createdAt,desc&sort=name,asc
-
+    /product?pageNo=0&size=10&sort=createdAt,desc&sort=name,ascs
     /product?pageNo=0 & size=10 & sort=-createdAt & sort=name
  */
 @Setter
@@ -35,7 +31,7 @@ public class DataListRequestVO extends RequestVO {
 
     protected int pageSize;
 
-    protected List<String> sort;
+    protected Product.SortType sort;
 
     public int getPageNo() {
         return pageNo < 0 ? 0 : pageNo;
@@ -45,21 +41,11 @@ public class DataListRequestVO extends RequestVO {
         return pageSize <= 0 ? DEFAULT_PAGE_ROW : pageSize;
     }
 
+    public Sort getSort() {
+        return sort == null ? Product.SortType.CREATED.getSort() : sort.getSort();
+    }
+
     public Pageable getPageable() {
-        Sort sortDomain = null;
-
-        if (!CollectionUtils.isEmpty(sort)) {
-            List<Sort.Order> orders = sort.stream()
-                    .map(order -> {
-                        if (order.startsWith("-")) {
-                            return new Sort.Order(Sort.Direction.DESC, order.substring(1));
-                        }
-                        return new Sort.Order(Sort.Direction.ASC, order);
-                    }).collect(Collectors.toList());
-
-            sortDomain = new Sort(orders);
-        }
-
-        return new PageRequest(getPageNo(), getPageSize(), sortDomain);
+        return new PageRequest(getPageNo(), getPageSize(), getSort());
     }
 }

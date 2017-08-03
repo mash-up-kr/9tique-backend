@@ -1,5 +1,7 @@
 package kr.co.mash_up.nine_tique.domain;
 
+import org.springframework.data.domain.Sort;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -139,5 +141,46 @@ public class Product extends AbstractEntity<Long> {
 
     public void addImage(ProductImage image) {
         productImages.add(image);
+    }
+
+    public enum SortType {
+        // 최신순
+        CREATED {
+            @Override
+            public Sort getSort() {
+                return new Sort(Sort.Direction.DESC, "id");
+            }
+        },
+
+        // 인기순
+        FAVIROITE {
+            @Override
+            public Sort getSort() {
+                return new Sort(Sort.Direction.DESC, "zzimCount");
+            }
+        },
+
+        // 낮은 가격순
+        PRICE_LOW {
+            @Override
+            public Sort getSort() {
+                return new Sort(Sort.Direction.ASC, "price");
+            }
+        },
+
+        // 높은 가격순
+        PRICE_HIGH {
+            @Override
+            public Sort getSort() {
+                return new Sort(Sort.Direction.DESC, "price");
+            }
+        };
+
+        /**
+         * 타입별로 정렬 방법을 리턴한다
+         *
+         * @return 정렬 방법
+         */
+        public abstract Sort getSort();
     }
 }
