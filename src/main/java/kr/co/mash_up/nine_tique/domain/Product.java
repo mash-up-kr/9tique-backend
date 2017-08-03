@@ -145,7 +145,7 @@ public class Product extends AbstractEntity<Long> {
 
     public enum SortType {
         // 최신순
-        CREATED {
+        NEWEST {
             @Override
             public Sort getSort() {
                 return new Sort(Sort.Direction.DESC, "id");
@@ -153,7 +153,7 @@ public class Product extends AbstractEntity<Long> {
         },
 
         // 인기순
-        FAVIROITE {
+        FAVORITE {
             @Override
             public Sort getSort() {
                 return new Sort(Sort.Direction.DESC, "zzimCount");
@@ -161,7 +161,7 @@ public class Product extends AbstractEntity<Long> {
         },
 
         // 낮은 가격순
-        PRICE_LOW {
+        PRICE_LOWEST {
             @Override
             public Sort getSort() {
                 return new Sort(Sort.Direction.ASC, "price");
@@ -169,7 +169,7 @@ public class Product extends AbstractEntity<Long> {
         },
 
         // 높은 가격순
-        PRICE_HIGH {
+        PRICE_HIGHEST {
             @Override
             public Sort getSort() {
                 return new Sort(Sort.Direction.DESC, "price");
