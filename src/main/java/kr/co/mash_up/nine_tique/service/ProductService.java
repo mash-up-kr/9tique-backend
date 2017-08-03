@@ -61,8 +61,8 @@ public interface ProductService {
      * 상품 상세정보 조회
      *
      * @param userId    유저 ID(찜, 내가 등록한 상품인지 확인)
-     * @param productid 상품 ID
+     * @param productId 상품 ID
      * @return
      */
-    public abstract ProductDto readProduct(Long userId, Long productid);
+    public abstract ProductDto readProduct(Long userId, Long productId);
 }

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import kr.co.mash_up.nine_tique.domain.Brand;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.Image;
 import kr.co.mash_up.nine_tique.domain.ImageType;
@@ -24,13 +25,10 @@ import kr.co.mash_up.nine_tique.domain.ProductImage;
 import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
 import kr.co.mash_up.nine_tique.domain.ZzimProduct;
-import kr.co.mash_up.nine_tique.web.dto.CategoryDto;
-import kr.co.mash_up.nine_tique.web.dto.ImageDto;
-import kr.co.mash_up.nine_tique.web.dto.ProductDto;
-import kr.co.mash_up.nine_tique.web.dto.ShopDto;
 import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
+import kr.co.mash_up.nine_tique.repository.BrandRepository;
 import kr.co.mash_up.nine_tique.repository.CategoryRepository;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
 import kr.co.mash_up.nine_tique.repository.ProductRepository;
@@ -39,7 +37,11 @@ import kr.co.mash_up.nine_tique.repository.ShopRepository;
 import kr.co.mash_up.nine_tique.repository.ZzimRepository;
 import kr.co.mash_up.nine_tique.service.ProductService;
 import kr.co.mash_up.nine_tique.util.FileUtil;
-import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.BrandDto;
+import kr.co.mash_up.nine_tique.web.dto.CategoryDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.dto.ShopDto;
 import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.ProductRequestVO;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +68,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private SellerRepository sellerRepository;
 
+    @Autowired
+    private BrandRepository brandRepository;
+
     @Transactional
     @Override
     public void addProduct(Long userId, ProductRequestVO requestVO) {
@@ -78,9 +83,12 @@ public class ProductServiceImpl implements ProductService {
         Optional<Category> categoryOp = categoryRepository.findOneByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
         Category category = categoryOp.orElseThrow(() -> new IdNotFoundException("addProduct -> category not found"));
 
+        Optional<Brand> brandOp = brandRepository.findByNameEng(requestVO.getBrandNameEng());
+        Brand brand = brandOp.orElseThrow(() -> new IdNotFoundException("addProduct -> brand not found"));
+
         product.setShop(seller.getShop());
         product.setCategory(category);
-        // Todo: 브랜드 검증 후 등록
+        product.setBrand(brand);
         productRepository.save(product);
 
         // SellerProduct 저장
@@ -89,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
 
         requestVO.getImages().forEach(productImageDto -> {
             Optional<Image> imageOp = imageRepository.findByFileName(FileUtil.getFileName(productImageDto.getUrl()));
-            Image image = imageOp.orElseThrow(() -> new IdNotFoundException("product create -> productImage not found"));
+            Image image = imageOp.orElseThrow(() -> new IdNotFoundException("addProduct -> productImage not found"));
 
             product.addImage(new ProductImage(product, image));
 
@@ -99,13 +107,10 @@ public class ProductServiceImpl implements ProductService {
         });
     }
 
+    // Todo: 수정된 항목만 update해야 하는지...?
     @Transactional
     @Override
     public void modifyProduct(Long userId, Long productId, ProductRequestVO requestVO) {
-        // Todo: 파라미터 검증은 controller에서
-        ParameterUtil.checkParameterEmpty(requestVO.getName(), requestVO.getBrandName(), requestVO.getSize(),
-                requestVO.getPrice(), requestVO.getDescription(), requestVO.getMainCategory(), requestVO.getImages());
-
         Optional<Product> productOp = productRepository.findOneByProductId(productId);
         Product product = productOp.orElseThrow(() -> new IdNotFoundException("modifyProduct -> product not found"));
 
@@ -118,6 +123,9 @@ public class ProductServiceImpl implements ProductService {
 
         Optional<Category> categoryOp = categoryRepository.findOneByMainAndSub(requestVO.getMainCategory(), requestVO.getSubCategory());
         Category category = categoryOp.orElseThrow(() -> new IdNotFoundException("modifyProduct -> category not found"));
+
+        Optional<Brand> brandOp = brandRepository.findByNameEng(requestVO.getBrandNameEng());
+        Brand brand = brandOp.orElseThrow(() -> new IdNotFoundException("addProduct -> brand not found"));
 
         List<ProductImage> oldImages = product.getProductImages();
         List<ImageDto> updateImages = requestVO.getImages();
@@ -141,7 +149,7 @@ public class ProductServiceImpl implements ProductService {
         // 상품 이미지 추가
         updateImages.forEach(imageDto -> {
             Optional<Image> imageOptional = imageRepository.findByFileName(FileUtil.getFileName(imageDto.getUrl()));
-            Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("update -> image not found"));
+            Image image = imageOptional.orElseThrow(() -> new IdNotFoundException("modifyProduct -> image not found"));
 
             product.addImage(new ProductImage(product, image));
 
@@ -150,12 +158,10 @@ public class ProductServiceImpl implements ProductService {
                     FileUtil.getImageUploadPath(ImageType.PRODUCT, productId));
         });
 
-        // Todo: 없으면 어떻게 되는지 파악하고 제거
-        requestVO.setStatus(product.getStatus().name());  // 이전상태 유지
+        // Todo: 없어도 이전 상태가 유지되는지? 어떻게 되는지 파악하고 제거
+        requestVO.setStatus(product.getStatus());  // 이전상태 유지
 
-        // Todo: 브랜드 검증 후 수정
-
-        product.update(requestVO.toProductEntity(), category);
+        product.update(requestVO.toProductEntity(), category, brand);
         productRepository.save(product);
     }
 
@@ -260,9 +266,7 @@ public class ProductServiceImpl implements ProductService {
                     return new ProductDto.Builder()
                             .withId(product.getId())
                             .withName(product.getName())
-
-                            // Todo: 브랜드쪽 수정
-                            .withBrandName(product.getBrand().getNameKo())
+                            .withBrand(BrandDto.fromBrand(product.getBrand()))
                             .withSize(product.getSize())
                             .withPrice(product.getPrice())
 //                            .withDescription(product.getDescription())
@@ -287,9 +291,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional(readOnly = true)
     @Override
-    public ProductDto readProduct(Long userId, Long productid) {
-        Optional<Product> productOptional = productRepository.findOneByProductId(productid);
-        Product product = productOptional.orElseThrow(() -> new IdNotFoundException("product find by id -> product not found"));
+    public ProductDto readProduct(Long userId, Long productId) {
+        Optional<Product> productOptional = productRepository.findOneByProductId(productId);
+        Product product = productOptional.orElseThrow(() -> new IdNotFoundException("readProduct -> product not found"));
 
         List<ImageDto> productImageDtos = product.getProductImages().stream()
                 .map(ProductImage::getImage)
@@ -317,7 +321,7 @@ public class ProductServiceImpl implements ProductService {
         return new ProductDto.Builder()
                 .withId(product.getId())
                 .withName(product.getName())
-                .withBrandName(product.getBrand().getNameKo())
+                .withBrand(BrandDto.fromBrand(product.getBrand()))
                 .withSize(product.getSize())
                 .withPrice(product.getPrice())
                 .withDescription(product.getDescription())

@@ -13,7 +13,8 @@ import kr.co.mash_up.nine_tique.exception.AlreadyExistException;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.repository.BrandRepository;
 import kr.co.mash_up.nine_tique.service.BrandService;
-import kr.co.mash_up.nine_tique.web.vo.BrandVO;
+import kr.co.mash_up.nine_tique.web.dto.BrandDto;
+import kr.co.mash_up.nine_tique.web.vo.BrandRequestVO;
 
 /**
  * Created by ethankim on 2017. 7. 3..
@@ -26,7 +27,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Transactional
     @Override
-    public void addBrand(BrandVO brandVO) {
+    public void addBrand(BrandRequestVO brandVO) {
         Optional<Brand> brand = brandRepository.findByNameKo(brandVO.getNameKo());
         brand.orElseThrow(() -> new AlreadyExistException("brand add -> brand already exist"));
         brandRepository.save(brandVO.toBrandEntity());
@@ -34,7 +35,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Transactional
     @Override
-    public void modifyBrand(Long brandId, BrandVO brandVO) {
+    public void modifyBrand(Long brandId, BrandRequestVO brandVO) {
         Brand oldBrand = brandRepository.findOne(brandId);
         Optional.ofNullable(oldBrand).orElseThrow(() -> new IdNotFoundException("brand modify -> brand not found"));
         oldBrand.update(brandVO.toBrandEntity());
@@ -51,13 +52,14 @@ public class BrandServiceImpl implements BrandService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BrandVO> readBrands() {
+    public List<BrandDto> readBrands() {
         List<Brand> brands = brandRepository.findAll();
 
         return brands.stream()
-                .map(brand -> new BrandVO.Builder()
-                        .withNameKo(brand.getNameKo())
-                        .withNameEng(brand.getNameEng())
+                .map(brand -> new BrandDto.Builder()
+                        .brandId(brand.getId())
+                        .nameKo(brand.getNameKo())
+                        .nameEng(brand.getNameEng())
                         .build()
                 ).collect(Collectors.toList());
     }

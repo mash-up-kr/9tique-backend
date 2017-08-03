@@ -28,13 +28,15 @@ public class BrandRepositoryTest {
 
     private static final String BRAND_NAME_KO = "브랜드 이름";
 
+    private static final String BRAND_NAME_ENG = "nameEng";
+
     @Autowired
     private BrandRepository brandRepository;
 
     @Before
     public void setUp() throws Exception {
         Brand brand = new Brand();
-        brand.setNameEng("nameEng");
+        brand.setNameEng(BRAND_NAME_ENG);
         brand.setNameKo(BRAND_NAME_KO);
         brandRepository.save(brand);
     }
@@ -50,5 +52,18 @@ public class BrandRepositoryTest {
         // then : 브랜드가 조회된다
         assertTrue(brandOp.isPresent());
         assertEquals(brandOp.get().getNameKo(), brandNameKo);
+    }
+
+    @Test
+    public void findByNameEng_영어_이름으로_브랜드_조회() throws Exception {
+        // given : 영어 브랜드 이름으로
+        String brandNameEng = BRAND_NAME_ENG;
+
+        // when : 브랜드를 조회하면
+        Optional<Brand> brandOp = brandRepository.findByNameEng(brandNameEng);
+
+        // then : 브랜드가 조회된다
+        assertTrue(brandOp.isPresent());
+        assertEquals(brandOp.get().getNameEng(), brandNameEng);
     }
 }

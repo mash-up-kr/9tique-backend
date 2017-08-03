@@ -20,9 +20,10 @@ import kr.co.mash_up.nine_tique.NineTiqueApplication;
 import kr.co.mash_up.nine_tique.service.impl.CategoryServiceImpl;
 
 import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_CATEGORY;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
@@ -39,6 +40,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 public class CategoryControllerTest {
 
     public static final String TEST_MAIN = "testMain";
+
     public static final String TEST_SUB = "testSub";
 
     Logger logger = Logger.getLogger(this.getClass());
@@ -67,7 +69,7 @@ public class CategoryControllerTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
 
     }
 
