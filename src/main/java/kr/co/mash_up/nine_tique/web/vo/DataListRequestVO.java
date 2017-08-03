@@ -42,7 +42,7 @@ public class DataListRequestVO extends RequestVO {
     }
 
     public Sort getSort() {
-        return sort == null ? Product.SortType.CREATED.getSort() : sort.getSort();
+        return sort == null ? Product.SortType.NEWEST.getSort() : sort.getSort();
     }
 
     public Pageable getPageable() {
