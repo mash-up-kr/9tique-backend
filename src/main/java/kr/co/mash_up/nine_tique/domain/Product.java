@@ -16,7 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = {"productImages", "sellerProducts", "zzimProducts"})
+@ToString(exclude = {"productImages", "sellerProducts", "zzimProducts", "postProducts", "promotionProducts"})
 @EqualsAndHashCode(callSuper = false, of = "id")
 public class Product extends AbstractEntity<Long> {
 

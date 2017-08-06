@@ -186,16 +186,19 @@ public class ShopController {
         return new DataListResponseVO<>(page);
     }
 
-    /*
-    Todo: 매장 상품 리스트 - 카테고리별
-     /brands/{brand_id}/products?category=xx
-     */
+    @ApiOperation(value = "매장 상품 리스트 조회", notes = "매장의 상품 리스트를 조회한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
     @GetMapping("/{shop_id}/products")
     public DataListResponseVO<ProductDto> readShopProducts(@PathVariable(value = "shop_id") Long shopId,
                                                            ProductListRequestVO requestVO) {
-        log.info("readShopProducts - shopId : {}, page : {}", shopId, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("readShopProducts - userId : {}, shopId : {}, page : {}", userId, shopId, requestVO);
 
-
-        return null;
+        ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
+        Page<ProductDto> page = shopService.readShopProducts(shopId, userId, requestVO);
+        return new DataListResponseVO<>(page);
     }
 }

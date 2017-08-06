@@ -24,25 +24,25 @@ public interface ProductRepositoryCustom {
      * @param pageable
      * @return
      */
-    public abstract Page<Product> findAll(Pageable pageable);
+    public abstract Page<Product> findProducts(Pageable pageable);
 
     /**
-     * 카테고리에 속한 상품 리스트를 조회한다
+     * 카테고리별 상품 리스트를 조회한다
      *
-     * @param pageable
      * @param category
+     * @param pageable
      * @return
      */
-    public abstract Page<Product> findByCategory(Pageable pageable, Category category);
+    public abstract Page<Product> findProductsByCategory(Category category, Pageable pageable);
 
     /**
-     * 메인 카테고리에 속한 상품 리스트를 조회한다
+     * 메인 카테고리별 상품 리스트를 조회한다
      *
-     * @param pageable
      * @param mainCategory
+     * @param pageable
      * @return
      */
-    public abstract Page<Product> findByMainCategory(Pageable pageable, String mainCategory);
+    public abstract Page<Product> findProductsByMainCategory(String mainCategory, Pageable pageable);
 
     /**
      * 게시물의 상품 리스트를 조회한다
@@ -52,4 +52,34 @@ public interface ProductRepositoryCustom {
      * @return
      */
     public abstract Page<Product> findPostProducts(Long postId, Pageable pageable);
+
+    /**
+     * 매장의 상품 리스트를 조회한다
+     *
+     * @param shopId   Shop ID
+     * @param pageable
+     * @return
+     */
+    public abstract Page<Product> findShopProducts(Long shopId, Pageable pageable);
+
+    /**
+     * 카테고리별 매장의 상품 리스트를 조회한다
+     *
+     * @param shopId   Shop ID
+     * @param category 카테고리
+     * @param pageable
+     * @return
+     */
+
+    public abstract Page<Product> findShopProductsByCategory(Long shopId, Category category, Pageable pageable);
+
+    /**
+     * 메인 카테고리별 매장의 상품 리스트를 조회한다
+     *
+     * @param shopId       Shop ID
+     * @param mainCategory 메인 카테고리 이름
+     * @param pageable
+     * @return
+     */
+    public abstract Page<Product> findShopProductsByMainCategory(Long shopId, String mainCategory, Pageable pageable);
 }

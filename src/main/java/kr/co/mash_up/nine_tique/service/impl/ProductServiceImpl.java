@@ -223,17 +223,17 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> productPage;
 
         if (mainCategory.equalsIgnoreCase("NEW")) {
-            productPage = productRepository.findAll(pageable);
+            productPage = productRepository.findProducts(pageable);
         } else {
             if (subCategory.equalsIgnoreCase("ALL")) {
-                productPage = productRepository.findByMainCategory(pageable, mainCategory);
+                productPage = productRepository.findProductsByMainCategory(mainCategory, pageable);
             } else {
                 Optional<Category> categoryOptional = categoryRepository.findOneByMainAndSub(mainCategory, subCategory);
                 Category category = categoryOptional.orElseThrow(() -> new IdNotFoundException("find product by category -> category not found"));
 
                 log.debug(category.getMain() + " " + category.getSub() + " " + category.getId());
 
-                productPage = productRepository.findByCategory(pageable, category);
+                productPage = productRepository.findProductsByCategory(category, pageable);
             }
         }
 

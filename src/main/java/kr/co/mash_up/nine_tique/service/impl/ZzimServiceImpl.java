@@ -61,6 +61,7 @@ public class ZzimServiceImpl implements ZzimService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public Page<ProductDto> readZzimProducts(Long userId, Pageable pageable) {
         Page<ZzimProduct> zzimProductPage = zzimRepository.findZzimProducts(userId, pageable);
 

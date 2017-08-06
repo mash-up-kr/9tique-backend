@@ -21,6 +21,7 @@ import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.Post;
 import kr.co.mash_up.nine_tique.domain.PostProduct;
 import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.Shop;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,11 +50,16 @@ public class ProductRepositoryTest {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private ShopRepository shopRepository;
+
     private Product product;
 
     private Category testCategory;
 
     private Post testPost;
+
+    private Shop testShop;
 
     @Before
     public void setUp() throws Exception {
@@ -73,6 +79,14 @@ public class ProductRepositoryTest {
         testPost.setPostProducts(new ArrayList<>());
         postRepository.save(testPost);
 
+        // 매장
+        testShop = new Shop();
+        testShop.setName("shopName");
+        testShop.setDescription("shopDesc");
+        testShop.setPhoneNumber("shopPhoneNo");
+        testShop.setCommentCount(0L);
+        shopRepository.save(testShop);
+
         List<Product> products = new ArrayList<>();
         for (int i = 0; i < LOOP_COUNT; i++) {
             product = new Product();
@@ -82,6 +96,7 @@ public class ProductRepositoryTest {
             product.setDescription("desc");
             product.setStatus(Product.Status.SELL);
             product.setCategory(testCategory);
+            product.setShop(testShop);
             productRepository.save(product);
             products.add(product);
 
@@ -102,7 +117,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void findAll() throws Exception {
+    public void findProducts_상품_리스트_조회() throws Exception {
         // given : 페이지 번호, 사이즈로
         int pageNo = 0;
         int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
@@ -110,7 +125,7 @@ public class ProductRepositoryTest {
         Pageable pageable = new PageRequest(pageNo, pageSize);
 
         // when : 상품 리스트를 페이징으로 조회하면
-        Page<Product> productPage = productRepository.findAll(pageable);
+        Page<Product> productPage = productRepository.findProducts(pageable);
 
         // then : 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
         assertThat(productPage.getContent())
@@ -122,7 +137,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void findByCategory() throws Exception {
+    public void findProductsByCategory_카테고리별_상품_리스트_조회() throws Exception {
         // given : 카테고리, 페이지 번호, 사이즈로
         Category category = testCategory;
         int pageNo = 0;
@@ -131,7 +146,7 @@ public class ProductRepositoryTest {
         Pageable pageable = new PageRequest(pageNo, pageSize);
 
         // when : 카테고리에 속한 상품 리스트를 페이징으로 조회하면
-        Page<Product> productPage = productRepository.findByCategory(pageable, category);
+        Page<Product> productPage = productRepository.findProductsByCategory(category, pageable);
 
 
         // then : 카테고리에 속한 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
@@ -144,7 +159,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void findByMainCategory() throws Exception {
+    public void findProductsByMainCategory_메인_카테고리별_상품_리스트_조회() throws Exception {
         // given : 메인 카테고리, 페이지 번호, 사이즈로
         String mainCategory = MAIN_CATEGORY;
         int pageNo = 0;
@@ -153,7 +168,7 @@ public class ProductRepositoryTest {
         Pageable pageable = new PageRequest(pageNo, pageSize);
 
         // when : 메인 카테고리의 상품 리스트를 페이징으로 조회하면
-        Page<Product> productPage = productRepository.findByMainCategory(pageable, mainCategory);
+        Page<Product> productPage = productRepository.findProductsByMainCategory(mainCategory, pageable);
 
         // then : 메인 카테고리의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
         assertThat(productPage.getContent())
@@ -183,5 +198,84 @@ public class ProductRepositoryTest {
 
         assertEquals(postProducts.getNumber(), pageNo);
         assertEquals(postProducts.getTotalElements(), LOOP_COUNT);
+    }
+
+    @Test
+    public void findShopProducts_매장의_상품_리스트_조회() throws Exception {
+        // given : 매장 ID, 페이지 번호, 사이즈로
+        long shopId = testShop.getId();
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 매장의 상품 리스트를 페이징으로 조회하면
+        Page<Product> shopProducts = productRepository.findShopProducts(shopId, pageable);
+
+        // then : 매장의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(shopProducts.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(shopProducts.getNumber(), pageNo);
+        assertEquals(shopProducts.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : shopProducts.getContent()) {
+            assertEquals(product.getShop().getId().longValue(), shopId);
+        }
+    }
+
+    @Test
+    public void findShopProductsByCategory_카테고리별_매장의_상품_리스트_조회() throws Exception {
+        // given : 매장 ID, 카테고리, 페이지 번호, 사이즈로
+        long shopId = testShop.getId();
+        Category category = testCategory;
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 카테고리별 매장의 상품 리스트를 페이징으로 조회하면
+        Page<Product> productPage = productRepository.findShopProductsByCategory(shopId, category, pageable);
+
+        // then : 카테고리별 매장의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(productPage.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(productPage.getNumber(), pageNo);
+        assertEquals(productPage.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : productPage.getContent()) {
+            assertEquals(product.getShop().getId().longValue(), shopId);
+            assertEquals(product.getCategory(), category);
+        }
+    }
+
+    @Test
+    public void findShopProductsByMainCategory_메인_카테고리별_매장의_상품_리스트_조회() throws Exception {
+        // given : 매장 ID, 메인 카테고리, 페이지 번호, 사이즈로
+        long shopId = testShop.getId();
+        String mainCategory = MAIN_CATEGORY;
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 메인 카테고리의 상품 리스트를 페이징으로 조회하면
+        Page<Product> productPage = productRepository.findShopProductsByMainCategory(shopId, mainCategory, pageable);
+
+        // then : 메인 카테고리의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(productPage.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(productPage.getNumber(), pageNo);
+        assertEquals(productPage.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : productPage.getContent()) {
+            assertEquals(product.getShop().getId().longValue(), shopId);
+            assertEquals(product.getCategory().getMain(), mainCategory);
+        }
     }
 }
