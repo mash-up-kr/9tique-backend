@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import kr.co.mash_up.nine_tique.domain.Post;
 import kr.co.mash_up.nine_tique.domain.PostProduct;
+import kr.co.mash_up.nine_tique.domain.Product;
 
 
 /**
@@ -29,13 +30,4 @@ public interface PostRepositoryCustom {
      * @return
      */
     public abstract Page<Post> findPosts(Pageable pageable);
-
-    /**
-     * 게시물의 상품 리스트 조회
-     *
-     * @param postId   Post ID
-     * @param pageable
-     * @return
-     */
-    public abstract Page<PostProduct> findPostProducts(Long postId, Pageable pageable);
 }

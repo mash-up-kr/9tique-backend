@@ -12,10 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import kr.co.mash_up.nine_tique.config.PersistenceConfig;
 import kr.co.mash_up.nine_tique.domain.Category;
+import kr.co.mash_up.nine_tique.domain.Post;
+import kr.co.mash_up.nine_tique.domain.PostProduct;
 import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 
@@ -42,17 +46,34 @@ public class ProductRepositoryTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+
     private Product product;
 
     private Category testCategory;
 
+    private Post testPost;
+
     @Before
     public void setUp() throws Exception {
+
+        // 카테고리
         testCategory = new Category();
         testCategory.setMain(MAIN_CATEGORY);
         testCategory.setSub("sub");
         categoryRepository.save(testCategory);
 
+        // 게시물
+        testPost = new Post();
+        testPost.setName("postName");
+        testPost.setContents("postContents");
+        testPost.setPostComments(new ArrayList<>());
+        testPost.setCommentCount(0L);
+        testPost.setPostProducts(new ArrayList<>());
+        postRepository.save(testPost);
+
+        List<Product> products = new ArrayList<>();
         for (int i = 0; i < LOOP_COUNT; i++) {
             product = new Product();
             product.setName("name");
@@ -62,6 +83,9 @@ public class ProductRepositoryTest {
             product.setStatus(Product.Status.SELL);
             product.setCategory(testCategory);
             productRepository.save(product);
+            products.add(product);
+
+            testPost.addProduct(new PostProduct(testPost, product));
         }
     }
 
@@ -138,5 +162,26 @@ public class ProductRepositoryTest {
 
         assertEquals(productPage.getNumber(), pageNo);
         assertEquals(productPage.getTotalElements(), LOOP_COUNT);
+    }
+
+    @Test
+    public void findPostProducts_게시물의_상품_리스트_조회() throws Exception {
+        // given : 게시물 ID, 페이지 번호, 사이즈로
+        long postId = testPost.getId();
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 게시물의 상품 리스트를 페이징으로 조회하면
+        Page<Product> postProducts = productRepository.findPostProducts(postId, pageable);
+
+        // then : 게시물의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(postProducts.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(postProducts.getNumber(), pageNo);
+        assertEquals(postProducts.getTotalElements(), LOOP_COUNT);
     }
 }

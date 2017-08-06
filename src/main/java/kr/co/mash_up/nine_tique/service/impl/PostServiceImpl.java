@@ -305,14 +305,14 @@ public class PostServiceImpl implements PostService {
         return new PageImpl<>(postComments, resultPageable, postCommentPage.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<ProductDto> readPostProducts(Long postId, DataListRequestVO requestVO) {
         Pageable pageable = requestVO.getPageable();
 
-        Page<PostProduct> postProductPage = postRepository.findPostProducts(postId, pageable);
+        Page<Product> postProductPage = productRepository.findPostProducts(postId, pageable);
 
         List<ProductDto> productDtos = postProductPage.getContent().stream()
-                .map(PostProduct::getProduct)
                 .map(product -> {
 
                     List<ImageDto> productImages = product.getProductImages().stream()

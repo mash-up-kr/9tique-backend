@@ -37,9 +37,13 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath name = createString("name");
 
+    public final ListPath<PostProduct, QPostProduct> postProducts = this.<PostProduct, QPostProduct>createList("postProducts", PostProduct.class, QPostProduct.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final ListPath<ProductImage, QProductImage> productImages = this.<ProductImage, QProductImage>createList("productImages", ProductImage.class, QProductImage.class, PathInits.DIRECT2);
+
+    public final ListPath<PromotionProduct, QPromotionProduct> promotionProducts = this.<PromotionProduct, QPromotionProduct>createList("promotionProducts", PromotionProduct.class, QPromotionProduct.class, PathInits.DIRECT2);
 
     public final ListPath<SellerProduct, QSellerProduct> sellerProducts = this.<SellerProduct, QSellerProduct>createList("sellerProducts", SellerProduct.class, QSellerProduct.class, PathInits.DIRECT2);
 

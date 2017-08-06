@@ -43,4 +43,13 @@ public interface ProductRepositoryCustom {
      * @return
      */
     public abstract Page<Product> findByMainCategory(Pageable pageable, String mainCategory);
+
+    /**
+     * 게시물의 상품 리스트를 조회한다
+     *
+     * @param postId   Post ID
+     * @param pageable
+     * @return
+     */
+    public abstract Page<Product> findPostProducts(Long postId, Pageable pageable);
 }
