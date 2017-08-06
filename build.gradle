@@ -123,6 +123,11 @@ clean {
     delete queryDslOutput
 }
 
+/**
+ * gradle clean 실행 후 generateQueryDSL task 실행
+ */
+clean.finalizedBy(generateQueryDSL)
+
 springBoot {
     mainClass = "kr.co.mash_up.nine_tique.NineTiqueApplication"
 }
