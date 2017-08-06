@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +23,8 @@ import kr.co.mash_up.nine_tique.domain.PostComment;
 import kr.co.mash_up.nine_tique.domain.PostImage;
 import kr.co.mash_up.nine_tique.domain.PostProduct;
 import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.ProductImage;
 import kr.co.mash_up.nine_tique.domain.User;
-import kr.co.mash_up.nine_tique.web.dto.CommentDto;
-import kr.co.mash_up.nine_tique.web.dto.ImageDto;
-import kr.co.mash_up.nine_tique.web.dto.PostDto;
-import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.exception.IdNotFoundException;
 import kr.co.mash_up.nine_tique.exception.UserIdNotMatchedException;
 import kr.co.mash_up.nine_tique.repository.ImageRepository;
@@ -36,6 +34,11 @@ import kr.co.mash_up.nine_tique.repository.ProductRepository;
 import kr.co.mash_up.nine_tique.repository.UserRepository;
 import kr.co.mash_up.nine_tique.service.PostService;
 import kr.co.mash_up.nine_tique.util.FileUtil;
+import kr.co.mash_up.nine_tique.web.dto.CommentDto;
+import kr.co.mash_up.nine_tique.web.dto.ImageDto;
+import kr.co.mash_up.nine_tique.web.dto.PostDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
+import kr.co.mash_up.nine_tique.web.dto.UserDto;
 import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.PostRequestVO;
@@ -300,5 +303,38 @@ public class PostServiceImpl implements PostService {
 
         Pageable resultPageable = new PageRequest(postCommentPage.getNumber(), postCommentPage.getSize());
         return new PageImpl<>(postComments, resultPageable, postCommentPage.getTotalElements());
+    }
+
+    @Override
+    public Page<ProductDto> readPostProducts(Long postId, DataListRequestVO requestVO) {
+        Pageable pageable = requestVO.getPageable();
+
+        Page<PostProduct> postProductPage = postRepository.findPostProducts(postId, pageable);
+
+        List<ProductDto> productDtos = postProductPage.getContent().stream()
+                .map(PostProduct::getProduct)
+                .map(product -> {
+
+                    List<ImageDto> productImages = product.getProductImages().stream()
+                            .map(ProductImage::getImage)
+                            .sorted(Comparator.comparing(Image::getId))
+                            .limit(1)
+                            .map(image ->
+                                    new ImageDto.Builder()
+                                            .url(FileUtil.getImageUrl(ImageType.PRODUCT, product.getId(), image.getFileName()))
+                                            .build())
+                            .collect(Collectors.toList());
+
+                    return new ProductDto.Builder()
+                            .withId(product.getId())
+                            .withPrice(product.getPrice())
+                            .withStatus(product.getStatus())
+                            .withImages(productImages)
+                            .build();
+                }).collect(Collectors.toList());
+
+        Pageable resultPageable = new PageRequest(postProductPage.getNumber(), postProductPage.getSize());
+
+        return new PageImpl<>(productDtos, resultPageable, postProductPage.getTotalElements());
     }
 }

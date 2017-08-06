@@ -1,42 +1,39 @@
 package kr.co.mash_up.nine_tique.repository.custom;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
 import java.util.Optional;
 
-import com.mysema.query.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.QCategory;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class CategoryRepositoryImpl implements CategoryRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final JPAQueryFactory queryFactory;
 
     private static final QCategory CATEGORY = QCategory.category;
 
     @Override
     public Optional<Category> findOneByMainAndSub(String main, String sub) {
-        JPAQuery query = new JPAQuery(entityManager);
 
-        query.from(CATEGORY)
-//                .where(qCategory.main.eq(main).and(qCategory.sub.eq(sub)).and(qCategory.enable.isTrue()));
-                .where(CATEGORY.main.eq(main)
-                        .and(CATEGORY.sub.eq(sub)));
+        Category category =
+                queryFactory.selectFrom(CATEGORY)
+                        .where(CATEGORY.main.eq(main)
+                                .and(CATEGORY.sub.eq(sub)))
+                        .fetchOne();
 
-        return Optional.ofNullable(query.uniqueResult(CATEGORY));
+        return Optional.ofNullable(category);
     }
 
     @Override
     public Optional<Category> findOneByCategoryId(Long categoryId) {
-        JPAQuery query = new JPAQuery(entityManager);
 
-        query.from(CATEGORY)
-//                .where(qCategory.id.eq(categoryId).and(qCategory.active.isTrue()));
-                .where(CATEGORY.id.eq(categoryId));
+        Category category = queryFactory.selectFrom(CATEGORY)
+                .where(CATEGORY.id.eq(categoryId))
+                .fetchOne();
 
-        return Optional.ofNullable(query.uniqueResult(CATEGORY));
+        return Optional.ofNullable(category);
     }
 }

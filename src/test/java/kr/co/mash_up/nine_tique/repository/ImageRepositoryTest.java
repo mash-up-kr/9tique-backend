@@ -4,14 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import kr.co.mash_up.nine_tique.NineTiqueApplication;
+import kr.co.mash_up.nine_tique.config.PersistenceConfig;
 import kr.co.mash_up.nine_tique.domain.Image;
 
 import static org.junit.Assert.assertEquals;
@@ -21,8 +21,8 @@ import static org.junit.Assert.assertTrue;
  * Created by ethankim on 2017. 7. 31..
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {NineTiqueApplication.class})
 @DataJpaTest
+@ImportAutoConfiguration(classes = {PersistenceConfig.class})
 @ActiveProfiles(profiles = "test")
 public class ImageRepositoryTest {
 

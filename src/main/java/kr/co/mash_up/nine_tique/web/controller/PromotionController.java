@@ -18,10 +18,12 @@ import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.PromotionService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.DataResponseVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.PromotionRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -115,5 +117,19 @@ public class PromotionController {
 
         PromotionDto promotion = promotionService.readPromotion(promotionId);
         return new DataResponseVO<>(promotion);
+    }
+
+    /*
+    Todo: 프로모션 상품 리스트 - 카테고리별
+     /promotions/{promotion_id}/products?category=xx
+     */
+    @GetMapping("/{promotion_id}/products")
+    public DataListResponseVO<ProductDto> readPromotionProducts(@PathVariable(value = "promotion_id") Long promotionId,
+                                                                ProductListRequestVO requestVO) {
+        log.info("readBrandProducts - promotionId : {}, page : {}", promotionId, requestVO);
+
+
+
+        return null;
     }
 }

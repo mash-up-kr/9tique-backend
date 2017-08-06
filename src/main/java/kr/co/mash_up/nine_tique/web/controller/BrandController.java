@@ -19,8 +19,10 @@ import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.service.BrandService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.web.dto.BrandDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.vo.BrandRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
 
@@ -96,5 +98,18 @@ public class BrandController {
 
         List<BrandDto> brands = brandService.readBrands();
         return new DataListResponseVO<>(brands);
+    }
+
+    /*
+    Todo: 브랜드의 상품 리스트 - 카테고리별
+     /brands/{brand_id}/products?category=xx
+     */
+
+    @GetMapping("/{brand_id}/products")
+    public DataListResponseVO<ProductDto> readBrandProducts(@PathVariable(value = "brand_id") Long brandId,
+                                                                ProductListRequestVO requestVO) {
+        log.info("readBrandProducts - brandId : {}, page : {}", brandId, requestVO);
+
+        return null;
     }
 }

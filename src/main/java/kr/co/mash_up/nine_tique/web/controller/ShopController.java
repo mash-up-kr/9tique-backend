@@ -19,11 +19,13 @@ import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.impl.ShopServiceImpl;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.web.dto.CommentDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.dto.ShopDto;
 import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.DataResponseVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.ShopRequestVO;
 import lombok.extern.slf4j.Slf4j;
@@ -182,5 +184,18 @@ public class ShopController {
 
         Page<CommentDto> page = shopService.readShopComments(shopId, requestVO);
         return new DataListResponseVO<>(page);
+    }
+
+    /*
+    Todo: 매장 상품 리스트 - 카테고리별
+     /brands/{brand_id}/products?category=xx
+     */
+    @GetMapping("/{shop_id}/products")
+    public DataListResponseVO<ProductDto> readShopProducts(@PathVariable(value = "shop_id") Long shopId,
+                                                           ProductListRequestVO requestVO) {
+        log.info("readShopProducts - shopId : {}, page : {}", shopId, requestVO);
+
+
+        return null;
     }
 }

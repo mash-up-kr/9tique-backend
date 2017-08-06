@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import kr.co.mash_up.nine_tique.NineTiqueApplication;
+import kr.co.mash_up.nine_tique.config.PersistenceConfig;
 import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.domain.Seller;
 import kr.co.mash_up.nine_tique.domain.SellerProduct;
@@ -30,8 +30,8 @@ import static org.junit.Assert.assertTrue;
  * Created by ethankim on 2017. 7. 30..
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {NineTiqueApplication.class})
 @DataJpaTest
+@ImportAutoConfiguration(classes = {PersistenceConfig.class})
 @ActiveProfiles(profiles = "test")
 public class SellerRepositoryTest {
 

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 
 import kr.co.mash_up.nine_tique.web.dto.CommentDto;
 import kr.co.mash_up.nine_tique.web.dto.PostDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.PostRequestVO;
@@ -94,4 +95,13 @@ public interface PostService {
      * @return
      */
     public abstract Page<CommentDto> readPostComments(Long postId, DataListRequestVO requestVO);
+
+    /**
+     * 게시물 상품 리스트 조회
+     *
+     * @param postId    Post ID
+     * @param requestVO 페이징 정보
+     * @return
+     */
+    public abstract Page<ProductDto> readPostProducts(Long postId, DataListRequestVO requestVO);
 }
