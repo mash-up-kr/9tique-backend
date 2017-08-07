@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import kr.co.mash_up.nine_tique.config.PersistenceConfig;
+import kr.co.mash_up.nine_tique.domain.Brand;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.Post;
 import kr.co.mash_up.nine_tique.domain.PostProduct;
@@ -59,6 +60,9 @@ public class ProductRepositoryTest {
     @Autowired
     private PromotionRepository promotionRepository;
 
+    @Autowired
+    private BrandRepository brandRepository;
+
     private Product product;
 
     private Category testCategory;
@@ -68,6 +72,8 @@ public class ProductRepositoryTest {
     private Shop testShop;
 
     private Promotion testPromotion;
+
+    private Brand testBrand;
 
     @Before
     public void setUp() throws Exception {
@@ -105,6 +111,12 @@ public class ProductRepositoryTest {
         testPromotion.setPromotionProducts(new ArrayList<>());
         promotionRepository.save(testPromotion);
 
+        // 브랜드
+        testBrand = new Brand();
+        testBrand.setNameEng("nameEng");
+        testBrand.setNameKo("브랜드 이름");
+        brandRepository.save(testBrand);
+
         List<Product> products = new ArrayList<>();
         for (int i = 0; i < LOOP_COUNT; i++) {
             product = new Product();
@@ -115,6 +127,7 @@ public class ProductRepositoryTest {
             product.setStatus(Product.Status.SELL);
             product.setCategory(testCategory);
             product.setShop(testShop);
+            product.setBrand(testBrand);
             productRepository.save(product);
             products.add(product);
 
@@ -367,6 +380,85 @@ public class ProductRepositoryTest {
         assertEquals(productPage.getTotalElements(), LOOP_COUNT);
 
         for (Product product : productPage.getContent()) {
+            assertEquals(product.getCategory().getMain(), mainCategory);
+        }
+    }
+
+    @Test
+    public void findBrandProducts_브랜드의_상품_리스트_조회() throws Exception {
+        // given : 브랜드 ID, 페이지 번호, 사이즈로
+        long brandId = testBrand.getId();
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 브랜드의 상품 리스트를 페이징으로 조회하면
+        Page<Product> brandProducts = productRepository.findBrandProducts(brandId, pageable);
+
+        // then : 브랜드의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(brandProducts.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(brandProducts.getNumber(), pageNo);
+        assertEquals(brandProducts.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : brandProducts.getContent()) {
+            assertEquals(product.getBrand().getId().longValue(), brandId);
+        }
+    }
+
+    @Test
+    public void findBrandProductsByCategory_카테고리별_브랜드의_상품_리스트_조회() throws Exception {
+        // given : 브랜드 ID, 카테고리, 페이지 번호, 사이즈로
+        long brandId = testBrand.getId();
+        Category category = testCategory;
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 카테고리별 브랜드의 상품 리스트를 페이징으로 조회하면
+        Page<Product> brandProducts = productRepository.findBrandProductsByCategory(brandId, category, pageable);
+
+        // then : 카테고리별 브랜드의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(brandProducts.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(brandProducts.getNumber(), pageNo);
+        assertEquals(brandProducts.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : brandProducts.getContent()) {
+            assertEquals(product.getBrand().getId().longValue(), brandId);
+            assertEquals(product.getCategory(), category);
+        }
+    }
+
+    @Test
+    public void findBrandProductsByMainCategory_메인_카테고리별_브랜드의_상품_리스트_조회() throws Exception {
+        // given : 브랜드 ID, 메인 카테고리, 페이지 번호, 사이즈로
+        long brandId = testBrand.getId();
+        String mainCategory = MAIN_CATEGORY;
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 메인 카테고리별 브랜드의 상품 리스트를 페이징으로 조회하면
+        Page<Product> brandProducts = productRepository.findBrandProductsByMainCategory(brandId, mainCategory, pageable);
+
+        // then : 메인 카테고리별 브랜드의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(brandProducts.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(brandProducts.getNumber(), pageNo);
+        assertEquals(brandProducts.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : brandProducts.getContent()) {
+            assertEquals(product.getBrand().getId().longValue(), brandId);
             assertEquals(product.getCategory().getMain(), mainCategory);
         }
     }

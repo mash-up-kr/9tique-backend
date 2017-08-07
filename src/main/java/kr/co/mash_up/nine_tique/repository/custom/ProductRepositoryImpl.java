@@ -12,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.QBrand;
 import kr.co.mash_up.nine_tique.domain.QCategory;
 import kr.co.mash_up.nine_tique.domain.QPostProduct;
 import kr.co.mash_up.nine_tique.domain.QProduct;
@@ -34,6 +35,8 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
     private static final QShop SHOP = QShop.shop;
 
     private static final QPromotionProduct PROMOTION_PRODUCT = QPromotionProduct.promotionProduct;
+
+    private static final QBrand BRAND = QBrand.brand;
 
     public ProductRepositoryImpl(JPAQueryFactory queryFactory) {
         super(Product.class);
@@ -192,6 +195,52 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
                         .join(PRODUCT.promotionProducts, PROMOTION_PRODUCT)
                         .join(PRODUCT.category, CATEGORY)
                         .where(PROMOTION_PRODUCT.promotion.id.eq(promotionId)
+                                .and(CATEGORY.main.eq(mainCategory)))
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Product> findBrandProducts(Long brandId, Pageable pageable) {
+
+        JPAQuery<Product> query =
+                queryFactory.selectFrom(PRODUCT)
+                        .join(PRODUCT.brand, BRAND)
+                        .where(BRAND.id.eq(brandId))
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Product> findBrandProductsByCategory(Long brandId, Category category, Pageable pageable) {
+
+        JPAQuery<Product> query =
+                queryFactory.selectFrom(PRODUCT)
+                        .join(PRODUCT.brand, BRAND)
+                        .join(PRODUCT.category, CATEGORY)
+                        .where(BRAND.id.eq(brandId)
+                                .and(CATEGORY.id.eq(category.getId())))
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Product> findBrandProductsByMainCategory(Long brandId, String mainCategory, Pageable pageable) {
+
+        JPAQuery<Product> query =
+                queryFactory.selectFrom(PRODUCT)
+                        .join(PRODUCT.brand, BRAND)
+                        .join(PRODUCT.category, CATEGORY)
+                        .where(BRAND.id.eq(brandId)
                                 .and(CATEGORY.main.eq(mainCategory)))
                         .orderBy(PRODUCT.status.asc());
 

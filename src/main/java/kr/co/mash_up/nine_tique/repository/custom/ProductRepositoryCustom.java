@@ -112,4 +112,33 @@ public interface ProductRepositoryCustom {
      * @return
      */
     public abstract Page<Product> findPromotionProductsByMainCategory(Long promotionId, String mainCategory, Pageable pageable);
+
+    /**
+     * 브랜드의 상품 리스트를 조회한다
+     *
+     * @param brandId  브랜드 ID
+     * @param pageable
+     * @return
+     */
+    public abstract Page<Product> findBrandProducts(Long brandId, Pageable pageable);
+
+    /**
+     * 카테고리별 브랜드의 상품 리스트를 조회한다
+     *
+     * @param brandId  브랜드 ID
+     * @param category 카테고리
+     * @param pageable
+     * @return
+     */
+    public abstract Page<Product> findBrandProductsByCategory(Long brandId, Category category, Pageable pageable);
+
+    /**
+     * 메인 카테고리별 브랜드의 상품 리스트를 조회한다
+     *
+     * @param brandId      브랜드 ID
+     * @param mainCategory 메인 카테고리 이름
+     * @param pageable
+     * @return
+     */
+    public abstract Page<Product> findBrandProductsByMainCategory(Long brandId, String mainCategory, Pageable pageable);
 }

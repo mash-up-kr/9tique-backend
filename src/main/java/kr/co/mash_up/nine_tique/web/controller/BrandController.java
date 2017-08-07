@@ -1,6 +1,7 @@
 package kr.co.mash_up.nine_tique.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.BrandService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.web.dto.BrandDto;
@@ -100,16 +102,19 @@ public class BrandController {
         return new DataListResponseVO<>(brands);
     }
 
-    /*
-    Todo: 브랜드의 상품 리스트 - 카테고리별
-     /brands/{brand_id}/products?category=xx
-     */
-
+    @ApiOperation(value = "브랜드 상품 리스트 조회", notes = "브랜드의 상품 리스트를 조회한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
     @GetMapping("/{brand_id}/products")
     public DataListResponseVO<ProductDto> readBrandProducts(@PathVariable(value = "brand_id") Long brandId,
                                                                 ProductListRequestVO requestVO) {
-        log.info("readBrandProducts - brandId : {}, page : {}", brandId, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("readBrandProducts - userId : {}, brandId : {}, page : {}", userId, brandId, requestVO);
 
-        return null;
+        ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
+        Page<ProductDto> page = brandService.readBrandProducts(brandId, userId, requestVO);
+        return new DataListResponseVO<>(page);
     }
 }

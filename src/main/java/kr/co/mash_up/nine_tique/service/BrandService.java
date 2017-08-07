@@ -1,9 +1,13 @@
 package kr.co.mash_up.nine_tique.service;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 import kr.co.mash_up.nine_tique.web.dto.BrandDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.vo.BrandRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 
 /**
  * Brand와 관련된 비즈니스 로직 처리
@@ -40,4 +44,14 @@ public interface BrandService {
      * @return 브랜드 리스트
      */
     public abstract List<BrandDto> readBrands();
+
+    /**
+     * 브랜드 상품 리스트 조회
+     *
+     * @param brandId   브랜드 ID
+     * @param userId    User ID
+     * @param requestVO 카테고리 및 페이징 정보
+     * @return
+     */
+    public abstract Page<ProductDto> readBrandProducts(Long brandId, Long userId, ProductListRequestVO requestVO);
 }
