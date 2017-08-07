@@ -2,8 +2,10 @@ package kr.co.mash_up.nine_tique.service;
 
 import org.springframework.data.domain.Page;
 
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.PromotionRequestVO;
 
 /**
@@ -51,4 +53,14 @@ public interface PromotionService {
      * @return
      */
     public abstract PromotionDto readPromotion(Long promotionId);
+
+    /**
+     * 프로모션 상품 리스트 조회
+     *
+     * @param promotionId 프로모션 ID
+     * @param userId      User ID
+     * @param requestVO   카테고리 및 페이징 정보
+     * @return
+     */
+    public abstract Page<ProductDto> readPromotionProducts(Long promotionId, Long userId, ProductListRequestVO requestVO);
 }

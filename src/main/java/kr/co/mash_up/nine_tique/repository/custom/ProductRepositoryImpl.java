@@ -15,6 +15,7 @@ import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.domain.QCategory;
 import kr.co.mash_up.nine_tique.domain.QPostProduct;
 import kr.co.mash_up.nine_tique.domain.QProduct;
+import kr.co.mash_up.nine_tique.domain.QPromotionProduct;
 import kr.co.mash_up.nine_tique.domain.QShop;
 
 /**
@@ -29,6 +30,10 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
     private static final QCategory CATEGORY = QCategory.category;
 
     private static final QPostProduct POST_PRODUCT = QPostProduct.postProduct;
+
+    private static final QShop SHOP = QShop.shop;
+
+    private static final QPromotionProduct PROMOTION_PRODUCT = QPromotionProduct.promotionProduct;
 
     public ProductRepositoryImpl(JPAQueryFactory queryFactory) {
         super(Product.class);
@@ -103,8 +108,6 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
 
-    private static final QShop SHOP = QShop.shop;
-
     @Override
     public Page<Product> findShopProducts(Long shopId, Pageable pageable) {
 
@@ -143,6 +146,52 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
                         .join(PRODUCT.shop, SHOP)
                         .join(PRODUCT.category, CATEGORY)
                         .where(SHOP.id.eq(shopId)
+                                .and(CATEGORY.main.eq(mainCategory)))
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Product> findPromotionProducts(Long promotionId, Pageable pageable) {
+
+        JPAQuery<Product> query =
+                queryFactory.selectFrom(PRODUCT)
+                        .join(PRODUCT.promotionProducts, PROMOTION_PRODUCT)
+                        .where(PROMOTION_PRODUCT.promotion.id.eq(promotionId))
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Product> findPromotionProductsByCategory(Long promotionId, Category category, Pageable pageable) {
+
+        JPAQuery<Product> query =
+                queryFactory.selectFrom(PRODUCT)
+                        .join(PRODUCT.promotionProducts, PROMOTION_PRODUCT)
+                        .join(PRODUCT.category, CATEGORY)
+                        .where(PROMOTION_PRODUCT.promotion.id.eq(promotionId)
+                                .and(CATEGORY.id.eq(category.getId())))
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
+
+        return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+    }
+
+    @Override
+    public Page<Product> findPromotionProductsByMainCategory(Long promotionId, String mainCategory, Pageable pageable) {
+
+        JPAQuery<Product> query =
+                queryFactory.selectFrom(PRODUCT)
+                        .join(PRODUCT.promotionProducts, PROMOTION_PRODUCT)
+                        .join(PRODUCT.category, CATEGORY)
+                        .where(PROMOTION_PRODUCT.promotion.id.eq(promotionId)
                                 .and(CATEGORY.main.eq(mainCategory)))
                         .orderBy(PRODUCT.status.asc());
 

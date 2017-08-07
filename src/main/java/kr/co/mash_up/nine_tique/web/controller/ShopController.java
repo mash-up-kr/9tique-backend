@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
-import kr.co.mash_up.nine_tique.service.impl.ShopServiceImpl;
+import kr.co.mash_up.nine_tique.service.ShopService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.web.dto.CommentDto;
 import kr.co.mash_up.nine_tique.web.dto.ProductDto;
@@ -44,7 +44,7 @@ import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_SHOP;
 public class ShopController {
 
     @Autowired
-    private ShopServiceImpl shopService;
+    private ShopService shopService;
 
     @ApiOperation(value = "매장 추가", notes = "매장 정보를 추가한다")
     @ApiResponses(value = {

@@ -119,17 +119,19 @@ public class PromotionController {
         return new DataResponseVO<>(promotion);
     }
 
-    /*
-    Todo: 프로모션 상품 리스트 - 카테고리별
-     /promotions/{promotion_id}/products?category=xx
-     */
+    @ApiOperation(value = "프로모션 상품 리스트 조회", notes = "프로모션의 상품 리스트를 조회한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
     @GetMapping("/{promotion_id}/products")
     public DataListResponseVO<ProductDto> readPromotionProducts(@PathVariable(value = "promotion_id") Long promotionId,
                                                                 ProductListRequestVO requestVO) {
-        log.info("readBrandProducts - promotionId : {}, page : {}", promotionId, requestVO);
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("readPromotionProducts - userId : {}, promotionId : {}, page : {}", userId, promotionId, requestVO);
 
-
-
-        return null;
+        ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
+        Page<ProductDto> page = promotionService.readPromotionProducts(promotionId, userId, requestVO);
+        return new DataListResponseVO<>(page);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,8 @@ import kr.co.mash_up.nine_tique.domain.Category;
 import kr.co.mash_up.nine_tique.domain.Post;
 import kr.co.mash_up.nine_tique.domain.PostProduct;
 import kr.co.mash_up.nine_tique.domain.Product;
+import kr.co.mash_up.nine_tique.domain.Promotion;
+import kr.co.mash_up.nine_tique.domain.PromotionProduct;
 import kr.co.mash_up.nine_tique.domain.Shop;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 
@@ -53,6 +56,9 @@ public class ProductRepositoryTest {
     @Autowired
     private ShopRepository shopRepository;
 
+    @Autowired
+    private PromotionRepository promotionRepository;
+
     private Product product;
 
     private Category testCategory;
@@ -61,9 +67,10 @@ public class ProductRepositoryTest {
 
     private Shop testShop;
 
+    private Promotion testPromotion;
+
     @Before
     public void setUp() throws Exception {
-
         // 카테고리
         testCategory = new Category();
         testCategory.setMain(MAIN_CATEGORY);
@@ -87,6 +94,17 @@ public class ProductRepositoryTest {
         testShop.setCommentCount(0L);
         shopRepository.save(testShop);
 
+        // 프로모션
+        testPromotion = new Promotion();
+        testPromotion.setName("name");
+        testPromotion.setDescription("desc");
+        testPromotion.setStartAt(LocalDateTime.now());
+        testPromotion.setEndAt(LocalDateTime.now().plusDays(3L));
+        testPromotion.setPriority(1000);
+        testPromotion.setStatus(Promotion.Status.SAVED);
+        testPromotion.setPromotionProducts(new ArrayList<>());
+        promotionRepository.save(testPromotion);
+
         List<Product> products = new ArrayList<>();
         for (int i = 0; i < LOOP_COUNT; i++) {
             product = new Product();
@@ -101,6 +119,7 @@ public class ProductRepositoryTest {
             products.add(product);
 
             testPost.addProduct(new PostProduct(testPost, product));
+            testPromotion.addProduct(new PromotionProduct(testPromotion, product));
         }
     }
 
@@ -262,10 +281,10 @@ public class ProductRepositoryTest {
 
         Pageable pageable = new PageRequest(pageNo, pageSize);
 
-        // when : 메인 카테고리의 상품 리스트를 페이징으로 조회하면
+        // when : 메인 카테고리별 프로모션의 상품 리스트를 페이징으로 조회하면
         Page<Product> productPage = productRepository.findShopProductsByMainCategory(shopId, mainCategory, pageable);
 
-        // then : 메인 카테고리의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        // then : 메인 카테고리별 프로모션의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
         assertThat(productPage.getContent())
                 .isNotEmpty()
                 .hasSize(pageSize);
@@ -275,6 +294,79 @@ public class ProductRepositoryTest {
 
         for (Product product : productPage.getContent()) {
             assertEquals(product.getShop().getId().longValue(), shopId);
+            assertEquals(product.getCategory().getMain(), mainCategory);
+        }
+    }
+
+    @Test
+    public void findPromotionProducts_프로모션의_상품_리스트_조회() throws Exception {
+        // given : 프로모션 ID, 페이지 번호, 사이즈로
+        long promotionId = testPromotion.getId();
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 프로모션의 상품 리스트를 페이징으로 조회하면
+        Page<Product> promotionProducts = productRepository.findPromotionProducts(promotionId, pageable);
+
+        // then : 프로모션의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(promotionProducts.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(promotionProducts.getNumber(), pageNo);
+        assertEquals(promotionProducts.getTotalElements(), LOOP_COUNT);
+    }
+
+    @Test
+    public void findPromotionProductsByCategory_카테고리별_프로모션의_상품_리스트_조회() throws Exception {
+        // given : 프로모션 ID, 카테고리, 페이지 번호, 사이즈로
+        long promotionId = testPromotion.getId();
+        Category category = testCategory;
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 카테고리별 프로모션의 상품 리스트를 페이징으로 조회하면
+        Page<Product> productPage = productRepository.findPromotionProductsByCategory(promotionId, category, pageable);
+
+        // then : 카테고리별 프로모션의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(productPage.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(productPage.getNumber(), pageNo);
+        assertEquals(productPage.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : productPage.getContent()) {
+            assertEquals(product.getCategory(), category);
+        }
+    }
+
+    @Test
+    public void findPromotionProductsByMainCategory_메인_카테고리별_프로모션의_상품_리스트_조회() throws Exception {
+        // given : 프로모션 ID, 메인 카테고리, 페이지 번호, 사이즈로
+        long promotionId = testPromotion.getId();
+        String mainCategory = MAIN_CATEGORY;
+        int pageNo = 0;
+        int pageSize = DataListRequestVO.DEFAULT_PAGE_ROW;
+
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        // when : 메인 카테고리별 프로모션의 상품 리스트를 페이징으로 조회하면
+        Page<Product> productPage = productRepository.findPromotionProductsByMainCategory(promotionId, mainCategory, pageable);
+
+        // then : 메인 카테고리별 프로모션의 상품 리스트 페이지가 페이지 사이즈만큼 조회된다
+        assertThat(productPage.getContent())
+                .isNotEmpty()
+                .hasSize(pageSize);
+
+        assertEquals(productPage.getNumber(), pageNo);
+        assertEquals(productPage.getTotalElements(), LOOP_COUNT);
+
+        for (Product product : productPage.getContent()) {
             assertEquals(product.getCategory().getMain(), mainCategory);
         }
     }
