@@ -20,6 +20,7 @@ import kr.co.mash_up.nine_tique.service.PostService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.web.dto.CommentDto;
 import kr.co.mash_up.nine_tique.web.dto.PostDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
@@ -185,6 +186,20 @@ public class PostController {
         log.info("readPostComments - postId : {}, page : {}", postId, requestVO);
 
         Page<CommentDto> page = postService.readPostComments(postId, requestVO);
+        return new DataListResponseVO<>(page);
+    }
+
+    @ApiOperation(value = "게시물 상품 리스트 조회", notes = "게시물의 상품 리스트를 조회한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping("/{post_id}/products")
+    public DataListResponseVO<ProductDto> readPostProducts(@PathVariable(value = "post_id") Long postId,
+                                                           DataListRequestVO requestVO) {
+        log.info("readPostProducts - postId : {}, page : {}", postId, requestVO);
+
+        Page<ProductDto> page = postService.readPostProducts(postId, requestVO);
         return new DataListResponseVO<>(page);
     }
 }

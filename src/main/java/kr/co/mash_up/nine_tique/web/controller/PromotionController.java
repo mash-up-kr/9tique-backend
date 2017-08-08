@@ -18,10 +18,12 @@ import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
 import kr.co.mash_up.nine_tique.service.PromotionService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.dto.PromotionDto;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.DataResponseVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.PromotionRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -115,5 +117,21 @@ public class PromotionController {
 
         PromotionDto promotion = promotionService.readPromotion(promotionId);
         return new DataResponseVO<>(promotion);
+    }
+
+    @ApiOperation(value = "프로모션 상품 리스트 조회", notes = "프로모션의 상품 리스트를 조회한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping("/{promotion_id}/products")
+    public DataListResponseVO<ProductDto> readPromotionProducts(@PathVariable(value = "promotion_id") Long promotionId,
+                                                                ProductListRequestVO requestVO) {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("readPromotionProducts - userId : {}, promotionId : {}, page : {}", userId, promotionId, requestVO);
+
+        ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
+        Page<ProductDto> page = promotionService.readPromotionProducts(promotionId, userId, requestVO);
+        return new DataListResponseVO<>(page);
     }
 }

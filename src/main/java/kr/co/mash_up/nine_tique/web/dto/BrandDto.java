@@ -31,8 +31,8 @@ public class BrandDto {
 
     public static BrandDto fromBrand(Brand brand) {
         BrandDto brandDto = new BrandDto();
-        brand.setNameKo(brand.getNameKo());
-        brand.setNameEng(brand.getNameEng());
+        brandDto.setNameKo(brand.getNameKo());
+        brandDto.setNameEng(brand.getNameEng());
         return brandDto;
     }
 

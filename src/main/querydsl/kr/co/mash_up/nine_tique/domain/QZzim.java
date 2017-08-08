@@ -1,19 +1,19 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.path.PathInits;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
  * QZzim is a Querydsl query type for Zzim
  */
-@Generated("com.mysema.query.codegen.EntitySerializer")
+@Generated("com.querydsl.codegen.EntitySerializer")
 public class QZzim extends EntityPathBase<Zzim> {
 
     private static final long serialVersionUID = -101166025L;
@@ -41,18 +41,18 @@ public class QZzim extends EntityPathBase<Zzim> {
     }
 
     public QZzim(Path<? extends Zzim> path) {
-        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QZzim(PathMetadata<?> metadata) {
-        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+    public QZzim(PathMetadata metadata) {
+        this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QZzim(PathMetadata<?> metadata, PathInits inits) {
+    public QZzim(PathMetadata metadata, PathInits inits) {
         this(Zzim.class, metadata, inits);
     }
 
-    public QZzim(Class<? extends Zzim> type, PathMetadata<?> metadata, PathInits inits) {
+    public QZzim(Class<? extends Zzim> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.user = inits.isInitialized("user") ? new QUser(forProperty("user"), inits.get("user")) : null;
     }

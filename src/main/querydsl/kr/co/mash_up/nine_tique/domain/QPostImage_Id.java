@@ -1,18 +1,18 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
+import com.querydsl.core.types.Path;
 
 
 /**
  * QPostImage_Id is a Querydsl query type for Id
  */
-@Generated("com.mysema.query.codegen.EmbeddableSerializer")
+@Generated("com.querydsl.codegen.EmbeddableSerializer")
 public class QPostImage_Id extends BeanPath<PostImage.Id> {
 
     private static final long serialVersionUID = -2018595775L;
@@ -31,7 +31,7 @@ public class QPostImage_Id extends BeanPath<PostImage.Id> {
         super(path.getType(), path.getMetadata());
     }
 
-    public QPostImage_Id(PathMetadata<?> metadata) {
+    public QPostImage_Id(PathMetadata metadata) {
         super(PostImage.Id.class, metadata);
     }
 

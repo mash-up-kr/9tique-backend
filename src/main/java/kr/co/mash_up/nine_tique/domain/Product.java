@@ -16,7 +16,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString(exclude = {"productImages", "sellerProducts", "zzimProducts"})
+@ToString(exclude = {"productImages", "sellerProducts", "zzimProducts", "postProducts", "promotionProducts"})
 @EqualsAndHashCode(callSuper = false, of = "id")
 public class Product extends AbstractEntity<Long> {
 
@@ -67,7 +67,11 @@ public class Product extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ZzimProduct> zzimProducts;
 
-    // Todo: 프로모션 상품, 포스트 상품 추가
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PostProduct> postProducts;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<PromotionProduct> promotionProducts;
 
     /**
      * 상품의 판매중/판매 완료 여부

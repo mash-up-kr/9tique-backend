@@ -1,19 +1,19 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.path.PathInits;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
  * QPromotion is a Querydsl query type for Promotion
  */
-@Generated("com.mysema.query.codegen.EntitySerializer")
+@Generated("com.querydsl.codegen.EntitySerializer")
 public class QPromotion extends EntityPathBase<Promotion> {
 
     private static final long serialVersionUID = 1878581424L;
@@ -56,7 +56,7 @@ public class QPromotion extends EntityPathBase<Promotion> {
         super(path.getType(), path.getMetadata());
     }
 
-    public QPromotion(PathMetadata<?> metadata) {
+    public QPromotion(PathMetadata metadata) {
         super(Promotion.class, metadata);
     }
 

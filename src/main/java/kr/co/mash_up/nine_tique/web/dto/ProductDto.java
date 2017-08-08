@@ -3,6 +3,7 @@ package kr.co.mash_up.nine_tique.web.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.co.mash_up.nine_tique.domain.Product;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDto {
 
     @JsonProperty
@@ -49,12 +51,6 @@ public class ProductDto {
     @JsonProperty(value = "zzim_status")
     private boolean zzimStatus;
 
-    @JsonProperty(value = "created_at")
-    private long createdAt;
-
-    @JsonProperty(value = "updated_at")
-    private long updatedAt;
-
     @JsonProperty(value = "seller")
     private boolean seller;
 
@@ -82,10 +78,6 @@ public class ProductDto {
 
         private boolean zzimStatus;
 
-        private long createdAt;
-
-        private long updatedAt;
-
         private boolean seller;
 
         public ProductDto build() {
@@ -101,8 +93,6 @@ public class ProductDto {
             productDto.setShopDto(shop);
             productDto.setImages(images);
             productDto.setZzimStatus(zzimStatus);
-            productDto.setCreatedAt(createdAt);
-            productDto.setUpdatedAt(updatedAt);
             productDto.setSeller(seller);
             return productDto;
         }
@@ -159,16 +149,6 @@ public class ProductDto {
 
         public Builder withZzimStatus(boolean zzimStatus) {
             this.zzimStatus = zzimStatus;
-            return this;
-        }
-
-        public Builder withCreatedAt(long createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder withUpdatedAt(long updatedAt) {
-            this.updatedAt = updatedAt;
             return this;
         }
 

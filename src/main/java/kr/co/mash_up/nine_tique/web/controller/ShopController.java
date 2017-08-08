@@ -16,14 +16,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import kr.co.mash_up.nine_tique.security.SecurityUtil;
-import kr.co.mash_up.nine_tique.service.impl.ShopServiceImpl;
+import kr.co.mash_up.nine_tique.service.ShopService;
 import kr.co.mash_up.nine_tique.util.ParameterUtil;
 import kr.co.mash_up.nine_tique.web.dto.CommentDto;
+import kr.co.mash_up.nine_tique.web.dto.ProductDto;
 import kr.co.mash_up.nine_tique.web.dto.ShopDto;
 import kr.co.mash_up.nine_tique.web.vo.CommentRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.DataListResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.DataResponseVO;
+import kr.co.mash_up.nine_tique.web.vo.ProductListRequestVO;
 import kr.co.mash_up.nine_tique.web.vo.ResponseVO;
 import kr.co.mash_up.nine_tique.web.vo.ShopRequestVO;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +44,7 @@ import static kr.co.mash_up.nine_tique.util.Constant.RestEndpoint.API_SHOP;
 public class ShopController {
 
     @Autowired
-    private ShopServiceImpl shopService;
+    private ShopService shopService;
 
     @ApiOperation(value = "매장 추가", notes = "매장 정보를 추가한다")
     @ApiResponses(value = {
@@ -181,6 +183,22 @@ public class ShopController {
         log.info("addShopComment - shopId : {}, page : {}", shopId, requestVO);
 
         Page<CommentDto> page = shopService.readShopComments(shopId, requestVO);
+        return new DataListResponseVO<>(page);
+    }
+
+    @ApiOperation(value = "매장 상품 리스트 조회", notes = "매장의 상품 리스트를 조회한다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "조회 성공"),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @GetMapping("/{shop_id}/products")
+    public DataListResponseVO<ProductDto> readShopProducts(@PathVariable(value = "shop_id") Long shopId,
+                                                           ProductListRequestVO requestVO) {
+        Long userId = SecurityUtil.getCurrentUser().getId();
+        log.info("readShopProducts - userId : {}, shopId : {}, page : {}", userId, shopId, requestVO);
+
+        ParameterUtil.checkParameterEmpty(requestVO.getMainCategory());
+        Page<ProductDto> page = shopService.readShopProducts(shopId, userId, requestVO);
         return new DataListResponseVO<>(page);
     }
 }

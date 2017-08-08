@@ -1,19 +1,19 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.path.PathInits;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
  * QPostComment is a Querydsl query type for PostComment
  */
-@Generated("com.mysema.query.codegen.EntitySerializer")
+@Generated("com.querydsl.codegen.EntitySerializer")
 public class QPostComment extends EntityPathBase<PostComment> {
 
     private static final long serialVersionUID = -2135028116L;
@@ -43,18 +43,18 @@ public class QPostComment extends EntityPathBase<PostComment> {
     }
 
     public QPostComment(Path<? extends PostComment> path) {
-        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QPostComment(PathMetadata<?> metadata) {
-        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+    public QPostComment(PathMetadata metadata) {
+        this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QPostComment(PathMetadata<?> metadata, PathInits inits) {
+    public QPostComment(PathMetadata metadata, PathInits inits) {
         this(PostComment.class, metadata, inits);
     }
 
-    public QPostComment(Class<? extends PostComment> type, PathMetadata<?> metadata, PathInits inits) {
+    public QPostComment(Class<? extends PostComment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.post = inits.isInitialized("post") ? new QPost(forProperty("post")) : null;
         this.writer = inits.isInitialized("writer") ? new QUser(forProperty("writer"), inits.get("writer")) : null;

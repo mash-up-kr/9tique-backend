@@ -1,19 +1,19 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.path.PathInits;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
  * QShopImage is a Querydsl query type for ShopImage
  */
-@Generated("com.mysema.query.codegen.EntitySerializer")
+@Generated("com.querydsl.codegen.EntitySerializer")
 public class QShopImage extends EntityPathBase<ShopImage> {
 
     private static final long serialVersionUID = 553528338L;
@@ -41,18 +41,18 @@ public class QShopImage extends EntityPathBase<ShopImage> {
     }
 
     public QShopImage(Path<? extends ShopImage> path) {
-        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QShopImage(PathMetadata<?> metadata) {
-        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+    public QShopImage(PathMetadata metadata) {
+        this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QShopImage(PathMetadata<?> metadata, PathInits inits) {
+    public QShopImage(PathMetadata metadata, PathInits inits) {
         this(ShopImage.class, metadata, inits);
     }
 
-    public QShopImage(Class<? extends ShopImage> type, PathMetadata<?> metadata, PathInits inits) {
+    public QShopImage(Class<? extends ShopImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.id = inits.isInitialized("id") ? new QShopImage_Id(forProperty("id")) : null;
         this.image = inits.isInitialized("image") ? new QImage(forProperty("image")) : null;

@@ -267,7 +267,7 @@ COMMENT = '유저의 찜(장바구니라고 생각하면 이해하기 쉬움)';
 -- Table `nine_tique`.`post`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nine_tique`.`post` (
-  `id` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL COMMENT '게시물 이름(제목)',
   `contents` TEXT NOT NULL COMMENT '게시물 내용(형식이 복잡할 수 있다)',
   `comment_count` INT(11) NOT NULL DEFAULT '0' COMMENT '게시물의 댓글 갯수',

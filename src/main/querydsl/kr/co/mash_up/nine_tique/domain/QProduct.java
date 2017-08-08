@@ -1,19 +1,19 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.path.PathInits;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
  * QProduct is a Querydsl query type for Product
  */
-@Generated("com.mysema.query.codegen.EntitySerializer")
+@Generated("com.querydsl.codegen.EntitySerializer")
 public class QProduct extends EntityPathBase<Product> {
 
     private static final long serialVersionUID = 721244220L;
@@ -37,9 +37,13 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath name = createString("name");
 
+    public final ListPath<PostProduct, QPostProduct> postProducts = this.<PostProduct, QPostProduct>createList("postProducts", PostProduct.class, QPostProduct.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
     public final ListPath<ProductImage, QProductImage> productImages = this.<ProductImage, QProductImage>createList("productImages", ProductImage.class, QProductImage.class, PathInits.DIRECT2);
+
+    public final ListPath<PromotionProduct, QPromotionProduct> promotionProducts = this.<PromotionProduct, QPromotionProduct>createList("promotionProducts", PromotionProduct.class, QPromotionProduct.class, PathInits.DIRECT2);
 
     public final ListPath<SellerProduct, QSellerProduct> sellerProducts = this.<SellerProduct, QSellerProduct>createList("sellerProducts", SellerProduct.class, QSellerProduct.class, PathInits.DIRECT2);
 
@@ -61,18 +65,18 @@ public class QProduct extends EntityPathBase<Product> {
     }
 
     public QProduct(Path<? extends Product> path) {
-        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QProduct(PathMetadata<?> metadata) {
-        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+    public QProduct(PathMetadata metadata) {
+        this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QProduct(PathMetadata<?> metadata, PathInits inits) {
+    public QProduct(PathMetadata metadata, PathInits inits) {
         this(Product.class, metadata, inits);
     }
 
-    public QProduct(Class<? extends Product> type, PathMetadata<?> metadata, PathInits inits) {
+    public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.brand = inits.isInitialized("brand") ? new QBrand(forProperty("brand")) : null;
         this.category = inits.isInitialized("category") ? new QCategory(forProperty("category")) : null;

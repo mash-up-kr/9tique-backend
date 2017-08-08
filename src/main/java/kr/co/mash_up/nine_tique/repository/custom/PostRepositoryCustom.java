@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 import kr.co.mash_up.nine_tique.domain.Post;
+import kr.co.mash_up.nine_tique.domain.PostProduct;
+import kr.co.mash_up.nine_tique.domain.Product;
 
 
 /**

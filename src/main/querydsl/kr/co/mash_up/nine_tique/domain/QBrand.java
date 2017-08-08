@@ -1,19 +1,19 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
-import com.mysema.query.types.path.PathInits;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
  * QBrand is a Querydsl query type for Brand
  */
-@Generated("com.mysema.query.codegen.EntitySerializer")
+@Generated("com.querydsl.codegen.EntitySerializer")
 public class QBrand extends EntityPathBase<Brand> {
 
     private static final long serialVersionUID = 1136410132L;
@@ -44,7 +44,7 @@ public class QBrand extends EntityPathBase<Brand> {
         super(path.getType(), path.getMetadata());
     }
 
-    public QBrand(PathMetadata<?> metadata) {
+    public QBrand(PathMetadata metadata) {
         super(Brand.class, metadata);
     }
 

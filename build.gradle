@@ -13,7 +13,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'idea'
 
 jar {
     baseName = 'nine_tique'
@@ -53,57 +52,82 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
 
     // queryDSL
-    compile 'com.mysema.querydsl:querydsl-jpa:3.7.2'
-    compile 'com.mysema.querydsl:querydsl-apt:3.7.2'
+    def querydslVersion = "4.1.4"
+    compile "com.querydsl:querydsl-jpa:$querydslVersion"
+    compile "com.querydsl:querydsl-apt:$querydslVersion"
 
     // Swagger
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
 }
 
+/**
+ * QueryDSL Configuration
+ */
 // https://gist.github.com/EdwardBeckett/5377401
 // http://blog.jongminkim.co.kr/?p=386
+
+//configurations {
+//    compile.exclude module: "spring-boot-starter-jdbc"  // 다른 commection pool 사용시 jdbc exclude
+//    querydslapt
+//}
+
+def queryDslOutput = file("src/main/querydsl")
+
 sourceSets {
-    querydsl {
+    main {
         java {
-            srcDirs = ['src/main/querydsl']
+            // sourceSet 설정. 아래의 3개의 방법이 있다
+//            srcDirs = ['src/main/java', queryDslOutput]
+//            srcDir "src/main/querydsl"
+            srcDir queryDslOutput
         }
     }
 }
 
-configurations {
-//    compile.exclude module: "spring-boot-starter-jdbc"  // 다른 commection pool 사용시 jdbc exclude
-    querydslapt
-}
-
 task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Generates the QueryDSL query types') {
+    doFirst {
+        if (!queryDslOutput.exists()) {
+            logger.info("Creating `$queryDslOutput` directory")
+
+            if (!queryDslOutput.mkdirs()) {
+                throw new InvalidUserDataException("Unable to create `$queryDslOutput` directory")
+            }
+        }
+    }
+
     source = sourceSets.main.java
-    classpath = configurations.compile + configurations.querydslapt
+    classpath = configurations.compile
     options.compilerArgs = [
-            '-proc:only', '-processor', 'com.mysema.query.apt.jpa.JPAAnnotationProcessor'
+            "-proc:only",
+            "-processor",
+            "com.querydsl.apt.jpa.JPAAnnotationProcessor"
     ]
-    destinationDir = sourceSets.querydsl.java.srcDirs.iterator().next()
+    destinationDir = queryDslOutput
     dependencyCacheDir = compileJava.dependencyCacheDir
 }
+
 generateQueryDSL.mustRunAfter clean
 
 compileJava {
     dependsOn generateQueryDSL
-    source generateQueryDSL.destinationDir
+//    source generateQueryDSL.destinationDir
 }
 
-compileQuerydslJava {
-    dependsOn generateQueryDSL
-    options.warnings = false
-    classpath += sourceSets.main.runtimeClasspath
-}
+compileTestJava.dependsOn(generateQueryDSL)
 
+/**
+ * gradle clean task 실행 시 querydsl 경로 제거
+ */
 clean {
-    delete sourceSets.querydsl.java.srcDirs
+    delete queryDslOutput
 }
 
-idea {
-    module {
-        sourceDirs += file('src/main/querydsl')
-    }
+/**
+ * gradle clean 실행 후 generateQueryDSL task 실행
+ */
+clean.finalizedBy(generateQueryDSL)
+
+springBoot {
+    mainClass = "kr.co.mash_up.nine_tique.NineTiqueApplication"
 }

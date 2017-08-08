@@ -1,18 +1,18 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
+import com.querydsl.core.types.Path;
 
 
 /**
  * QAuthority is a Querydsl query type for Authority
  */
-@Generated("com.mysema.query.codegen.EntitySerializer")
+@Generated("com.querydsl.codegen.EntitySerializer")
 public class QAuthority extends EntityPathBase<Authority> {
 
     private static final long serialVersionUID = -141563056L;
@@ -39,7 +39,7 @@ public class QAuthority extends EntityPathBase<Authority> {
         super(path.getType(), path.getMetadata());
     }
 
-    public QAuthority(PathMetadata<?> metadata) {
+    public QAuthority(PathMetadata metadata) {
         super(Authority.class, metadata);
     }
 

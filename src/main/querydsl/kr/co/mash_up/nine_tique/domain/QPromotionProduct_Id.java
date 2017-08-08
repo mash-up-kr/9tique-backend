@@ -1,18 +1,18 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
+import com.querydsl.core.types.Path;
 
 
 /**
  * QPromotionProduct_Id is a Querydsl query type for Id
  */
-@Generated("com.mysema.query.codegen.EmbeddableSerializer")
+@Generated("com.querydsl.codegen.EmbeddableSerializer")
 public class QPromotionProduct_Id extends BeanPath<PromotionProduct.Id> {
 
     private static final long serialVersionUID = 854175594L;
@@ -31,7 +31,7 @@ public class QPromotionProduct_Id extends BeanPath<PromotionProduct.Id> {
         super(path.getType(), path.getMetadata());
     }
 
-    public QPromotionProduct_Id(PathMetadata<?> metadata) {
+    public QPromotionProduct_Id(PathMetadata metadata) {
         super(PromotionProduct.Id.class, metadata);
     }
 

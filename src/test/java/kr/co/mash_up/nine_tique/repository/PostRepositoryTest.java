@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +13,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import kr.co.mash_up.nine_tique.NineTiqueApplication;
+import kr.co.mash_up.nine_tique.config.PersistenceConfig;
 import kr.co.mash_up.nine_tique.domain.Post;
+import kr.co.mash_up.nine_tique.domain.PostProduct;
+import kr.co.mash_up.nine_tique.domain.Product;
 import kr.co.mash_up.nine_tique.web.vo.DataListRequestVO;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,8 +31,8 @@ import static org.junit.Assert.assertTrue;
  * Created by ethankim on 2017. 7. 31..
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {NineTiqueApplication.class})
 @DataJpaTest
+@ImportAutoConfiguration(classes = {PersistenceConfig.class})
 @ActiveProfiles(profiles = "test")
 public class PostRepositoryTest {
 
@@ -48,6 +52,7 @@ public class PostRepositoryTest {
             post.setContents("postContents");
             post.setPostComments(new ArrayList<>());
             post.setCommentCount(0L);
+            post.setPostProducts(new ArrayList<>());
             postRepository.save(post);
         }
     }

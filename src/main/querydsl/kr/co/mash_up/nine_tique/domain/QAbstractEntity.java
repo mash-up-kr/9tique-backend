@@ -1,18 +1,18 @@
 package kr.co.mash_up.nine_tique.domain;
 
-import static com.mysema.query.types.PathMetadataFactory.*;
+import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.mysema.query.types.path.*;
+import com.querydsl.core.types.dsl.*;
 
-import com.mysema.query.types.PathMetadata;
+import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
-import com.mysema.query.types.Path;
+import com.querydsl.core.types.Path;
 
 
 /**
  * QAbstractEntity is a Querydsl query type for AbstractEntity
  */
-@Generated("com.mysema.query.codegen.SupertypeSerializer")
+@Generated("com.querydsl.codegen.SupertypeSerializer")
 public class QAbstractEntity extends EntityPathBase<AbstractEntity<? extends java.io.Serializable>> {
 
     private static final long serialVersionUID = 1997421240L;
@@ -23,19 +23,19 @@ public class QAbstractEntity extends EntityPathBase<AbstractEntity<? extends jav
 
     public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({"all", "rawtypes", "unchecked"})
     public QAbstractEntity(String variable) {
-        super((Class)AbstractEntity.class, forVariable(variable));
+        super((Class) AbstractEntity.class, forVariable(variable));
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({"all", "rawtypes", "unchecked"})
     public QAbstractEntity(Path<? extends AbstractEntity> path) {
-        super((Class)path.getType(), path.getMetadata());
+        super((Class) path.getType(), path.getMetadata());
     }
 
-    @SuppressWarnings("all")
-    public QAbstractEntity(PathMetadata<?> metadata) {
-        super((Class)AbstractEntity.class, metadata);
+    @SuppressWarnings({"all", "rawtypes", "unchecked"})
+    public QAbstractEntity(PathMetadata metadata) {
+        super((Class) AbstractEntity.class, metadata);
     }
 
 }
