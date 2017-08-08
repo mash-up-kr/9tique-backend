@@ -57,12 +57,11 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
     @Override
     public Page<Product> findProducts(Pageable pageable) {
 
-        QueryResults<Product> results =
+        JPAQuery<Product> query =
                 queryFactory.selectFrom(PRODUCT)
-                        .orderBy(PRODUCT.status.asc(), PRODUCT.id.desc())
-                        .limit(pageable.getPageSize())
-                        .offset(pageable.getOffset())
-                        .fetchResults();
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
@@ -70,14 +69,13 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
     @Override
     public Page<Product> findProductsByCategory(Category category, Pageable pageable) {
 
-        QueryResults<Product> results =
+        JPAQuery<Product> query =
                 queryFactory.selectFrom(PRODUCT)
                         .join(PRODUCT.category, CATEGORY)
                         .where(CATEGORY.id.eq(category.getId()))
-                        .orderBy(PRODUCT.status.asc(), PRODUCT.id.desc())
-                        .limit(pageable.getPageSize())
-                        .offset(pageable.getOffset())
-                        .fetchResults();
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
@@ -85,14 +83,13 @@ public class ProductRepositoryImpl extends QueryDslRepositorySupport implements 
     @Override
     public Page<Product> findProductsByMainCategory(String mainCategory, Pageable pageable) {
 
-        QueryResults<Product> results =
+        JPAQuery<Product> query =
                 queryFactory.selectFrom(PRODUCT)
                         .join(PRODUCT.category, CATEGORY)
                         .where(CATEGORY.main.eq(mainCategory))
-                        .orderBy(PRODUCT.status.asc())
-                        .limit(pageable.getPageSize())
-                        .offset(pageable.getOffset())
-                        .fetchResults();
+                        .orderBy(PRODUCT.status.asc());
+
+        QueryResults<Product> results = getQuerydsl().applyPagination(pageable, query).fetchResults();
 
         return new PageImpl<>(results.getResults(), pageable, results.getTotal());
     }
